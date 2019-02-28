@@ -3,10 +3,11 @@
 		<a name="comment"></a>
 		<form action="/comment/{{ videoId }}" method="post">
 			<div class="form-group">
-				<label for="text">What did you learn from this video?</label>
+				<h4 for="text">What did you learn from this video?</h4>
 				<textarea id="text" name="text" class="form-control" rows="3">{{ text }}</textarea>
 			</div>
-			<button type="submit" class="btn btn-primary mb-2"><i class="fas fa-pen"></i> Save</button>
+			<button type="submit" class="btn btn-primary"><i class="fas fa-pen"></i> Save</button>
+			<button type="button" stt-target="text" class="ml-1 stt-button btn btn-outline-secondary"><i class="fas fa-microphone"></i> Record</button>
 		</form>
 	</div>
 </div>

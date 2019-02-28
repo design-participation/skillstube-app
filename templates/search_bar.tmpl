@@ -1,16 +1,16 @@
 <div class="row">
-	<div class="col mb-5">
+	<div class="col mb-3">
 		<form action="/search" method="get">
 			<div class="input-group">
 				<div class="input-group-prepend">
-					<select name="prompt" style="z-index: 2; border-top-right-radius: 0px; border-bottom-right-radius: 0px;" class="custom-select" id="inputGroupSelect01" aria-label="Prompt">
+					<select name="prompt" style="z-index: 2; border-top-right-radius: 0px; border-bottom-right-radius: 0px;" class="custom-select border-secondary" id="inputGroupSelect01" aria-label="Prompt">
 						<option {{ 'selected' if prompt == '1' }} value="1">How to</option>
 						<option {{ 'selected' if prompt == '2' }} value="2">What is</option>
 						<option {{ 'selected' if prompt == '3' }} value="3">Examples of</option>
 						<option {{ 'selected' if prompt == '4' }} value="4">(no start)</option>
 					</select>
 				</div>
-				<input id="query-field1" type="text" class="form-control" name="q" placeholder="type here" aria-label="Search query" aria-describedby="button-addon1" value="{{ query|e }}">
+				<input id="query-field1" type="text" class="form-control border-secondary" autofocus name="q" placeholder="type here" aria-label="Search query" aria-describedby="button-addon1" value="{{ query|e }}">
 				<div class="input-group-append">
 					<button type="button" stt-target="query-field1" class="stt-button btn btn-outline-secondary"><i class="fas fa-microphone"></i></button>
 					<button class="btn btn-outline-secondary" type="submit" id="button-addon1"><i class="fas fa-search"></i> Search</button>

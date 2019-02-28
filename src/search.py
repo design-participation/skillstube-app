@@ -26,14 +26,14 @@ async def search(request):
     if query.strip() != '':
         final_query = '"%s" %s' % (prompts[prompt], query)
         if request.query.get('channel_only'):
-            async for item in youtube.search(final_query, 25,
+            async for item in youtube.search(final_query, 24,
                         videoSyndicated='true',
                         videoEmbeddable='true',
                         channelId=secrets.YOUTUBE_CHANNEL,
                     ):
                 results.append({'videoId': item['id']['videoId'], 'thumbnail': item['snippet']['thumbnails']['high']['url'], 'title': item['snippet']['title']})
         else:
-            async for item in youtube.search(final_query, 25,
+            async for item in youtube.search(final_query, 24,
                         videoCategoryId=26, # 26 = how to and style, 27 = education
                         relevanceLanguage='en',
                         videoSyndicated='true',

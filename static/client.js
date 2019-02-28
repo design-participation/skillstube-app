@@ -12,10 +12,12 @@ $(function() {
 		let target = $('#' + $(button).attr('stt-target'));
 		console.log(button, target);
 		function on_interim(text) {
-			target.value = text;
+			console.log('interim', text);
+			$(target).val(text);
 		}
 		function on_final(text) {
-			target.value = text;
+			console.log('interim', text);
+			$(target).val(text);
 		}
 		let stt = SpeechToTextProviderFactory()(on_final, on_interim);
 		let listening = false;
