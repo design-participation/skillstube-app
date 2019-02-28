@@ -23,6 +23,7 @@ async def get_user(request):
     return None
 
 async def add_globals(request):
+    print(request.url)
     values = {}
     user = await get_user(request)
     if user is not None:

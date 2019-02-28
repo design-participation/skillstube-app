@@ -19,10 +19,12 @@ if [ "`grep USE_SSL src/secrets.py | grep True`" != "" ] && [ ! -f `grep SSL_KEY
 	exit 1
 fi
 
-# warn: remove disk-saving options in production (only keep --dbpath)
-mkdir -p data/mongo
-mongod --nojournal --nssize=1 --noprealloc --smallfiles --dbpath data/mongo >/dev/null 2>&1 &
+timestamp=`date '+%Y-%m-%d_%H:%M:%S'`
+mkdir -p data/mongo logs
 
-python src/server.py -debug
+# warn: remove disk-saving options in production (only keep --dbpath)
+mongod --nojournal --nssize=1 --noprealloc --smallfiles --dbpath data/mongo --port `grep DB_URL src/secrets.py | cut -f2 -d"'" | awk -F: '{print $(NF)}'` > "logs/db_$timestamp.txt" 2>&1 &
+
+python -u src/server.py -debug 2>&1 | tee "logs/server_$timestamp.txt"
 
 kill %%

@@ -8,12 +8,10 @@ import pymongo
 from bson.objectid import ObjectId
 from passlib.hash import pbkdf2_sha256
 
-#TODO: import from secrets?
-db_name = 'videosearch'
-db_url = 'mongodb://localhost:27017'
+import secrets
 
-client = motor.motor_asyncio.AsyncIOMotorClient(db_url)
-db = client[db_name]
+client = motor.motor_asyncio.AsyncIOMotorClient(secrets.DB_URL)
+db = client[secrets.DB_NAME]
 
 class DB:
     def __init__(self, db_name):
