@@ -1,0 +1,32 @@
+{% extends 'base.tmpl' %}
+{% block title %}Friend{% endblock %}
+{% block body %}
+<h1>Friend</h1>
+<div class="row">
+	<div class="col">
+		<div class="card border-0 mb-3">
+			<div class="row">
+				<div class="col-4">
+					<a href="/">
+						<img class="card-img" src="{{ friend['picture'] }}">
+					</a>
+				</div>
+				<div class="col-8">
+					<div class="card-body">
+						<p class="name"><strong>Name:</strong> {{ friend['name'] }}</p>
+						<p class="name"><strong>Email:</strong> {{ friend['email'] }}</p>
+						{% if debug %}
+						<p class="uid"><strong>debug:Uid:</strong> {{ friend['_id'] }}</p>
+						{% endif %}
+						<form action="/unfriend/{{ friend_id }}" method="get">
+							<button class="btn btn-primary" type="submit"> <i class="fas fa-sign-out-alt"></i> Remove </button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<h1>Shared content</h1>
+{% include 'result_list.tmpl' %}
+{% endblock body %}

@@ -1,0 +1,10 @@
+{% extends 'base.tmpl' %}
+{% block title %}Shared{% endblock %}
+{% block body %}
+<h1>Shared with me</h1>
+{% set comments = shared_with_me %}
+{% include 'comment_list.tmpl' %}
+<h1>Shared by myself</h1>
+{% set comments = shared_by_myself %}
+{% include 'comment_list.tmpl' %}
+{% endblock body %}

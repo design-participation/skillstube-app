@@ -1,0 +1,20 @@
+<nav class="navbar navbar-light bg-light">
+	<a class="navbar-brand" href="/"> {% if not nologo %} {% include 'logo.tmpl' %} {% endif %}<span class="logo-text">How-to-App </span></a>
+	{% if user %}
+	<div class="user">
+		<a href="/personal"><img class="user-picture-sm" src="{{ user['picture'] }}">
+			{% if user['notification_count'] > 0 %}
+			<span class="notification-count badge badge-primary">{{ user['notification_count'] }}</span>
+			{% endif %}
+		</a>
+	</div>
+	{% else %}
+	<div>
+		<a class="nav-link" href="/login"> <i class="fas fa-sign-in-alt"></i> Login </a>
+	</div>
+	{% endif %}
+	</div>
+</nav>
+
+<div class="user mt-1 mr-1">
+</div>

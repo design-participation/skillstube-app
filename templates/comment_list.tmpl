@@ -1,0 +1,37 @@
+<div class="row">
+	<div class="col">
+		{% for item in comments %}
+		<div class="card mb-3">
+			<a name="{{ item['_id'] }}"></a>
+			<div class="card-body">
+				<img class="user-picture mr-3 float-left" src="{{ item['user']['picture'] }}">
+				{% if show_video %}
+				<a href="/watch/{{ item['video_id'] }}">
+					<img style="max-width: 128px;float:right" src="http://i3.ytimg.com/vi/{{ item['video_id'] }}/hqdefault.jpg" class="ml-2 mb-2">
+				</a>
+				{% endif %}
+				<p> {{ item['text'] }} </p>
+				{% if user['_id'] == item['user_id'] %}
+				<div class="row">
+					<div class="col">
+						<form action="/share/{{ item['_id'] }}" method="get">
+							<button class="btn btn-outline-secondary float-right mb-2" type="submit"><i class="fas fa-share-alt"></i> {{ 'Share' if item.shared_with|count == 0 else 'Shared with' }}
+								{% for share_user in item['shared_with'] %}
+								<img class="user-picture-xs ml-2 float-right" src="{{ share_user['picture'] }}">
+								{% endfor %}
+							</button>
+						</form>
+					</div>
+				</div>
+				{% else %}
+				<div class="float-right mb-2">
+					{% for share_user in item['shared_with'] %}
+					<img class="user-picture-xs ml-2 float-right" src="{{ share_user['picture'] }}">
+					{% endfor %}
+				</div>
+				{% endif %}
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+</div>

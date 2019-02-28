@@ -1,0 +1,12 @@
+<div class="row">
+	<div class="col">
+		<a name="comment"></a>
+		<form action="/comment/{{ videoId }}" method="post">
+			<div class="form-group">
+				<label for="text">What did you learn from this video?</label>
+				<textarea id="text" name="text" class="form-control" rows="3">{{ text }}</textarea>
+			</div>
+			<button type="submit" class="btn btn-primary mb-2"><i class="fas fa-pen"></i> Save</button>
+		</form>
+	</div>
+</div>

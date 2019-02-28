@@ -1,0 +1,24 @@
+{% extends 'base.tmpl' %}
+{% block title %}Share{% endblock %}
+{% block body %}
+<h1>Share this comment</h1>
+<div class="row">
+	<div class="col">
+		<div class="card mb-3">
+			<div class="card-body">
+				<img class="user-picture mr-3" style="float:left" src="{{ user['picture'] }}">
+				<p> {{ comment['text'] }} </p>
+			</div>
+		</div>
+	</div>
+</div>
+<h1>With whom?</h1>
+<form action="/share/{{ comment['_id'] }}" method="post">
+	{% include 'friend_selector.tmpl' %}
+	<div class="row">
+		<div class="col">
+			<button class="btn btn-primary mb-2" type="submit"><i class="fas fa-share-alt"></i> Share</button>
+		</div>
+	</div>
+</form>
+{% endblock body %}

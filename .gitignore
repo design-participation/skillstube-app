@@ -1,0 +1,7 @@
+data/mongo
+src/__pycache__
+src/secrets.py
+ssl/*.crt
+ssl/*.key
+ssl/*.srl
+ssl/*.csr

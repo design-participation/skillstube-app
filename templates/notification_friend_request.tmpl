@@ -1,0 +1,12 @@
+<img class="user-picture mb-3 mr-3" style="float:left" src="{{ item.data['sender']['picture'] }}">
+<strong>Friend request</strong>
+<form action="/friend/accept/{{ item['data']['friend_id'] }}" method="post">
+	{% if item['new'] %}
+	<button style="float:right" class="btn btn-primary ml-3" id="submit" type="submit"><i class="fas fa-user-friends"></i> Accept </button>
+	<p> Do you accept to connect with <strong>{{ item['data']['sender']['name'] }}</strong>? </p>
+	{% else %}
+	<p> You accepted to connect with <strong>{{ item['data']['sender']['name'] }}</strong>. </p>
+	{% endif %}
+	<input type="hidden" name="notification" value="{{ item['_id'] }}">
+
+</form>

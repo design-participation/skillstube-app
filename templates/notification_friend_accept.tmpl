@@ -1,0 +1,7 @@
+<img class="user-picture mb-3 mr-3" style="float:left" src="{{ item.data['sender']['picture'] }}">
+<strong>Connected</strong>
+<form action="/friend/accept/{{ item['data']['friend_id'] }}" method="post">
+	<p> You are now connected with <strong>{{ item['data']['sender']['name'] }}</strong> </p>
+	<input type="hidden" name="notification" value="{{ item['_id'] }}">
+
+</form>

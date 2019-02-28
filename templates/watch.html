@@ -1,0 +1,27 @@
+{% extends 'base.tmpl' %}
+{% block title %}Watch{% endblock %}
+{% block body %}
+{% include 'search_bar.tmpl' %}
+<div class="row">
+	<div class="col">
+		<div class="embed-responsive embed-responsive-16by9 mb-5">
+			<!--<video src="{{ video_url }}" controls autoplay></video>-->
+			<iframe id="player" 
+							type="text/html" 
+							width="640" 
+							height="390"
+							src="http://www.youtube-nocookie.com/embed/{{ videoId }}?rel=0&showinfo=0"
+							frameborder="0"
+							allow="autoplay"
+							allowfullscreen
+							>
+			</iframe>
+		</div>
+	</div>
+</div>
+{% if user %}
+	<h4> Comments </h4>
+	{% include 'comment_list.tmpl' %}
+	{% include 'comment_form.tmpl' %}
+{% endif %}
+{% endblock body %}

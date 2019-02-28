@@ -1,0 +1,103 @@
+/* ============= logo ============= */
+.logo-text {
+	color: #645AA5;
+}
+.logo i:nth-child(1) {
+	color: #645AA5;
+}
+.logo i:nth-child(2) {
+	color: #8E3B88;
+	transform: rotate(-5deg) translate(-.07em, -.2em);
+}
+.logo i:nth-child(3) {
+	color: #E8314F;
+	transform: rotate(5deg) translateY(-.4em);
+}
+.logo i:nth-child(4) {
+	color: #F47726;
+	transform: rotate(-5deg) translateX(-.15em);
+}
+
+/* ============= user ============= */
+.user-picture {
+	width: 64px;
+	height: 64px;
+	background: var(--warning);
+	border-radius: 50%;
+}
+.user-picture-sm {
+	width: 48px;
+	height: 48px;
+	background: var(--warning);
+	border-radius: 50%;
+}
+.user-picture-xs {
+	width: 32px;
+	width: 32px;
+	background: var(--warning);
+	border-radius: 50%;
+}
+.notification-count {
+	position: relative;
+	top: 15px;
+	right: 15px;
+	margin-right: -15px;
+}
+.user a:hover {
+	text-decoration: none;
+}
+
+/* ============= card selector ============= */
+.hidden-checkbox {
+	opacity: 0;
+	position: absolute;
+	width: 0px;
+	height: 0px;
+}
+.form-check-label {
+	cursor: pointer;
+}
+.selected-item {
+	background: var(--success);
+	color: var(--white);
+}
+.selected-item img {
+	filter: opacity(.5);
+}
+.selected-item div:before {
+	font: 400 13.3333px Arial;
+	font-size: 1.5rem;
+	position: absolute;
+	top: 10px;
+  left: 10px;
+	content: "\f1e0";
+	-webkit-font-smoothing: antialiased;
+	display: inline-block;
+	font-style: normal;
+	font-variant: normal;
+	text-rendering: auto;
+	line-height: 1;
+	font-weight: 900;
+	font-family: "Font Awesome 5 Free";
+}
+
+/* ============= speech to text ============= */
+.stt-recording {
+  background: red;
+  color: white;
+  animation: stt-recording-anim .5s steps(2, end) infinite;
+  animation-direction: alternate;
+}
+
+.stt-recording:hover {
+  background: red;
+  color: white;
+  animation: stt-recording-anim .5s steps(2, end) infinite;
+  animation-direction: alternate;
+}
+
+@keyframes stt-recording-anim {
+  0%   { color: white; }
+  100% { color: red; }
+}
+
