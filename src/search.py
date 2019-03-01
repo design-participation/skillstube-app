@@ -20,7 +20,7 @@ async def search(request):
     query = request.query.get('q', '')
     results = []
     prompt = request.query.get('prompt', '1')
-    prompts = {'1': 'How to', '2': 'What is', '3': 'Examples of', '4': ''}
+    prompts = {'1': 'How to', '2': 'What is', '3': 'Show me', '4': ''}
     if prompt not in prompts:
         prompt = '1'
     if query.strip() != '':
