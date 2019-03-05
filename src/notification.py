@@ -20,5 +20,13 @@ async def dismiss_notification(request):
 @aiohttp_jinja2.template('notifications.html')
 async def show_notifications(request):
     user = await get_user(request)
+    notification_items = await notifications.list(user['_id'], return_all=False, populate=True)
+    return {'notifications': notification_items}
+
+@routes.get('/notifications/all')
+@login_required
+@aiohttp_jinja2.template('notifications.html')
+async def show_notifications(request):
+    user = await get_user(request)
     notification_items = await notifications.list(user['_id'], return_all=True, populate=True)
     return {'notifications': notification_items}

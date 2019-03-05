@@ -6,7 +6,7 @@ from aiohttp import ClientSession
 from bson.objectid import ObjectId
 
 from util import routes, get_user
-from backend import users, friends, comments, history, shares
+from backend import users, friends, comments, history, shares, favorites
 
 # TODO: disable debugging code
 
@@ -36,9 +36,14 @@ async def debug_populate(request):
         paragraphs = [line.strip() for line in fp]
     with open('data/random/queries.txt') as fp:
         queries = [line.strip() for line in fp]
+    folder_names = ['Cooking', 'Stuff I like', 'Sailing', 'The teacher asked it', 'Chipmunks', 'To the zoo', 'Home', 'Mum', 'Dad', 'Other', 'Nothing special']
 
     import random
     for user_id in user_ids:
+        folders = []
+        for i in range(random.randint(1, 5)):
+            name = random.choice(folder_names)
+            folders.append(await favorites.add_folder(user_id, name))
         # generate random friend connections
         friend_ids = []
         for num in range(random.randint(1, 8)):
@@ -56,6 +61,9 @@ async def debug_populate(request):
         # generate random video history
         for num in range(random.randint(1, 20)):
             video_id = random.choice(videos)
+            if random.random() > .5:
+                folder_id = random.choice(folders)
+                await favorites.add(user_id, folder_id, video_id)
             await history.add(user_id, 'video', video_id)
 
             # generate random comments

@@ -1,8 +1,28 @@
 <nav class="navbar navbar-light bg-light">
 	<a class="navbar-brand" href="/"> {% if not nologo %} {% include 'logo.tmpl' %} {% endif %}<span class="logo-text">How-To-App </span></a>
 	{% if user %}
+		<ul class="nav">
+			<li class="nav-item">
+				<a class="nav-link" href="/friends"><i class="fas fa-user-friends"></i> Friends</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="/shared"><i class="fas fa-share-alt"></i> Shared</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="/favorites"><i class="fas fa-star"></i> Favorites</a>
+			</li>
+			<!--<li class="nav-item">
+				<a class="nav-link" href="/comments"><i class="far fa-comments"></i> Comments</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="/notifications"><i class="fas fa-check"></i> Notifications</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="/recent"><i class="fas fa-history"></i> Recent</a>
+			</li>-->
+		</ul>
 	<div class="user">
-		<a href="/personal"><img class="user-picture-sm" src="{{ user['picture'] }}">
+		<a href="/notifications"><img class="user-picture-sm" src="{{ user['picture'] }}">
 			{% if user['notification_count'] > 0 %}
 			<span class="notification-count badge badge-primary">{{ user['notification_count'] }}</span>
 			{% endif %}
@@ -15,6 +35,19 @@
 	{% endif %}
 	</div>
 </nav>
-
-<div class="user mt-1 mr-1">
+<div class="row">
+	<div class="col">
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i> Home</a></li>
+				{% for item in breadcrumb %}
+					{% if item.active %}
+					<li class="breadcrumb-item active" aria-current="page">{{ item.text }}</li>
+					{% else %}
+					<li class="breadcrumb-item"><a href="#">{{ item.text }}</a></li>
+					{% endif %}
+				{% endfor %}
+			</ol>
+		</nav>
+	</div>
 </div>

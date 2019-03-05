@@ -2,14 +2,15 @@ $(function() {
 
 	/***************** friend selector for sharing ******************/
 
-	function update_checkbox(target) {
+	function update_checkbox(event) {
+		let target = event.target;
 		let checked = target.checked;
-		if(checked)
-			$(target).siblings('label').addClass('selected-item');
-		else
-			$(target).siblings('label').removeClass('selected-item');
+		if(! $(target).hasClass('disabled')) {
+			if(checked) $(target).parent().addClass('btn-success').removeClass('btn-success-outline');
+			else $(target).parent().removeClass('btn-success').addClass('btn-success-outline');
+		}
 	}
-	$('input[type="checkbox"]').change();
+	$('input[type="checkbox"]').change(update_checkbox).change();
 
 	/***************** speech to text ******************/
 

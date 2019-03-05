@@ -32,9 +32,11 @@ async def share_select(request):
     comment = await comments.get(comment_id)
     if comment is not None and comment['user_id'] == user['_id']:
         friend_items = await friends.list(user['_id'], populate=True)
-        initial_share = [item['recipient_id'] for item in await shares.list(comment['video_id'], comment_id=comment_id)]
-        print(initial_share)
-        return {'comment': comment, 'friends': friend_items, 'initial_share': initial_share}
+        initial_share = set([item['recipient_id'] for item in await shares.list(comment['video_id'], comment_id=comment_id)])
+        for item in friend_items:
+            if item['_id'] in initial_share:
+                item['selected'] = True
+        return {'comment': comment, 'friends': friend_items}
     raise web.HTTPBadRequest()
 
 #POST /share/{comment_id} => perform the sharing

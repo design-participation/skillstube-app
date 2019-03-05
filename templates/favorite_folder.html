@@ -1,0 +1,7 @@
+{% extends 'base.tmpl' %}
+{% block title %}Folder{% endblock %}
+{% block body %}
+<h3 class="favorite-folder"><i class="fas fa-heart"></i> {{ folder.name }}</h3>
+{% set results = folder.videos %}
+{% include 'search_results.tmpl' %}
+{% endblock body %}

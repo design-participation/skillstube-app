@@ -251,6 +251,29 @@ class Shares(DB):
         return await super().list(filter, limit=limit)
 
 
+class Favorites(DB):
+    def __init__(self):
+        super().__init__('favorites')
+
+    async def add_folder(self, user_id, name):
+        return await super().add(user_id=user_id, type='folder', name=name)
+
+    async def add(self, user_id, folder_id, video_id):
+        return await super().add(user_id=user_id, type='video', video_id=video_id, folder_id=folder_id)
+
+    async def list_folders(self, user_id):
+        return await super().list({'user_id': user_id, 'type': 'folder'})
+
+    async def list(self, user_id, folder_id=None, limit=0):
+        filter = {'user_id': user_id, 'type': 'video'}
+        if folder_id is not None:
+            filter['folder_id'] = folder_id
+        return await super().list(filter, limit=limit)
+
+    async def count(self, folder_id):
+        return await self.db.count_documents({'folder_id': folder_id})
+
+
 async def clear_all():
     await asyncio.gather(
         users.clear(),
@@ -259,6 +282,7 @@ async def clear_all():
         friends.clear(),
         comments.clear(),
         shares.clear(),
+        favorites.clear(),
         )
 
 users = Users()
@@ -267,6 +291,7 @@ notifications = Notifications()
 friends = Friends()
 comments = Comments()
 shares = Shares()
+favorites = Favorites()
 
 #TODO write proper separate tests
 #TODO documentation

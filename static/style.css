@@ -102,3 +102,8 @@
   100% { color: red; }
 }
 
+/* ================ misc =============== */
+
+.favorite-folder i {
+	color: red;
+}
