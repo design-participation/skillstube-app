@@ -104,6 +104,19 @@
 
 /* ================ misc =============== */
 
-.favorite-folder i {
-	color: red;
+.player {
+	background: black;
+}
+
+.card-img-4 img {
+	width: 50%;
+	border-radius: 0px;
+}
+
+.card-img-4 img:nth-child(1) {
+	border-top-left-radius: calc(.25rem - 1px);
+}
+
+.card-img-4 img:nth-child(2) {
+	border-top-right-radius: calc(.25rem - 1px);
 }

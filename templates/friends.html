@@ -1,24 +1,19 @@
 {% extends 'base.tmpl' %}
 {% block title %}Friends{% endblock %}
 {% block body %}
-<!--<h3>Friend notifications</h3>
-{% include 'notification_list.tmpl' %}
-<hr>-->
+{% include 'friend_list.tmpl' %}
 <h3>Add Friend</h3>
 <div class="row mb-3">
 	<div class="col">
 		<form action="/friend/request" method="post">
 			<div class="form-group">
 				<label for="email"> <i class="far fa-envelope"></i> Friend email:</label>
-				<input class="form-control" id="email" type="email" name="email" value="{{ email|e }}" placeholder="Enter email" required>
+				<input class="form-control" id="email" type="email" name="email" value="{{ email|e }}" placeholder="Enter friend email" required>
 			</div>
 			<div class="form-group">
-				<button class="btn btn-primary" id="submit" type="submit">Send request</button>
+				<button class="btn btn-primary" id="submit" type="submit"><i class="fas fa-user-friends"></i> Send request</button>
 			</div>
 		</form>
 	</div>
 </div>
-<hr>
-<h3>Friends</h3>
-{% include 'friend_list.tmpl' %}
 {% endblock body %}

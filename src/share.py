@@ -4,7 +4,7 @@ from bson.objectid import ObjectId
 
 from util import routes, get_user, login_required
 from backend import comments, shares, notifications, friends
-
+from navigation import Breadcrumb
 
 @routes.post('/view-shared/{share_id}')
 @login_required
@@ -64,5 +64,5 @@ async def show_shared(request):
     user = await get_user(request)
     shared_by_myself = [item for item in await comments.list(user['_id'], populate=True) if len(item['shared_with']) > 0]
     shared_with_me = await comments.list(user['_id'], only_shared=True, populate=True)
-    return {'shared_by_myself': shared_by_myself, 'shared_with_me': shared_with_me, 'show_video': True}
+    return {'shared_by_myself': shared_by_myself, 'shared_with_me': shared_with_me, 'show_video': True, 'breadcrumb': [Breadcrumb.HOME(), Breadcrumb.SHARED()]}
 

@@ -1,0 +1,33 @@
+{% extends 'base.tmpl' %}
+{% block title %}Write comment{% endblock %}
+{% block body %}
+<div class="row mb-5">
+	<div class="col">
+		{% include 'video.tmpl' %}
+	</div>
+</div>
+<div class="row">
+	<div class="col">
+		<a name="form"></a>
+		<form action="/comment/{{ video.video_id }}" method="post">
+			<div class="row">
+				<div class="col mb-3">
+					<div class="form-group">
+						<h3 for="text">What did you learn from this video?</h3>
+						<textarea id="text" name="text" class="form-control" rows="3">{{ text }}</textarea>
+					</div>
+					<button type="button" stt-target="text" class="stt-button btn btn-outline-secondary"><i class="fas fa-microphone-slash"></i> Record</button>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
+					<h3>Share it with whom?</h3>
+					{% include 'friend_selector.tmpl' %}
+					<button type="submit" class="btn btn-primary"><i class="fas fa-pen"></i> Save</button>
+					<a class="btn btn-danger ml-2" href="/watch/{{ video.video_id }}"><i class="fas fa-times"></i> Cancel</a>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock body %}

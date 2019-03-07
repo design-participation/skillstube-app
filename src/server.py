@@ -18,7 +18,7 @@ import friend
 import share
 import comment
 import notification
-import favorites
+import playlists
 
 if '-debug' in sys.argv[1:]:
     import debug

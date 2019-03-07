@@ -6,11 +6,11 @@ $(function() {
 		let target = event.target;
 		let checked = target.checked;
 		if(! $(target).hasClass('disabled')) {
-			if(checked) $(target).parent().addClass('btn-success').removeClass('btn-success-outline');
-			else $(target).parent().removeClass('btn-success').addClass('btn-success-outline');
+			if(checked) $(target).parent().addClass('btn-secondary').removeClass('btn-light-outline');
+			else $(target).parent().removeClass('btn-secondary').addClass('btn-light-outline');
 		}
 	}
-	$('input[type="checkbox"]').change(update_checkbox).change();
+	$('.btn > input[type="checkbox"]').change(update_checkbox).change();
 
 	/***************** speech to text ******************/
 

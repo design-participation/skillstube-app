@@ -1,0 +1,29 @@
+{% extends 'base.tmpl' %}
+{% block title %}Add to playlist{% endblock %}
+{% block body %}
+<div class="row mb-5">
+	<div class="col">
+		{% include 'video.tmpl' %}
+	</div>
+</div>
+<div class="row">
+	<div class="col-4">
+		<a name="playlist"></a>
+		<form action="/set_playlist/{{ video.video_id }}" method="post">
+			<div class="mb-3">
+				<h3>Add to existing playlist</h3>
+				<select name="folder" class="custom-select border-secondary" id="inputGroupSelect01" aria-label="Playlist">
+					<option value="" selected>Select playlist name</option>
+					{% for folder in folders %}
+					<option value="{{ folder._id }}"> {{ folder.name }} </option>
+					{% endfor %}
+				</select>
+				<h3>Or create a new one</h3>
+				<input type="text" class="form-control" name="new_name">
+			</div>
+			<button type="submit" class="btn btn-primary"><i class="fas fa-star"></i> Save</button>
+			<a href="javascript:window.history.back()" class="btn btn-danger"><i class="fas fa-times"></i> Cancel</a>
+		</form>
+	</div>
+</div>
+{% endblock body %}

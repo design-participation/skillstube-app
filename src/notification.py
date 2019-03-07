@@ -5,6 +5,7 @@ from bson.objectid import ObjectId
 
 from util import routes, login_required, get_user
 from backend import notifications
+from navigation import Breadcrumb
 
 #get /dismiss/{notification_id} => dismiss notification (json result)
 @routes.get('/dismiss/{notification_id}')
@@ -21,7 +22,7 @@ async def dismiss_notification(request):
 async def show_notifications(request):
     user = await get_user(request)
     notification_items = await notifications.list(user['_id'], return_all=False, populate=True)
-    return {'notifications': notification_items}
+    return {'notifications': notification_items, 'breadcrumb': [Breadcrumb.HOME(), Breadcrumb.NOTIFICATIONS()]}
 
 @routes.get('/notifications/all')
 @login_required
@@ -29,4 +30,5 @@ async def show_notifications(request):
 async def show_notifications(request):
     user = await get_user(request)
     notification_items = await notifications.list(user['_id'], return_all=True, populate=True)
-    return {'notifications': notification_items}
+    return {'notifications': notification_items, 'breadcrumb': [Breadcrumb.HOME(), Breadcrumb.NOTIFICATIONS()]}
+

@@ -24,9 +24,9 @@ class DB:
             if item is not None and type(item) is not ObjectId:
                 raise Exception('need to use ObjectId()')
 
-    async def add(self, **kwargs):
-        result = await self.db.insert_one(kwargs)
-        return result.inserted_id
+    async def add(self, _key=None, **kwargs):
+        result = await self.db.replace_one(_key if _key is not None else kwargs, kwargs, upsert=True)
+        return result.upserted_id
 
     async def get(self, _id, projection=None):
         self.check_type(_id)
@@ -85,6 +85,20 @@ class Users(DB):
             return user['_id']
         return None
 
+
+class Videos(DB):
+    def __init__(self):
+        super().__init__('videos')
+
+    async def add(self, video_id, title, thumbnail): 
+        return await super().add(video_id=video_id, title=title, thumbnail=thumbnail)
+
+    async def get(self, video_id):
+        if type(video_id) is list:
+            return await self.db.find({'video_id': {'$in': video_id}}).to_list(None)
+        else:
+            return await self.db.find_one({'video_id': video_id})
+         
 
 class History(DB):
     def __init__(self):
@@ -251,15 +265,21 @@ class Shares(DB):
         return await super().list(filter, limit=limit)
 
 
-class Favorites(DB):
+class Playlists(DB):
     def __init__(self):
-        super().__init__('favorites')
+        super().__init__('playlists')
+        self.db.create_index('user_id')
+
+    async def get_for_video(self, user_id, video_id):
+        item = await self.db.find_one({'user_id': user_id, 'type': 'video', 'video_id': video_id})
+        if item is not None:
+            return await self.get(item['folder_id'])
 
     async def add_folder(self, user_id, name):
         return await super().add(user_id=user_id, type='folder', name=name)
 
     async def add(self, user_id, folder_id, video_id):
-        return await super().add(user_id=user_id, type='video', video_id=video_id, folder_id=folder_id)
+        return await super().add(_key={'user_id': user_id, 'video_id': video_id}, user_id=user_id, type='video', video_id=video_id, folder_id=folder_id)
 
     async def list_folders(self, user_id):
         return await super().list({'user_id': user_id, 'type': 'folder'})
@@ -277,21 +297,23 @@ class Favorites(DB):
 async def clear_all():
     await asyncio.gather(
         users.clear(),
+        videos.clear(),
         history.clear(),
         notifications.clear(),
         friends.clear(),
         comments.clear(),
         shares.clear(),
-        favorites.clear(),
+        playlists.clear(),
         )
 
 users = Users()
+videos = Videos()
 history = History()
 notifications = Notifications()
 friends = Friends()
 comments = Comments()
 shares = Shares()
-favorites = Favorites()
+playlists = Playlists()
 
 #TODO write proper separate tests
 #TODO documentation

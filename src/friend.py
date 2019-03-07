@@ -4,6 +4,7 @@ import aiohttp_jinja2
 
 from util import routes, login_required, get_user
 from backend import friends, users, notifications
+from navigation import Breadcrumb
 from bson.objectid import ObjectId
 
 #GET /personal => show personal information
@@ -17,7 +18,7 @@ async def show_friends(request):
 
     # get friend request notifications
     notification_items = await notifications.list(user['_id'], ['friend request', 'friend accept'], populate=True)
-    return {'friends': friend_items, 'notifications': notification_items}
+    return {'friends': friend_items, 'notifications': notification_items, 'breadcrumb': [Breadcrumb.HOME(), Breadcrumb.FRIENDS()]}
 
 #POST /friend/request (email) => send friend request to user identified by email address
 @routes.post('/friend/request')
