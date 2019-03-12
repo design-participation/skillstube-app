@@ -75,7 +75,9 @@ async def debug_populate(request):
 
             # generate random comments
             if random.random() > .3:
-                comment_id = await comments.add(user_id, video_id, random.choice(paragraphs))
+                words = random.choice(paragraphs).split()
+                words = words[:random.randint(3, len(words) + 1)]
+                comment_id = await comments.add(user_id, video_id, ' '.join(words) + '.')
                 comment_item = await comments.get(comment_id)
                 # share comment
                 for other_id in friend_ids:

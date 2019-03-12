@@ -1,3 +1,4 @@
+import sys
 from aiohttp import web
 from aiohttp_session import get_session
 import aiohttp_jinja2
@@ -13,8 +14,11 @@ from bson.objectid import ObjectId
 @aiohttp_jinja2.template('friends.html')
 async def show_friends(request):
     user = await get_user(request)
-    friend_ids = await friends.list(user['_id'])
-    friend_items = await users.get(friend_ids)
+    friend_items = await friends.list(user['_id'], populate=True)
+    # TODO: remove
+    if '-debug' in sys.argv:
+        for item in friend_items:
+            item['href'] = '/debug:login/' + str(item['_id'])
 
     # get friend request notifications
     notification_items = await notifications.list(user['_id'], ['friend request', 'friend accept'], populate=True)
@@ -36,18 +40,28 @@ async def request_friend(request):
         raise web.HTTPBadRequest()
     raise web.HTTPFound('/friends')
 
+@routes.get('/friend/request/{request_id}')
+@login_required
+@aiohttp_jinja2.template('friend_request.html')
+async def view_friend_request(request):
+    print('view friend request')
+    user = await get_user(request)
+    request_id = ObjectId(request.match_info['request_id'])
+    request = await friends.get(request_id)
+    print(user['_id'], request)
+    if request is not None and request['other_id'] == user['_id']:
+        #TODO: finish
+        friend = await users.get(request['user_id'])
+        return {'friend': friend, 'request_id': request_id}
+    raise web.HTTPBadRequest()
+
 #POST /friend/accept/{friend_id} => accept friend request
-@routes.post('/friend/accept/{request_id}')
+@routes.get('/friend/accept/{request_id}')
 @login_required
 async def accept_friend(request):
     user = await get_user(request)
     request_id = ObjectId(request.match_info['request_id'])
     data = await request.post()
-    if 'notification' in data:
-        notification_id = ObjectId(data['notification'])
-        notification = await notifications.get(notification_id)
-        if notification is not None and notification['data']['friend_id'] == request_id:
-            await notifications.dismiss(user['_id'], notification_id)
     await friends.accept(request_id)
     raise web.HTTPFound('/friends')
 

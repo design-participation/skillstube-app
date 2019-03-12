@@ -1,3 +1,5 @@
+import re
+
 from aiohttp import web
 from aiohttp_session import get_session
 import aiohttp_jinja2
@@ -9,7 +11,7 @@ from navigation import Breadcrumb
 import secrets
 
 youtube = Youtube()
-prompts = {'1': 'How to', '2': 'What is', '3': 'Show me', '4': ''}
+prompts = {'1': 'How to', '2': 'What is', '3': 'Examples of', '4': ''}
 
 @routes.get('/')
 @aiohttp_jinja2.template('index.html')
@@ -117,4 +119,14 @@ async def show_recent(request):
             recent_videos.append({'videoId': videoId, 'title': '', 'thumbnail': 'http://i3.ytimg.com/vi/%s/hqdefault.jpg' % videoId})
             seen.add(videoId)
     return {'results': recent_videos}
+
+@routes.get('/suggest')
+async def suggest(request):
+    query = request.query.get('q', '')
+    prompt = request.query.get('prompt', '1')
+    if prompt not in prompts:
+        prompt = 1
+    found = await youtube.suggest(prompts[prompt] + ' ' + query)
+    suggestions = [re.sub('^' + prompts[prompt].lower(), '', item.strip()).strip() for item in found[1]]
+    return web.json_response(suggestions)
 

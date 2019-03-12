@@ -4,6 +4,7 @@ import json
 import random
 import string
 import sys
+from urllib.parse import quote
 
 YOUTUBE_API_SERVICE_NAME = 'youtube'
 YOUTUBE_API_VERSION = 'v3'
@@ -107,6 +108,13 @@ class Youtube:
             return await test_existence(videoIds)
         else:
             return await asyncio.gather(*[asyncio.create_task(test_existence(videoId)) for videoId in videoIds])
+
+    # see https://stackoverflow.com/questions/5102878/google-suggest-api
+    async def suggest(self, query):
+        url = 'http://suggestqueries.google.com/complete/search?output=firefox&q=%s' % quote(query)
+        async with self.session.get(url) as response:
+            data = await response.text()
+            return json.loads(data)
 
 
 if __name__ == '__main__':

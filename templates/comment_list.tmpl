@@ -11,25 +11,11 @@
 				</a>
 				{% endif %}
 				<p> {{ item['text'] }} </p>
-				{% if False and user['_id'] == item['user_id'] %}
-				<!--<div class="row">
-					<div class="col">
-						<form action="/share/{{ item['_id'] }}" method="get">
-							<button class="btn btn-outline-secondary float-right mb-2" type="submit"><i class="fas fa-share-alt"></i> {{ 'Share' if item.shared_with|count == 0 else 'Shared with' }}
-								{% for share_user in item['shared_with'] %}
-								<img class="user-picture-xs ml-2 float-right" src="{{ share_user['picture'] }}">
-								{% endfor %}
-							</button>
-						</form>
-					</div>
-				</div>-->
-				{% else %}
 				<div class="float-right mb-2">
 					{% for share_user in item['shared_with'] %}
 					<img class="user-picture-xs ml-2 float-right" src="{{ share_user['picture'] }}">
 					{% endfor %}
 				</div>
-				{% endif %}
 			</div>
 		</div>
 		{% endfor %}

@@ -1,10 +1,10 @@
-<img class="user-picture mb-3 mr-3" style="float:left" src="{{ item.data.sender.picture }}">
-<strong>{{ item.data.sender.name }} shared a comment with you</strong>
-<form style="min-height: 96px" action="/view-shared/{{ item.data.share_id }}" method="post">
-	<button class="float-right btn btn-primary ml-3" id="submit" type="submit"><i class="fas fa-share-alt"></i> See </button>
-			<img style="max-width:128px; float:left" src="{{ item.data.preview.thumbnail }}" class="rounded img-thumbnail mr-3">
-			<p>
-			{{ item.data.preview.text|truncate(200) }}
-			</p>
-	<input type="hidden" name="notification" value="{{ item['_id'] }}">
-</form>
+<div class="row">
+	<div class="col-9">
+		<img style="flush:left" class="user-picture mb-3 mr-3" src="{{ item.data.sender.picture }}">
+		<strong>{{ item.data.sender.name }}</strong> shared a comment <i class="far fa-comment"></i> with you.</strong>
+		<p> <i>"{{ item.data.preview.text|truncate(200) }}"</i> </p>
+	</div>
+	<div class="col-3">
+		<img src="{{ item.data.preview.thumbnail }}" class="rounded img-thumbnail mb-3">
+	</div>
+</div>

@@ -6,6 +6,7 @@ from util import routes, get_user, login_required
 from backend import comments, shares, notifications, friends
 from navigation import Breadcrumb
 
+# TODO: deprecated
 @routes.post('/view-shared/{share_id}')
 @login_required
 async def view_shared(request):

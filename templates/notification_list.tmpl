@@ -4,10 +4,7 @@
 	<p> No new notification at this time. </p>
 	{% else %}
 		{% for item in notifications %}
-			<div class="alert {{'alert-info alert-dismissible' if item.new else 'alert-secondary'}}">
-			{% if item.new %}
-			<a href="#" onclick="fetch('/dismiss/{{ item['_id'] }}')" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-			{% endif %}
+		<a style="display:block; text-decoration: none" href="/notification/{{ item._id }}" class="alert {{ 'alert-info' if item.new else 'alert-secondary' }}">
 			{% if item.type == 'friend request' %}
 				{% include 'notification_friend_request.tmpl' %}
 			{% elif item.type == 'friend accept' %}
@@ -15,9 +12,9 @@
 			{% elif item.type == 'shared content' %}
 				{% include 'notification_shared_content.tmpl' %}
 			{% else %}
-			<p> Notification of unsupported type <strong>{{ item['type'] }}</strong>. </p>
+				Notification of unsupported type
 			{% endif %}
-			</div>
+		</a>
 		{% endfor %}
 	{% endif %}
 	</div>

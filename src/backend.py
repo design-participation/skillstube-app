@@ -126,14 +126,16 @@ class Notifications(DB):
     async def dismiss(self, user_id, _id):
         await self.db.find_one_and_update({'_id': _id, 'user_id': user_id}, {'$set': {'new': False}})
 
-    async def list(self, user_id, notification_type=None, return_all=False, populate=False, limit=0):
+    async def list(self, user_id, notification_type=None, return_old=False, return_all=False, populate=False, limit=0):
         filter = {'user_id': user_id}
         if notification_type:
             if type(notification_type) == list:
                 filter['$or'] = [{'type': x} for x in notification_type]
             else:
                 filter['type'] = notification_type
-        if not return_all:
+        if return_old:
+            filter['new'] = False
+        elif not return_all:
             filter['new'] = True
         result = await super().list(filter, limit=limit, sort=[('date', pymongo.DESCENDING)])
         if populate:
@@ -185,11 +187,14 @@ class Friends(DB):
     async def list(self, user_id, populate=False, limit=0):
         filter = {'$or': [{'user_id': user_id}, {'other_id': user_id}], 'status': 'accepted'}
         found = await super().list(filter, limit=limit, sort=[('date', pymongo.DESCENDING)])
+        order = {}
         result = []
-        for item in found:
+        for i, item in enumerate(found):
             result.append(item['other_id'] if item['user_id'] == user_id else item['user_id'])
+            order[result[-1]] = i
         if populate:
-            return await users.get(result)
+            result = await users.get(result)
+            result.sort(key=lambda item: order[item['_id']]) # need to reenforce sorting order
         return result
 
 

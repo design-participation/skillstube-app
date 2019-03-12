@@ -6,7 +6,7 @@
 		{% include 'video.tmpl' %}
 		<div class="mt-3">
 			{% if user %}
-				<a class="btn btn-primary" href="/comment/{{ video.video_id }}#form"><i class="fas fa-comment"></i> Add comment</a>
+				<a class="btn btn-primary mr-3" href="/comment/{{ video.video_id }}#form"><i class="fas fa-comment"></i> Add comment</a>
 				{% if folder %}
 					<a class="btn btn-success" href="/set_playlist/{{ video.video_id }}#form"><i class="fas fa-star"></i> {{ folder.name }} </a>
 				{% else %}

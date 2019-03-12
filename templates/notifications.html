@@ -2,4 +2,13 @@
 {% block title %}Notifications{% endblock %}
 {% block body %}
 {% include 'notification_list.tmpl' %}
+<div class="row">
+	<div class="col">
+		{% if subset == 'old' %}
+		<p> <a class="btn btn-secondary" href="/notifications"><i class="fas fa-bell"></i> New notifications</a> </p>
+		{% elif subset == 'new' %}
+		<p> <a class="btn btn-secondary" href="/notifications/old"><i class="fas fa-bell-slash"></i> Old notifications</a> </p>
+		{% endif %}
+	</div>
+</div>
 {% endblock body %}

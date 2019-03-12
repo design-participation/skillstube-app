@@ -1,5 +1,28 @@
 $(function() {
 
+	/***************** query suggestions ******************/
+
+	let timer = null;
+	function get_suggestions(query, sync, async) {
+		if(timer != null) clearTimeout(timer);
+		timer = setTimeout(function() {
+			let prompt = $('#query-prompt').val()
+			fetch('/suggest?q=' + escape(query) + '&prompt=' + prompt)
+				.then(function(response) {
+					return response.json();
+				})
+				.then(function(data) {
+					let source = [];
+					for(var i = 0; i < data.length; i++) {
+						source.push({'id': i, name: data[i]});
+					}
+					async(source);
+				});
+		}, 100);
+	}
+	$("#query-field").typeahead({source: get_suggestions, matcher: function() { return true; } });
+
+
 	/***************** friend selector for sharing ******************/
 
 	function update_checkbox(event) {
