@@ -102,6 +102,34 @@
   100% { color: red; }
 }
 
+/* ================ comment bubble =============== */
+
+.bubble-arrow {
+	content: url(/static/img/bubble-arrow.svg);
+	position: relative; 
+	top: -44px; 
+	left: 69px; 
+	width: 12px; 
+	height: 16px; 
+	z-index: 1;
+}
+
+.bubble-text {
+	z-index: 0;
+	background: lightgray;
+	position:relative; 
+	top: -80px; 
+	margin-left: 80px; 
+	margin-bottom: -72px; 
+	padding: 16px; 
+	border-radius: 10px
+}
+
+.bubble-text a {
+	text-decoration: none;
+	color: var(--black);
+}
+
 /* ================ misc =============== */
 
 .player {

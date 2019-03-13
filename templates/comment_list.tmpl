@@ -1,21 +1,29 @@
 <div class="row">
 	<div class="col">
 		{% for item in comments %}
-		<div class="card mb-3">
-			<a name="{{ item['_id'] }}"></a>
+		<div class="card border-0">
+			<a name="{{ item._id }}"></a>
 			<div class="card-body">
-				<img class="user-picture mr-3 float-left" src="{{ item['user']['picture'] }}">
+				<img class="user-picture" src="{{ item.user.picture }}">
+				<div class="bubble-arrow"></div>
+				<div class="bubble-text">
 				{% if show_video %}
-				<a href="/watch/{{ item['video_id'] }}">
-					<img style="max-width: 128px;float:right" src="http://i3.ytimg.com/vi/{{ item['video_id'] }}/hqdefault.jpg" class="ml-2 mb-2">
+				<a style="text-align: left;" class="btn" href="/watch/{{ item.video_id }}">
+						<img width="50%" style="float: right" src="http://i3.ytimg.com/vi/{{ item.video_id }}/hqdefault.jpg" class="rounded img-thumbnail ml-1 mb-1">
+						{{ item.text }}
 				</a>
+				{% else %}
+					{{ item.text }}
 				{% endif %}
-				<p> {{ item['text'] }} </p>
-				<div class="float-right mb-2">
-					{% for share_user in item['shared_with'] %}
-					<img class="user-picture-xs ml-2 float-right" src="{{ share_user['picture'] }}">
+				</div>
+
+				{% if item.shared_with|length > 0 %}
+				<div class="float-right bubble-shared">
+					{% for share_user in item.shared_with %}
+					<img class="user-picture-xs mr-1" src="{{ share_user.picture }}">
 					{% endfor %}
 				</div>
+				{% endif %}
 			</div>
 		</div>
 		{% endfor %}
