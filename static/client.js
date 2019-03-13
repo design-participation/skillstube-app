@@ -118,6 +118,7 @@ $(document).ready(function() {
 		$('.show-idle-prompt').removeClass('idle');
 	}
 	$(this).keypress(resetIdlePrompts).mouseover(resetIdlePrompts);
+	document.addEventListener('touchmove', resetIdlePrompts);
 
 	var nextIdleElement = 0;
 	var idleInterval = setInterval(function() {
