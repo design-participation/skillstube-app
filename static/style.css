@@ -82,6 +82,12 @@
 }
 
 /* ============= speech to text ============= */
+.stt-button {
+	color: var(--secondary);
+	margin: 0;
+	padding: .120rem .575rem;
+	font-size: 135%;
+}
 
 .stt-recording {
   background: red;
@@ -100,6 +106,53 @@
 @keyframes stt-recording-anim {
   0%   { color: white; }
   100% { color: red; }
+}
+
+.stt-input {
+	padding: 0px;
+}
+
+.stt-input input[type="text"] {
+	width: 100%;
+	height: calc(2.25rem + 2px);
+	line-height: 1.5;
+	font-weight: 400;
+	transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+	padding: .375rem .75rem;
+	font-size: 1rem;
+	display: block;
+	color: #495057;
+	background-color: #fff;
+	background-clip: padding-box;
+	border: 1px solid var(--secondary);
+	overflow: visible;
+	margin-right: 24px;
+}
+
+.stt-input input[type="text"]:focus {
+	color: #495057;
+	background-color: #fff;
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+	z-index: 3;
+}
+
+.stt-input .stt-button {
+	position: absolute;
+	overflow: visible;
+	top: 0px;
+	right: 0px;
+}
+
+.stt-textarea {
+	position: relative;
+}
+.stt-textarea .stt-button {
+	position: absolute;
+	overflow: visible;
+	top: 0px;
+	right: 0px;
 }
 
 /* ================ comment bubble =============== */
@@ -130,6 +183,12 @@
 	color: var(--black);
 }
 
+/* ================ search bar =============== */
+
+.prompt-select:focus {
+	z-index:3;
+}
+
 /* ================ misc =============== */
 
 .player {
@@ -147,4 +206,74 @@
 
 .card-img-4 img:nth-child(2) {
 	border-top-right-radius: calc(.25rem - 1px);
+}
+
+/* =================== prompts ================= */
+
+.idle {
+	animation: idleBlinker 2s linear;
+}
+
+@keyframes idleBlinker {
+  0% {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+  }
+  25% {
+    -webkit-box-shadow: 0 0 5rem 0 green;
+    -moz-box-shadow: 0 0 5rem 0 green;
+    box-shadow: 0 0 5rem 0 green;
+  }
+  50% {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+  }
+  75% {
+    -webkit-box-shadow: 0 0 5rem 0 green;
+    -moz-box-shadow: 0 0 5rem 0 green;
+    box-shadow: 0 0 5rem 0 green;
+  }
+  100% {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+  }
+}
+
+.arrow-prompt {
+	position: fixed;
+	bottom: 20px;
+	left: 20px;
+	font-size: 5rem;
+	opacity: 0;
+	color: green;
+}
+
+.arrow-prompt.idle {
+	animation: arrowIdleBlinker 2s linear;
+}
+
+@keyframes arrowIdleBlinker {
+  0% {
+    opacity: 0;
+    text-shadow: 0 0 0 transparent;
+  }
+  25% {
+    opacity: 1;
+    text-shadow: 0 0 3rem green;
+  }
+  50% {
+    opacity: 0;
+    text-shadow: 0 0 0 transparent;
+  }
+  75% {
+    opacity: 1;
+    text-shadow: 0 0 3rem green;
+  }
+  100% {
+    opacity: 0;
+    text-shadow: 0 0 0 transparent;
+  }
 }

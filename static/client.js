@@ -1,4 +1,4 @@
-$(function() {
+$(document).ready(function() {
 
 	/***************** query suggestions ******************/
 
@@ -95,4 +95,42 @@ $(function() {
 			});
 		}
 	});
+
+	/***************** idle prompts ****************/
+
+	jQuery.fn.random = function() {
+    var randomIndex = Math.floor(Math.random() * this.length);  
+		console.log(randomIndex);
+    return jQuery(this[randomIndex]);
+	};
+
+	jQuery.fn.eq_mod = function(index) {
+    return jQuery(this[index % this.length]);
+	};
+
+	const idleTriggerTime = 4;
+	const idleLoopTime = 4;
+	const idleAnimationDuration = 2;
+	var idleTime = 0;
+
+	function resetIdlePrompts() {
+		idleTime = 0;
+		$('.show-idle-prompt').removeClass('idle');
+	}
+	$(this).keypress(resetIdlePrompts).mouseover(resetIdlePrompts);
+
+	var nextIdleElement = 0;
+	var idleInterval = setInterval(function() {
+		idleTime = idleTime + 1;
+		if (idleTime >= idleTriggerTime) {
+			let sinceTrigger = idleTime - idleTriggerTime;
+			if(sinceTrigger % idleLoopTime == 0) {
+				$('.show-idle-prompt').eq_mod(nextIdleElement).addClass('idle');
+				nextIdleElement ++;
+			} else if(sinceTrigger % idleLoopTime == idleAnimationDuration) {
+				$('.show-idle-prompt').removeClass('idle');
+			}
+		}
+	}, 1000);
+
 });

@@ -32,6 +32,7 @@ async def init():
     setup(app, EncryptedCookieStorage(secrets.SERVER_COOKIE_KEY))
     aiohttp_jinja2.setup(app, loader=jinja2.FileSystemLoader('templates/'), context_processors=[add_globals])
 
+    # warning from doc: in production, /static should be handled by apache/nginx
     routes.static('/static', 'static', append_version=True)
     routes.static('/', 'static/favicon', append_version=True)
     app.add_routes(routes) 

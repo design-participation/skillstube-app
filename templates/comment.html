@@ -12,11 +12,11 @@
 		<form action="/comment/{{ video.video_id }}" method="post">
 			<div class="row">
 				<div class="col mb-3">
-					<div class="form-group">
 						<h3 for="text">What did you learn from this video?</h3>
-						<textarea id="text" name="text" class="form-control" rows="3" required>{{ text }}</textarea>
-					</div>
-					<button type="button" stt-target="text" class="stt-button btn btn-outline-secondary"><i class="fas fa-microphone-slash"></i> Record</button>
+						<div class="stt-textarea">
+							<textarea id="text" name="text" class="form-control" rows="3" required>{{ text }}</textarea>
+							<button type="button" stt-target="text" class="stt-button btn disabled"><i class="fas fa-microphone-slash"></i></button>
+						</div>
 				</div>
 			</div>
 			<div class="row">
