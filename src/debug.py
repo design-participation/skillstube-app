@@ -20,7 +20,7 @@ async def debug_populate(request):
     await backend.clear_all()
     # generate random users with personal data
     async with ClientSession() as session:
-        async with session.get('https://randomuser.me/api/?results=100') as response:
+        async with session.get('https://randomuser.me/api/?results=100&nat=AU') as response:
             data = await response.json()
             for i, user in enumerate(data['results']):
                 password = user['login']['password']

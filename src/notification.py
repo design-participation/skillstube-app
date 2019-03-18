@@ -5,7 +5,6 @@ from bson.objectid import ObjectId
 
 from util import routes, login_required, get_user
 from backend import notifications, shares
-from navigation import Breadcrumb
 
 #get /dismiss/{notification_id} => dismiss notification (json result)
 @routes.get('/dismiss/{notification_id}')
@@ -44,7 +43,7 @@ async def process_notification(request):
 async def show_notifications(request):
     user = await get_user(request)
     notification_items = await notifications.list(user['_id'], return_all=False, populate=True)
-    return {'notifications': notification_items, 'subset': 'new', 'breadcrumb': [Breadcrumb.HOME(), Breadcrumb.NOTIFICATIONS()]}
+    return {'notifications': notification_items, 'subset': 'new', 'nav': 'notifications'}
 
 @routes.get('/notifications/all')
 @login_required
@@ -52,7 +51,7 @@ async def show_notifications(request):
 async def show_all_notifications(request):
     user = await get_user(request)
     notification_items = await notifications.list(user['_id'], return_all=True, populate=True)
-    return {'notifications': notification_items, 'subset': 'all', 'breadcrumb': [Breadcrumb.HOME(), Breadcrumb.NOTIFICATIONS()]}
+    return {'notifications': notification_items, 'subset': 'all', 'nav': 'notifications'}
 
 @routes.get('/notifications/old')
 @login_required
@@ -60,5 +59,5 @@ async def show_all_notifications(request):
 async def show_old_notifications(request):
     user = await get_user(request)
     notification_items = await notifications.list(user['_id'], return_old=True, populate=True)
-    return {'notifications': notification_items, 'subset': 'old', 'breadcrumb': [Breadcrumb.HOME(), Breadcrumb.NOTIFICATIONS()]}
+    return {'notifications': notification_items, 'subset': 'old', 'nav': 'notifications'}
 

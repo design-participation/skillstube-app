@@ -4,7 +4,6 @@ from bson.objectid import ObjectId
 
 from util import routes, get_user, login_required
 from backend import comments, shares, notifications, friends
-from navigation import Breadcrumb
 
 # TODO: deprecated
 @routes.post('/view-shared/{share_id}')
@@ -37,7 +36,7 @@ async def share_select(request):
         for item in friend_items:
             if item['_id'] in initial_share:
                 item['selected'] = True
-        return {'comment': comment, 'friends': friend_items}
+        return {'comment': comment, 'friends': friend_items, 'nav': 'search'}
     raise web.HTTPBadRequest()
 
 #POST /share/{comment_id} => perform the sharing
@@ -63,7 +62,23 @@ async def share_save(request):
 @aiohttp_jinja2.template('shared.html')
 async def show_shared(request):
     user = await get_user(request)
+    shared_with_me = await comments.list(user['_id'], shared_with_me=True, populate=True)
+    return {'comments': shared_with_me, 'show_video': True, 'nav': 'shared'}
+
+@routes.get('/shared/by-me')
+@login_required
+@aiohttp_jinja2.template('shared.html')
+async def show_shared(request):
+    user = await get_user(request)
     shared_by_myself = [item for item in await comments.list(user['_id'], populate=True) if len(item['shared_with']) > 0]
-    shared_with_me = await comments.list(user['_id'], only_shared=True, populate=True)
-    return {'shared_by_myself': shared_by_myself, 'shared_with_me': shared_with_me, 'show_video': True, 'breadcrumb': [Breadcrumb.HOME(), Breadcrumb.SHARED()]}
+    return {'comments': shared_by_myself, 'show_video': True, 'nav': 'shared'}
+
+@routes.get('/shared/{friend_id}')
+@login_required
+@aiohttp_jinja2.template('shared.html')
+async def show_shared(request):
+    user = await get_user(request)
+    friend_id = ObjectId(request.match_info['friend_id'])
+    shared_with_me = await comments.list(user['_id'], shared_with_me=True, owner_id=friend_id, populate=True)
+    return {'comments': shared_with_me, 'show_video': True, 'nav': 'friends'}
 

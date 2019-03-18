@@ -1,11 +1,28 @@
 {% extends 'base.tmpl' %}
-{% block title %}Login{% endblock %}
+{% block title %}Logout{% endblock %}
 {% block body %}
 <div class="row">
 	<div class="col">
-		<div class="alert alert-info">You have been logged out.
-		<a href="/search">Go back to main page</a>
-		</div>
+		<div class="card border-0 mb-3">
+			<div class="row">
+				<div class="col-4">
+					<a href="/">
+						<img class="card-img" src="{{ user['picture'] }}">
+					</a>
+				</div>
+				<div class="col-8">
+					<div class="card-body">
+						<p class="name"><strong>Name:</strong> {{ user['name'] }}</p>
+						<p class="name"><strong>Email:</strong> {{ user['email'] }}</p>
+						{% if debug %}
+						<p class="uid"><strong>debug:Uid:</strong> {{ user['_id'] }}</p>
+						{% endif %}
+						<form action="/logout" method="post">
+							<button class="btn btn-danger" type="submit"> <i class="fas fa-sign-out-alt"></i> Logout </button>
+						</form>
+					</div>
+				</div>
+			</div>
 	</div>
 </div>
 {% endblock body %}

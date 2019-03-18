@@ -4,7 +4,6 @@ from bson.objectid import ObjectId
 
 from util import routes, get_user, login_required
 from backend import playlists, videos
-from navigation import Breadcrumb
 
 @routes.get('/playlists/{folder_id}')
 @aiohttp_jinja2.template('playlist.html')
@@ -16,7 +15,7 @@ async def show_playlists(request):
     if folder is not None and folder['user_id'] == user['_id']:
         folder['videos'] = await videos.get([item['video_id'] for item in await playlists.list(user['_id'], folder['_id'])])
         folder['count'] = await playlists.count(folder['_id'])
-        return {'folder': folder, 'breadcrumb': [Breadcrumb.HOME(), Breadcrumb.PLAYLISTS(), Breadcrumb.PLAYLIST(folder['name'], folder['_id'])]}
+        return {'folder': folder, 'nav': 'playlists'}
     raise web.HTTPBadRequest()
 
 @routes.get('/playlists')
@@ -28,7 +27,7 @@ async def show_playlists(request):
     for folder in folders:
         folder['videos'] = await videos.get([item['video_id'] for item in await playlists.list(user['_id'], folder['_id'], limit=4)])
         folder['count'] = await playlists.count(folder['_id'])
-    return {'folders': folders, 'breadcrumb': [Breadcrumb.HOME(), Breadcrumb.PLAYLISTS()]}
+    return {'folders': folders, 'nav': 'playlists'}
 
 # GET /set_playlist/{video_id} => ui for adding a video to a playlist
 @routes.get('/set_playlist/{video_id}')
@@ -39,7 +38,7 @@ async def set_playlist_ui(request):
     video_id = request.match_info['video_id']
     folders = await playlists.list_folders(user['_id'])
     video = await videos.get(video_id)
-    return {'folders': folders, 'video': video, 'breadcrumb': [Breadcrumb.HOME(), Breadcrumb.PLAYLISTS()]}
+    return {'folders': folders, 'video': video, 'nav': 'playlists'}
 
 # POST /set_playlist/{video_id} => actually add the video to a playlist
 @routes.post('/set_playlist/{video_id}')

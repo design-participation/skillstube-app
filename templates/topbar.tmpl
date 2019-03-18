@@ -1,50 +1,42 @@
-<nav class="navbar navbar-light bg-light">
-	<a class="navbar-brand" href="/"> 
-		{% if not nologo %} 
-			{% include 'logo.tmpl' %} 
+<nav class="navbar navbar-expand-sm navbar-light bg-light">
+  <!--<a class="navbar-brand" href="#">How-to-app</a>-->
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+				<a class="nav-link" href="javascript:window.history.back()" title="Back"><i class="fas fa-arrow-left"></i><span class="sr-only">Back</span></a>
+      </li>
+      <li class="nav-item {{ 'active' if nav == 'search' }}">
+				<a class="nav-link" href="/" title="Search"><i class="fas fa-search"></i><span class="sr-only">Search</span></a>
+      </li>
+			{% if user %}
+			<li class="nav-item {{ 'active' if nav == 'friends' }}">
+				<a class="nav-link" href="/friends" title="Friends"><i class="fas fa-user-friends"></i><span class="sr-only">Friends</span></a>
+			</li>
+			<li class="nav-item {{ 'active' if nav == 'playlists' }}">
+				<a class="nav-link" href="/playlists" title="Playlists"><i class="fas fa-star"></i><span class="sr-only">Playlists</span></a>
+			</li>
+			<li class="nav-item {{ 'active' if nav == 'notifications' }}">
+				<a class="nav-link" href="/notifications" title="Notifications"><i class="fas fa-bell"></i><span class="sr-only">Notifications</span>
+				{%- if user.notification_count > 0 -%}
+					<span class="notification-count badge badge-primary">{{ user.notification_count }}</span>
+				{%- endif -%}
+				</a>
+			</li>
+			{% endif %}
+    </ul>
+  </div>
+  <div class="float-right">
+		{% if user %}
+			<a href="/logout" title="User"><img class="nav-user-picture" src="{{ user.picture }}"><span class="sr-only">User</span></a>
 		{% else %}
-			<span class="logo-text">How-To-App </span>
-		{% endif %}</a>
-	{% if user %}
-		<ul class="nav">
+    <ul class="navbar-nav">
 			<li class="nav-item">
-				<a class="nav-link" href="/search"><i class="fas fa-search"></i> <span class="d-none d-md-inline">Search</span></a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link" href="/friends"><i class="fas fa-user-friends"></i> <span class="d-none d-md-inline">Friends</span></a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link" href="/shared"><i class="fas fa-share-alt"></i> <span class="d-none d-md-inline">Shared</span></a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link" href="/playlists"><i class="fas fa-star"></i> <span class="d-none d-md-inline">Playlists</span></a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link" href="/logout"> <i class="fas fa-sign-out-alt"></i> <span class="d-none d-md-inline">Logout</span> </a>
+				<a class="nav-link" href="/login" title="Login"><i class="fas fa-sign-in-alt"></i><span class="sr-only">Login</span></a>
 			</li>
 		</ul>
-	<div class="user">
-		<a href="/notifications"><img class="user-picture-sm" src="{{ user['picture'] }}">
-			{% if user['notification_count'] > 0 %}
-			<span class="notification-count badge badge-primary">{{ user['notification_count'] }}</span>
-			{% endif %}
-		</a>
+		{% endif %}
 	</div>
-	{% else %}
-	<div>
-		<a class="nav-link" href="/login"> <i class="fas fa-sign-in-alt"></i> Login </a>
-	</div>
-	{% endif %}
-	</div>
-</nav>
-<nav aria-label="breadcrumb">
-	<ol class="breadcrumb bg-transparent">
-		{% for item in breadcrumb %}
-			{% if loop.last %}
-			<li class="breadcrumb-item active" aria-current="page"><i class="fas fa-{{ item.icon }}"></i> {{ item.text }}</li>
-			{% else %}
-			<li class="breadcrumb-item"><a href="{{ item.link }}"><i class="fas fa-{{ item.icon }}"></i> {{ item.text }}</a></li>
-			{% endif %}
-		{% endfor %}
-	</ol>
 </nav>

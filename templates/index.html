@@ -11,17 +11,6 @@
 		<div>
 			{% include 'search_bar.tmpl' %}
 		</div>
-		{% if debug %}
-		<div>
-			<p>
-			Debug: <ul>
-			{% for link in debug_links %}
-				<li><a href="{{ link }}">{{ link }}</a></li>
-			{% endfor %}
-			</ul>
-			</p>
-		</div>
-		{% endif %}
 	</div>
 </div>
 {% endblock body %}

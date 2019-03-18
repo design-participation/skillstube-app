@@ -2,7 +2,7 @@ from aiohttp import web
 from aiohttp_session import get_session, new_session
 import aiohttp_jinja2
 
-from util import routes
+from util import routes, login_required
 from backend import users, history
 
 #GET /user => new user form
@@ -41,17 +41,32 @@ async def new_user(request):
 @routes.get('/login')
 @aiohttp_jinja2.template('login.html')
 async def login_form(request):
+    import sys
+    if '-debug' in sys.argv:
+        result = []
+        for user in await users.list():
+            user['href'] = '/debug:login/' + str(user['_id'])
+            result.append(user)
+        import random
+        random.shuffle(result)
+        return {'users': result}
     return {}
 
-#GET /logout => remove user_id from session
+#GET /logout => show logout screen
 @routes.get('/logout')
-#@aiohttp_jinja2.template('logout.html')
+@login_required
+@aiohttp_jinja2.template('logout.html')
+async def logout(request):
+    return {}
+
+#POST /logout => remove user_id from session
+@routes.post('/logout')
+@login_required
 async def logout(request):
     session = await get_session(request)
     if 'user_id' in session:
         del session['user_id']
-    #return {}
-    raise web.HTTPFound('/')
+    raise web.HTTPFound('/login')
 
 #POST /login (email, password) => login as existing user
 @routes.post('/login')

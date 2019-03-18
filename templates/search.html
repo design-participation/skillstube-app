@@ -1,7 +1,19 @@
 {% extends 'base.tmpl' %}
 {% block title %}Search{% endblock %}
 {% block body %}
+{% if query == '' %}
+<div style="margin-bottom: 30%" class="row">
+	<div class="col">
+		<div style="font-size: 500%; text-align: center; margin-top: 8%; margin-bottom: 1rem;">
+			{% include 'logo.tmpl' %}
+		</div>
+{% else %}
+<div class="row">
+	<div class="col">
+{% endif %}
 	{% include 'search_bar.tmpl' %}
 	{% include 'search_results.tmpl' %}
-	<div class="arrow-prompt show-idle-prompt"><i class="fas fa-arrow-down"></i></div>
+	</div>
+</div>
+<div class="arrow-prompt show-idle-prompt"><i class="fas fa-arrow-down"></i></div>
 {% endblock body %}

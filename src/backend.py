@@ -202,12 +202,12 @@ class Comments(DB):
     def __init__(self):
         super().__init__('comments')
 
-    async def list(self, user_id, video_id=None, populate=False, only_shared=False, limit=0):
+    async def list(self, user_id, video_id=None, populate=False, shared_with_me=False, owner_id=None, limit=0):
         filter = {'user_id': user_id}
         if video_id is not None:
             filter['video_id'] = video_id
-        if only_shared:
-            shared_comment_ids = [item['comment_id'] for item in await shares.list(recipient_id=user_id)]
+        if shared_with_me:
+            shared_comment_ids = [item['comment_id'] for item in await shares.list(recipient_id=user_id, owner_id=owner_id)]
             found = await super().get(shared_comment_ids)
         else:
             found = await super().list(filter, limit=limit, sort=[('date', pymongo.ASCENDING)])
@@ -257,7 +257,7 @@ class Shares(DB):
         return None
 
     # note: comment_id can be a list
-    async def list(self, video_id=None, recipient_id=None, comment_id=None, limit=0):
+    async def list(self, video_id=None, recipient_id=None, comment_id=None, owner_id=None, limit=0):
         self.check_type(recipient_id)
         self.check_type(comment_id)
         filter = {}
@@ -265,6 +265,8 @@ class Shares(DB):
             filter['video_id'] = video_id
         if recipient_id is not None:
             filter['recipient_id'] = recipient_id
+        if owner_id is not None:
+            filter['owner_id'] = owner_id
         if comment_id is not None:
             filter['comment_id'] = {'$in': comment_id} if type(comment_id) is list else comment_id
         return await super().list(filter, limit=limit)

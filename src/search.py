@@ -7,61 +7,61 @@ import aiohttp_jinja2
 from util import routes, get_user, login_required
 from youtube import Youtube
 from backend import users, comments, history, videos, playlists
-from navigation import Breadcrumb
 import secrets
 
 youtube = Youtube()
 prompts = {'1': 'How to', '2': 'What is', '3': 'Examples of', '4': ''}
+def validate_prompt(prompt):
+    return prompt if prompt in prompts else '1'
 
 @routes.get('/')
 @aiohttp_jinja2.template('index.html')
 async def index(request):
-    return {'breadcrumb': [Breadcrumb.HOME()]}
+    raise web.HTTPFound('/search')
+    #return {'nav': 'search'}
 
 @routes.get('/search')
 @aiohttp_jinja2.template('search.html')
 async def search(request):
+    session = await get_session(request)
+
+    query = request.query.get('q', session['query'] if 'query' in session else '')
+    prompt = validate_prompt(request.query.get('prompt', session['prompt'] if 'prompt' in session else ''))
+    channel_only = request.query.get('channel_only', session['channel_only'] if 'channel_only' in session else '')
+
     results = []
-    query = request.query.get('q', '')
-    prompt = request.query.get('prompt', '1')
-    if prompt not in prompts:
-        prompt = '1'
     if query.strip() != '':
         final_query = '"%s" %s' % (prompts[prompt], query)
-        if request.query.get('channel_only'):
-            async for item in youtube.search(final_query, 24,
-                        videoSyndicated='true',
-                        videoEmbeddable='true',
-                        channelId=secrets.YOUTUBE_CHANNEL,
-                    ):
-                video = {'video_id': item['id']['videoId'], 'thumbnail': item['snippet']['thumbnails']['high']['url'], 'title': item['snippet']['title']}
-                results.append(video)
-                await videos.add(**video)
+        if channel_only == 'on':
+            args = {
+                'videoSyndicated': 'true',
+                'videoEmbeddable': 'true',
+                'channelId': secrets.YOUTUBE_CHANNEL,
+            }
         else:
-            async for item in youtube.search(final_query, 24,
-                        videoCategoryId=26, # 26 = how to and style, 27 = education
-                        relevanceLanguage='en',
-                        videoSyndicated='true',
-                        videoEmbeddable='true',
-                        videoDuration='short',
-                        regionCode='AU',
-                        safeSearch='strict',
-                    ):
-                video = {'video_id': item['id']['videoId'], 'thumbnail': item['snippet']['thumbnails']['high']['url'], 'title': item['snippet']['title']}
-                results.append(video)
-                await videos.add(**video)
+            args = {
+                'videoCategoryId': 26, # 26 = how to and style, 27 = education
+                'relevanceLanguage': 'en',
+                'videoSyndicated': 'true',
+                'videoEmbeddable': 'true',
+                'videoDuration': 'short',
+                'regionCode': 'AU',
+                'safeSearch': 'strict',
+            }
+        async for item in youtube.search(final_query, 24, **args):
+            video = {'video_id': item['id']['videoId'], 'thumbnail': item['snippet']['thumbnails']['high']['url'], 'title': item['snippet']['title']}
+            results.append(video)
+            await videos.add(**video)
+
     user = await get_user(request)
     if user is not None:
         await history.add(user['_id'], 'query', query)
-    if query == '':
-        breadcrumb = [Breadcrumb.HOME(), Breadcrumb.SEARCH(1, 'Search', '')]
-    else:
-        breadcrumb = [Breadcrumb.HOME(), Breadcrumb.SEARCH(prompt, prompts[prompt], query)]
-    session = await get_session(request)
+
     session['query'] = query
     session['prompt'] = prompt
-    session['channel_only'] = request.query.get('channel_only')
-    return {'results': results, 'breadcrumb': breadcrumb}
+    session['channel_only'] = channel_only
+    
+    return {'results': results, 'query': query, 'prompt': prompt, 'channel_only': channel_only, 'nav': 'search'}
 
 # TODO: deprecated
 async def get_video_info(videoId):
@@ -97,13 +97,7 @@ async def watch(request):
     video = await videos.get(video_id)
     if video is None:
         raise web.HTTPBadRequest()
-    query = request.query.get('q', '')
-    prompt = request.query.get('prompt', '')
-    if query != '' and prompt != '':
-        breadcrumb = [Breadcrumb.HOME(), Breadcrumb.SEARCH(prompt, prompts[prompt], query), Breadcrumb.WATCH(video_id, video['title'])]
-    else:
-        breadcrumb = [Breadcrumb.HOME(), Breadcrumb.WATCH(video_id, video['title'])]
-    return { 'video': video, 'comments': comment_items, 'folder': folder, 'breadcrumb': breadcrumb }
+    return { 'video': video, 'comments': comment_items, 'folder': folder, 'nav': 'search'}
 
 @routes.get('/recent')
 @login_required
@@ -118,7 +112,7 @@ async def show_recent(request):
         if videoId not in seen:
             recent_videos.append({'videoId': videoId, 'title': '', 'thumbnail': 'http://i3.ytimg.com/vi/%s/hqdefault.jpg' % videoId})
             seen.add(videoId)
-    return {'results': recent_videos}
+    return {'results': recent_videos, 'nav': 'playlists'}
 
 @routes.get('/suggest')
 async def suggest(request):

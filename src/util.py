@@ -30,15 +30,8 @@ async def add_globals(request):
     if user is not None:
         user['notification_count'] = await notifications.count(user['_id'])
         values['user'] = user
-    session = await get_session(request)
-    # get global state
-    for name in ['query', 'prompt', 'playlist']:
-        if name in session:
-            values[name] = session[name]
     if '-debug' in sys.argv:
         values['debug'] = True
-        #values['debug_links'] = [item.path for item in routes if type(item) == web.RouteDef and item.method == 'GET']
-        values['debug_links'] = ['/logout', '/debug:users']
     return values
 
 def login_required(fn):

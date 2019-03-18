@@ -1,8 +1,8 @@
 <div class="card mb-3">
-	<a href="/watch/{{ video.video_id }}?q={{ query }}&prompt={{ prompt }}&folder={{ folder._id if folder }}">
+	<a class="no-decoration" href="/watch/{{ video.video_id }}?q={{ query }}&prompt={{ prompt }}&folder={{ folder._id if folder }}">
 	<img class="card-img-top" src="{{ video.thumbnail }}">
 	<div class="card-body">
-		{{ video.title }}
+		{{ video.title|safe }}
 	</div>
 	</a>
 </div>
