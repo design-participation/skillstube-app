@@ -34,7 +34,8 @@ async def init():
 
     # warning from doc: in production, /static should be handled by apache/nginx
     routes.static('/static', 'static', append_version=True)
-    routes.static('/', 'static/favicon', append_version=True)
+    routes.static('/pictures', 'data/pictures')
+    routes.static('/', 'static/favicon')
     app.add_routes(routes) 
     return app
 

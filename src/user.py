@@ -1,3 +1,6 @@
+import uuid
+import os
+
 from aiohttp import web
 from aiohttp_session import get_session, new_session
 import aiohttp_jinja2
@@ -15,12 +18,44 @@ async def new_user_form(request):
 @routes.post('/user')
 @aiohttp_jinja2.template('new_user.html')
 async def new_user(request):
-    data = await request.post()
+    reader = await request.multipart()
+    data = {}
+
+    while True: # handle file upload and other fields
+        field = await reader.next()
+        if not field:
+            break
+        if field.name in ['email', 'name', 'password']:
+            data[field.name] = (await field.read(decode=True)).decode('utf8')
+        elif field.name == 'picture':
+            if field.filename == '': # skip if no file was provided
+                continue
+            # TODO: should check content for actual picture; should also limit size on the client side
+            extension = field.filename.split('.')[-1].lower()
+            if extension not in ['jpg', 'jpeg', 'png', 'gif']:
+                raise web.HTTPBadRequest(reason='Picture file type not allowed, please use jpg, jpeg, png or gif')
+            filename = str(uuid.uuid4()) + '.' + extension
+            size = 0
+            with open('./data/pictures/' + filename, 'wb') as f:
+                while True:
+                    chunk = await field.read_chunk()  # 8192 bytes by default.
+                    if not chunk:
+                        break
+                    size += len(chunk)
+                    f.write(chunk)
+                    if size > 1024 * 1024 * 10: # max 10M 
+                        fp.close()
+                        os.unlink('./data/pictures/' + filename)
+                        raise web.HTTPBadRequest(reason='Picture file too large')
+            data['picture'] = '/pictures/' + filename
+        else:
+            raise web.HTTPBadRequest()
+
     email = data.get('email', '')
     password = data.get('password', '')
     name = data.get('name', '')
     picture = data.get('picture', '')
-    #TODO: need to check that picture exists
+
     if picture.strip() == '':
         picture = 'https://api.adorable.io/avatars/512/' + email
     error = None
@@ -30,6 +65,8 @@ async def new_user(request):
     if user_id is None:
         error = 'email already exists'
     if error is not None:
+        if os.path.exists('./data/' + picture):
+            os.unlink('./data/' + picture)
         return {'email': email, 'name': name, 'picture': picture, 'error': error}
     else:
         session = await new_session(request)

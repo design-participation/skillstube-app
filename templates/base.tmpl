@@ -22,6 +22,20 @@
 	<body>
 		{% include 'topbar.tmpl' %}
 		<div class="container mt-5 mb-5">
+		{% if error %}
+		<div class="row">
+			<div class="col">
+				<div class="alert alert-danger"><strong><i class="fas fa-exclamation-triangle"></i> Error:</strong> {{ error_message }} </div>
+			</div>
+		</div>
+		{% endif %}
+		{% if message %}
+		<div class="row">
+			<div class="col">
+				<div class="alert alert-info"><strong><i class="fas fa-info-circle"></i> Info:</strong> {{ info_message }} </div>
+			</div>
+		</div>
+		{% endif %}
 		{% block body %}{% endblock %}
 		</div>
 		<!--<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>-->
