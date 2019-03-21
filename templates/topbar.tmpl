@@ -25,21 +25,19 @@
 				{%- endif -%}
 				</a>
 			</li>
-			{% endif %}
-    </ul>
-  </div>
-  <div class="float-right">
-		{% if user %}
-			<a href="/user" title="User"><img class="nav-user-picture" src="{{ user.picture }}"><span class="sr-only">User</span></a>
-		{% else %}
-    <ul class="navbar-nav">
+			{% else %}
 			<li class="nav-item">
 				<a class="nav-link" href="/login" title="Login"><i class="fas fa-sign-in-alt"></i><span class="sr-only">Login</span></a>
 			</li>
 			<li class="nav-item">
 				<a class="nav-link" href="/new-user" title="New user"><i class="fas fa-user-plus"></i><span class="sr-only">New user</span></a>
 			</li>
-		</ul>
-		{% endif %}
+			{% endif %}
+    </ul>
+  </div>
+	{% if user %}
+	<div class="float-right">
+		<a href="/user" title="User"><img class="nav-user-picture" src="{{ user.picture }}"><span class="sr-only">User</span></a>
 	</div>
+	{% endif %}
 </nav>
