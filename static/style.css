@@ -4,6 +4,11 @@
   --color-friends: #8E3B88; 
   --color-playlists: #E8314F; 
   --color-notifications: #F47726; 
+
+  --color-search-light: #e0deed; 
+  --color-friends-light: #ecd3eb; 
+  --color-playlists-light: #fad5db; 
+  --color-notifications-light: #fce3d3; 
 }
 
 /* ============= logo ============= */
@@ -362,24 +367,28 @@ body {
 
 .nav-item.active:nth-child(2) {
 	border-color: var(--color-search) !important;
+	background-color: var(--color-search-light) !important;
 }
 .nav-item.active:nth-child(2) > .nav-link {
 	color: var(--color-search) !important;
 }
 .nav-item.active:nth-child(3) {
 	border-color: var(--color-friends) !important;
+	background-color: var(--color-friends-light) !important;
 }
 .nav-item.active:nth-child(3) > .nav-link {
 	color: var(--color-friends) !important;
 }
 .nav-item.active:nth-child(4) {
 	border-color: var(--color-playlists) !important;
+	background-color: var(--color-playlists-light) !important;
 }
 .nav-item.active:nth-child(4) > .nav-link {
 	color: var(--color-playlists) !important;
 }
 .nav-item.active:nth-child(5) {
 	border-color: var(--color-notifications) !important;
+	background-color: var(--color-notifications-light) !important;
 }
 .nav-item.active:nth-child(5) > .nav-link {
 	color: var(--color-notifications) !important;
