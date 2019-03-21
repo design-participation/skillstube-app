@@ -22,14 +22,14 @@
 	<body>
 		{% include 'topbar.tmpl' %}
 		<div class="container mt-5 mb-5">
-		{% if error %}
+		{% if error_message %}
 		<div class="row">
 			<div class="col">
-				<div class="alert alert-danger"><strong><i class="fas fa-exclamation-triangle"></i> Error:</strong> {{ error_message }} </div>
+				<div class="alert alert-danger"><strong><i class="far fa-frown"></i> Error:</strong> {{ error_message }} </div>
 			</div>
 		</div>
 		{% endif %}
-		{% if message %}
+		{% if info_message %}
 		<div class="row">
 			<div class="col">
 				<div class="alert alert-info"><strong><i class="fas fa-info-circle"></i> Info:</strong> {{ info_message }} </div>

@@ -22,6 +22,19 @@ $(document).ready(function() {
 	}
 	$("#query-field").typeahead({source: get_suggestions, matcher: function() { return true; } });
 
+	/***************** endeavour channel checkbox ******************/
+
+	var saved_prompt = 0;
+	$('#channel_only').change(function(event) {
+		var prompt_select = $('#query-prompt')[0];
+		if(event.target.checked) {
+			saved_prompt = prompt_select.selectedIndex;
+			prompt_select.selectedIndex = 3; // use "(no start)" when checkbox is checked
+		} else {
+			prompt_select.selectedIndex = saved_prompt;
+		}
+	});
+
 
 	/***************** friend selector for sharing ******************/
 

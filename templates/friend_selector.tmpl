@@ -4,8 +4,8 @@
 			{% for user in friends %}
 			<label class="btn border-light btn-light-outline mr-2 mb-2 {{ 'active disabled' if user.selected }}">
 				<input type="checkbox" {{ 'checked disabled' if user.selected }} name="friend" value="{{ user._id }}" autocomplete="off"> 
-				<img src="{{ user.picture }}" class="user-picture" alt="{{ user.name|e }}">
-				{{ user.name|e }}
+				<img src="{{ user.picture }}" class="user-picture" alt="{{ user.name }}"><br>
+				<small>{{ user.name }}</small>
 			</label>
 			{% endfor %}
 		</div>

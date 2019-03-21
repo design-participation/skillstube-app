@@ -160,6 +160,11 @@
 	overflow: visible;
 	top: 0px;
 	right: 0px;
+	font-size: 1.7rem;
+	border: 1px solid var(--secondary);
+	margin: .5rem;
+	padding-left: .75rem;
+	padding-right: .75rem;
 }
 
 /* ================ comment bubble =============== */

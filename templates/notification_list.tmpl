@@ -1,7 +1,7 @@
 <div class="row mb-3">
 	<div class="col">
 	{% if notifications|length == 0 %}
-	<p> List empty </p>
+		<h3>No new notification</h3>
 	{% else %}
 		{% for item in notifications %}
 		<a style="display:block; text-decoration: none" href="/notification/{{ item._id }}" class="alert {{ 'alert-info' if item.new else 'alert-secondary' }}">

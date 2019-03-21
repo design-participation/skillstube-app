@@ -1,9 +1,8 @@
 from aiohttp import web
 from aiohttp_session import get_session
 import aiohttp_jinja2
-from bson.objectid import ObjectId
 
-from util import routes, login_required, get_user
+from util import routes, login_required, get_user, to_objectid
 from backend import notifications, shares
 
 #get /dismiss/{notification_id} => dismiss notification (json result)
@@ -12,7 +11,7 @@ from backend import notifications, shares
 async def dismiss_notification(request):
     user = await get_user(request)
     notification_id = request.match_info['notification_id']
-    await notifications.dismiss(user['_id'], ObjectId(notification_id))
+    await notifications.dismiss(user['_id'], to_objectid(notification_id))
     return web.json_response('ok')
 
 #get /notification/{notification_id} => when clicked on notification, process and redirect user
@@ -20,9 +19,8 @@ async def dismiss_notification(request):
 @login_required
 async def process_notification(request):
     user = await get_user(request)
-    notification_id = ObjectId(request.match_info['notification_id'])
+    notification_id = to_objectid(request.match_info['notification_id'])
     notification = await notifications.get(notification_id)
-    print(notification, notification['user_id'], user['_id'])
     if notification is not None and notification['user_id'] == user['_id']: 
         await notifications.dismiss(user['_id'], notification_id)
         if notification['type'] == 'shared content':

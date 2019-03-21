@@ -1,4 +1,4 @@
-<div class="card mb-3">
+<div class="card mb-3 {{ 'show-idle-prompt' if loop.index == 1 }}">
 	<a class="no-decoration" href="/watch/{{ video.video_id }}?q={{ query }}&prompt={{ prompt }}&folder={{ folder._id if folder }}">
 	<img class="card-img-top" src="{{ video.thumbnail }}">
 	<div class="card-body">

@@ -24,10 +24,10 @@ if '-debug' in sys.argv[1:]:
     import debug
 
 import secrets
-from util import routes, get_user, add_globals
+from util import routes, get_user, add_globals, error_middleware
 
 async def init():
-    app = web.Application()
+    app = web.Application(middlewares=[error_middleware])
 
     setup(app, EncryptedCookieStorage(secrets.SERVER_COOKIE_KEY))
     aiohttp_jinja2.setup(app, loader=jinja2.FileSystemLoader('templates/'), context_processors=[add_globals])

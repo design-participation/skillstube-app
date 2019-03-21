@@ -1,9 +1,8 @@
 from aiohttp import web
 from datetime import datetime
 import aiohttp_jinja2
-from bson.objectid import ObjectId
 
-from util import routes, login_required, get_user
+from util import routes, login_required, get_user, to_objectid
 
 from backend import comments, friends, videos, shares
 
@@ -30,7 +29,7 @@ async def post_comment(request):
         for key, other_id in data.items():
             if key == 'friend':
                 print('adding', other_id)
-                await shares.add(video_id, comment_id, {'thumbnail': 'https://i.ytimg.com/vi/%s/hqdefault.jpg' % video_id, 'text': data['text']}, user['_id'], ObjectId(other_id))
+                await shares.add(video_id, comment_id, {'thumbnail': 'https://i.ytimg.com/vi/%s/hqdefault.jpg' % video_id, 'text': data['text']}, user['_id'], to_objectid(other_id))
         raise web.HTTPFound('/watch/' + video_id + '#' + str(comment_id))
     else:
         raise web.HTTPBadRequest()

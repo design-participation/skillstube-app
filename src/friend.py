@@ -3,9 +3,8 @@ from aiohttp import web
 from aiohttp_session import get_session
 import aiohttp_jinja2
 
-from util import routes, login_required, get_user
+from util import routes, login_required, get_user, to_objectid
 from backend import friends, users, notifications
-from bson.objectid import ObjectId
 
 #GET /personal => show personal information
 @routes.get('/friends')
@@ -45,7 +44,7 @@ async def request_friend(request):
 async def view_friend_request(request):
     print('view friend request')
     user = await get_user(request)
-    request_id = ObjectId(request.match_info['request_id'])
+    request_id = to_objectid(request.match_info['request_id'])
     request = await friends.get(request_id)
     print(user['_id'], request)
     if request is not None and request['other_id'] == user['_id']:
@@ -59,7 +58,7 @@ async def view_friend_request(request):
 @login_required
 async def accept_friend(request):
     user = await get_user(request)
-    request_id = ObjectId(request.match_info['request_id'])
+    request_id = to_objectid(request.match_info['request_id'])
     data = await request.post()
     await friends.accept(request_id)
     raise web.HTTPFound('/friends')

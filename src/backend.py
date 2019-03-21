@@ -69,15 +69,26 @@ class Users(DB):
     async def get(self, _id):
         return await super().get(_id, {'password': False})
 
-    async def add(self, email, password, name='', picture=''):
+    async def add(self, email, password, name='', picture='', origin='genuine'):
         if await self.db.find_one({'email': email}):
             return None
         return await super().add(
                 email=email,
                 password=pbkdf2_sha256.hash(password),
                 name=name,
-                picture=picture
+                picture=picture,
+                origin=origin
                 )
+
+    async def change_password(self, _id, old_password, new_password): 
+        user = await super().find({'_id': _id})
+        if user is not None and pbkdf2_sha256.verify(old_password, user['password']):
+            await self.db.find_one_and_update({'_id': _id}, {'$set': {'password': pbkdf2_sha256.hash(new_password)}})
+            return True
+        return False
+
+    async def change_picture(self, _id, picture): 
+        await self.db.find_one_and_update({'_id': _id}, {'$set': {'picture': picture}})
 
     async def login(self, email, password):
         user = await super().find({'email': email})
@@ -312,6 +323,8 @@ async def clear_all():
         shares.clear(),
         playlists.clear(),
         )
+    import os
+    os.system('rm data/pictures/*') # also remove all uploaded pictures
 
 users = Users()
 videos = Videos()

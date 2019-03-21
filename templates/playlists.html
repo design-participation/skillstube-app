@@ -2,32 +2,38 @@
 {% block title %}Playlists{% endblock %}
 {% block body %}
 <div class="row">
-{% for folder in folders %}
-	<div class="col-sm-6 col-md-4 col-lg-3">
-		<div class="card mb-3">
-			<a href="/playlists/{{ folder._id }}">
-			<div class="card-img-4">
-			{% for i in range(4) -%}
-				{%- if folder.videos|length > i -%}
-					<img class="card-img-top" src="{{ folder.videos[i].thumbnail }}">
-				{%- else -%}
-					<img class="card-img-top" src="/static/img/gray.png">
-				{%- endif -%}
-			{%- endfor %}
-			</div>
-			<div class="card-body">
-				<i class="fas fa-star"></i> {{ folder.name }}: 
-				{% if folder.count == 0 %}
-					Empty
-				{% elif folder.count == 1 %}
-					{{ folder.count }} video
-				{% else %}
-					{{ folder.count }} videos
-				{% endif %}
-			</div>
-			</a>
-		</div>
+	{% if folders|length == 0 %}
+	<div class="col">
+		<h3>Add <a href="/search">videos</a> to playlists.</h3>
 	</div>
-{% endfor %}
+	{% else %}
+		{% for folder in folders %}
+			<div class="col-sm-6 col-md-4 col-lg-3 align-items-stretch">
+				<div class="card mb-3">
+					<a href="/playlists/{{ folder._id }}">
+					<div class="card-img-4">
+					{% for i in range(4) -%}
+						{%- if folder.videos|length > i -%}
+							<img class="card-img-top" src="{{ folder.videos[i].thumbnail }}">
+						{%- else -%}
+							<img class="card-img-top" src="/static/img/gray.png">
+						{%- endif -%}
+					{%- endfor %}
+					</div>
+					<div class="card-body">
+						<i class="fas fa-star"></i> {{ folder.name }}: 
+						{% if folder.count == 0 %}
+							Empty
+						{% elif folder.count == 1 %}
+							{{ folder.count }} video
+						{% else %}
+							{{ folder.count }} videos
+						{% endif %}
+					</div>
+					</a>
+				</div>
+			</div>
+		{% endfor %}
+	{% endif %}
 </div>
 {% endblock body %}

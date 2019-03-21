@@ -4,9 +4,8 @@ from aiohttp import web
 from aiohttp_session import get_session, new_session
 import aiohttp_jinja2
 from aiohttp import ClientSession
-from bson.objectid import ObjectId
 
-from util import routes, get_user
+from util import routes, get_user, to_objectid
 from backend import users, friends, comments, history, shares, playlists, videos
 from youtube import Youtube
 
@@ -28,7 +27,7 @@ async def debug_populate(request):
                 name = user['name']['first'].title() + ' ' + user['name']['last'].title()
                 #picture = '/static/img/person%d.jpg' % i 
                 picture = user['picture']['large']
-                user_id = await users.add(password=password, email=email, name=name, picture=picture)
+                await users.add(password=password, email=email, name=name, picture=picture, origin='generated')
     # populate usage data for each user
     user_ids = [user['_id'] for user in await users.list()]
     print(user_ids)
@@ -96,7 +95,10 @@ async def debug_populate(request):
     tasks = [populate_one_video_batch(batch) for batch in range(0, len(video_ids), 25)]
     await asyncio.gather(*tasks)
 
-    raise web.HTTPFound('/debug:users')
+    # also add a newbie user to test blank pages
+    newbie = await users.add(password='newbie', email='newbie@newbie.com', name='newbie', picture='https://spikeybits.com/wp-content/uploads/2016/08/hello_my_name_is_newbie.png', origin='generated')
+
+    raise web.HTTPFound('/login')
 
 @routes.get('/debug:users')
 @aiohttp_jinja2.template('user_list.html')
@@ -110,7 +112,7 @@ async def debug_users(request):
 @routes.get('/debug:login/{user_id}')
 @aiohttp_jinja2.template('login.html')
 async def debug_login(request):
-    user_id = ObjectId(request.match_info['user_id'])
+    user_id = to_objectid(request.match_info['user_id'])
     user = await users.get(user_id)
     if user is not None:
         session = await new_session(request)

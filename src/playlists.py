@@ -1,8 +1,7 @@
 from aiohttp import web
 import aiohttp_jinja2
-from bson.objectid import ObjectId
 
-from util import routes, get_user, login_required
+from util import routes, get_user, login_required, to_objectid
 from backend import playlists, videos
 
 @routes.get('/playlists/{folder_id}')
@@ -10,7 +9,7 @@ from backend import playlists, videos
 @login_required
 async def show_playlists(request):
     user = await get_user(request)
-    folder_id = ObjectId(request.match_info['folder_id'])
+    folder_id = to_objectid(request.match_info['folder_id'])
     folder = await playlists.get(folder_id)
     if folder is not None and folder['user_id'] == user['_id']:
         folder['videos'] = await videos.get([item['video_id'] for item in await playlists.list(user['_id'], folder['_id'])])
@@ -50,7 +49,7 @@ async def set_playlist(request):
     data = await request.post()
     folder_id = None
     if 'folder' in data and data['folder'].strip() != '':
-        folder_id = ObjectId(data['folder'])
+        folder_id = to_objectid(data['folder'])
         if not await playlists.get(folder_id):
             folder_id = None
     if 'new_name' in data and data['new_name'].strip() != '':
