@@ -5,6 +5,7 @@
   --color-playlists: #E8314F; 
   --color-notifications: #F47726; 
 }
+
 /* ============= logo ============= */
 .logo-text {
 	color: #645AA5;
@@ -202,6 +203,10 @@
 }
 
 /* ================ misc =============== */
+
+body {
+	padding-top: 4rem;
+}
 
 .player {
 	background: black;
