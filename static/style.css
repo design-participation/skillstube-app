@@ -314,6 +314,35 @@ body {
 	padding-right: .5rem;
 }
 
+.navbar-collapse.show .nav-link {
+	padding-left: .5rem;
+	padding-right: .5rem;
+}
+
+.navbar-collapse.collapsing .nav-link {
+	padding-left: .5rem;
+	padding-right: .5rem;
+}
+
+.navbar-collapse.show .navbar-nav {
+	display:inline-block;
+	margin-top: .5rem;
+}
+
+.navbar-collapse.show .nav-item {
+	margin: .25rem;
+	padding-left: .5rem;
+	display: inline-block;
+}
+.navbar-collapse.collapsing .navbar-nav {
+	display:inline-block;
+	margin-top: .5rem;
+}
+.navbar-collapse.collapsing .nav-item {
+	margin: .25rem;
+	display: inline-block;
+}
+
 .nav-user-picture {
 	max-width: 4.125rem;
 	max-height: 4.125rem;
