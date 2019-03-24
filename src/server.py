@@ -19,6 +19,7 @@ import share
 import comment
 import notification
 import playlists
+import history
 
 if '-debug' in sys.argv[1:]:
     import debug

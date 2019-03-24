@@ -55,7 +55,10 @@ async def search(request):
 
     user = await get_user(request)
     if user is not None:
-        await history.add(user['_id'], 'query', query)
+        if query != '':
+            await history.add(user['_id'], 'search', {'query': query, 'prompt': prompt, 'channel_only': channel_only})
+        else:
+            await history.add(user['_id'], 'show-search-page')
 
     session['query'] = query
     session['prompt'] = prompt
@@ -90,13 +93,13 @@ async def watch(request):
     #results, (video_url, audio_url, title) = await asyncio.gather(task1, task2)
     comment_items = []
     folder = None
-    if user is not None:
-        comment_items = await comments.list(user['_id'], video_id, populate=True)
-        await history.add(user['_id'], 'video', video_id)
-        folder = await playlists.get_for_video(user['_id'], video_id)
     video = await videos.get(video_id)
     if video is None:
         raise web.HTTPBadRequest()
+    if user is not None:
+        comment_items = await comments.list(user['_id'], video_id, populate=True)
+        await history.add(user['_id'], 'watch', {'video': video['_id']})
+        folder = await playlists.get_for_video(user['_id'], video_id)
     return { 'video': video, 'comments': comment_items, 'folder': folder, 'nav': 'search'}
 
 @routes.get('/recent')
@@ -112,6 +115,7 @@ async def show_recent(request):
         if videoId not in seen:
             recent_videos.append({'videoId': videoId, 'title': '', 'thumbnail': 'http://i3.ytimg.com/vi/%s/hqdefault.jpg' % videoId})
             seen.add(videoId)
+    await history.add(user['_id'], 'recent-videos')
     return {'results': recent_videos, 'nav': 'playlists'}
 
 @routes.get('/suggest')
@@ -122,5 +126,8 @@ async def suggest(request):
         prompt = 1
     found = await youtube.suggest(prompts[prompt] + ' ' + query)
     suggestions = [re.sub('^' + prompts[prompt].lower(), '', item.strip()).strip() for item in found[1]]
+    user = await get_user(request)
+    if user is not None:
+        await history.add(user['_id'], 'suggest', {'query': query, 'prompt': prompt, 'suggestions': suggestions})
     return web.json_response(suggestions)
 

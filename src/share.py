@@ -2,7 +2,7 @@ from aiohttp import web
 import aiohttp_jinja2
 
 from util import routes, get_user, login_required, to_objectid
-from backend import comments, shares, notifications, friends
+from backend import comments, shares, notifications, friends, history
 
 # TODO: deprecated
 @routes.post('/view-shared/{share_id}')
@@ -18,6 +18,7 @@ async def view_shared(request):
         if notification is not None and notification['data']['share_id'] == share_id:
             await notifications.dismiss(user['_id'], notification_id)
     if share is not None and share['recipient_id'] == user['_id']:
+        await history.add(user['_id'], 'view-shared', {'share_id': share_id})
         raise web.HTTPFound('/watch/' + str(share['video_id']) + '#' + str(share['comment_id']))
     raise web.HTTPBadRequest()
         
@@ -35,6 +36,7 @@ async def share_select(request):
         for item in friend_items:
             if item['_id'] in initial_share:
                 item['selected'] = True
+        await history.add(user['_id'], 'share-select-friends', {'comment_id': comment_id})
         return {'comment': comment, 'friends': friend_items, 'nav': 'search'}
     raise web.HTTPBadRequest()
 
@@ -53,6 +55,7 @@ async def share_save(request):
             if key == 'friend':
                 print('adding', other_id)
                 await shares.add(video_id, comment_id, {'thumbnail': 'https://i.ytimg.com/vi/%s/hqdefault.jpg' % video_id, 'text': comment['text']}, user['_id'], to_objectid(other_id))
+        await history.add(user['_id'], 'share-comment', {'comment_id': comment_id, 'friends': [v for k, v in data.items() if k == 'friend']})
         raise web.HTTPFound('/watch/' + comment['video_id'] + '#' + str(comment['_id']))
     raise web.HTTPBadRequest()
 
@@ -62,6 +65,7 @@ async def share_save(request):
 async def show_shared(request):
     user = await get_user(request)
     shared_with_me = await comments.list(user['_id'], shared_with_me=True, populate=True)
+    await history.add(user['_id'], 'view-shared-with-me')
     return {'comments': shared_with_me, 'show_video': True, 'nav': 'shared'}
 
 @routes.get('/shared/by-me')
@@ -70,6 +74,7 @@ async def show_shared(request):
 async def show_shared(request):
     user = await get_user(request)
     shared_by_myself = [item for item in await comments.list(user['_id'], populate=True) if len(item['shared_with']) > 0]
+    await history.add(user['_id'], 'view-shared-by-me')
     return {'comments': shared_by_myself, 'show_video': True, 'nav': 'shared'}
 
 @routes.get('/shared/{friend_id}')
@@ -79,5 +84,6 @@ async def show_shared(request):
     user = await get_user(request)
     friend_id = to_objectid(request.match_info['friend_id'])
     shared_with_me = await comments.list(user['_id'], shared_with_me=True, owner_id=friend_id, populate=True)
+    await history.add(user['_id'], 'view-shared-by-friend', {'friend': friend_id})
     return {'comments': shared_with_me, 'show_video': True, 'nav': 'friends'}
 

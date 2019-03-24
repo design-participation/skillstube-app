@@ -4,7 +4,7 @@ import aiohttp_jinja2
 
 from util import routes, login_required, get_user, to_objectid
 
-from backend import comments, friends, videos, shares
+from backend import comments, friends, videos, shares, history
 
 # GET /comment/{video_id} => form to write and share a comment
 @routes.get('/comment/{video_id}') 
@@ -15,6 +15,7 @@ async def write_comment(request):
     video_id = request.match_info['video_id']
     video = await videos.get(video_id)
     friend_items = await friends.list(user['_id'], populate=True)
+    await history.add(user['_id'], 'write-comment', {'video_id': video_id})
     return {'video': video, 'friends': friend_items}
 
 #POST /comment/{video_id} (text) => add root comment to video
@@ -28,8 +29,9 @@ async def post_comment(request):
         comment_id = await comments.add(user['_id'], video_id, data['text'])
         for key, other_id in data.items():
             if key == 'friend':
-                print('adding', other_id)
+                #print('adding', other_id)
                 await shares.add(video_id, comment_id, {'thumbnail': 'https://i.ytimg.com/vi/%s/hqdefault.jpg' % video_id, 'text': data['text']}, user['_id'], to_objectid(other_id))
+        await history.add(user['_id'], 'save-comment', {'video_id': video_id, 'comment_id': comment_id, 'shared-with': [v for k, v in data.items() if key == 'friend']})
         raise web.HTTPFound('/watch/' + video_id + '#' + str(comment_id))
     else:
         raise web.HTTPBadRequest()
@@ -40,5 +42,6 @@ async def post_comment(request):
 async def show_comments(request):
     user = await get_user(request)
     comment_items = await comments.list(user['_id'], populate=True)
+    await history.add(user['_id'], 'show-comments')
     return {'comments': comment_items, 'show_video': True}
 

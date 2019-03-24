@@ -61,7 +61,8 @@ async def debug_populate(request):
         print('FRIENDS:', friend_ids)
         # generate random queries
         for num in range(random.randint(1, 15)):
-            await history.add(user_id, 'query', random.choice(queries))
+            #await history.add(user_id, 'query', random.choice(queries))
+            pass
 
         # generate random video history
         for num in range(random.randint(1, 50)):
@@ -70,7 +71,7 @@ async def debug_populate(request):
             if random.random() > .5:
                 folder_id = random.choice(folders)
                 await playlists.add(user_id, folder_id, video_id)
-            await history.add(user_id, 'video', video_id)
+            #await history.add(user_id, 'video', video_id)
 
             # generate random comments
             if random.random() > .3:

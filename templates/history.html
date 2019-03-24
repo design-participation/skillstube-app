@@ -1,0 +1,15 @@
+{% extends 'base.tmpl' %}
+{% block title %}History{% endblock %}
+{% block body %}
+<h2>History ({{ category }})</h2>
+<table>
+	<tr><th>Date</th><th>Category</th><th>Data</th></tr>
+{% for item in history %}
+	<tr>
+		<td>{{ item.date }}</td>
+		<td>{{ item.type }}</td>
+		<td>{{ item.data }}</td>
+	</tr>
+{% endfor %}
+</table>
+{% endblock body %}
