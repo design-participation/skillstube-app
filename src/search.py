@@ -27,7 +27,12 @@ async def search(request):
 
     query = request.query.get('q', session['query'] if 'query' in session else '')
     prompt = validate_prompt(request.query.get('prompt', session['prompt'] if 'prompt' in session else ''))
-    channel_only = request.query.get('channel_only', session['channel_only'] if 'channel_only' in session else '')
+    # checkboxes are only specified in query if they are ticked
+    if 'q' in request.query:
+        channel_only = request.query.get('channel_only', 'off')
+    else:
+        channel_only = session['channel_only'] if 'channel_only' in session else 'off'
+
 
     results = []
     if query.strip() != '':

@@ -98,7 +98,14 @@ async def login_form(request):
         return {'users': result}
     return {}
 
-#GET /user => show logout screen
+#GET /user => show form to channge profile information
+@routes.get('/user-modify')
+@login_required
+@aiohttp_jinja2.template('user-modify.html')
+async def logout(request):
+    return {}
+
+#GET /user => show user profile
 @routes.get('/user')
 @login_required
 @aiohttp_jinja2.template('user.html')
