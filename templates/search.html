@@ -15,5 +15,7 @@
 	{% include 'search_results.tmpl' %}
 	</div>
 </div>
-<div class="arrow-prompt show-idle-prompt"><i class="fas fa-arrow-down"></i></div>
+{% if results|length > 0 %}
+	<div class="arrow-prompt show-idle-prompt"><i class="fas fa-arrow-down"></i></div>
+{% endif %}
 {% endblock body %}

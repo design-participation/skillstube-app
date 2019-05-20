@@ -96,9 +96,11 @@
 
 /* ============= speech to text ============= */
 .stt-button {
+	background: white;
 	color: var(--secondary);
-	margin: 0;
-	padding: .120rem .575rem;
+	margin: .1rem;
+	/*padding: .120rem .575rem;*/
+	padding: .0rem .5rem;
 	font-size: 135%;
 }
 
