@@ -1,30 +1,23 @@
 #!/bin/bash
 
-if [ ! -d env ] || [ $(grep VIRTUAL_ENV= env/bin/activate|cut -f2 -d'"') != "$PWD/env" ] ; then
-	rm -rf env
-	virtualenv -p python3 env
-	. env/bin/activate
-	pip install -r requirements.txt
-fi
+PGID=$(ps -o pgid= $PID | grep -o [0-9]*)
 
-. env/bin/activate
-
-if [ ! -f src/secrets.py ]; then
-	echo "You need to change the configuration in src/secrets.py (see src/secrets.template.py)" >&2
-	exit 1
-fi
-
-if [ "`grep USE_SSL src/secrets.py | grep True`" != "" ] && [ ! -f `grep SSL_KEY src/secrets.py | cut -f2 -d"'"` ]; then
-	echo "SSL certificate not found. Configure one in src/secrets.py. You can generate it for localhost with ./ssl/generate.sh" >&2
-	exit 1
-fi
+trap "kill -TERM -$PGID" SIGTERM
 
 timestamp=`date '+%Y-%m-%d_%H:%M:%S'`
-mkdir -p data/mongo data/pictures logs
+mkdir -p data/mongo data/pictures data/logs
+
+if [ ! -r src/secrets.py ]; then
+	echo "ERROR: you must provide a secrets.py configuration file. Here is a template:"
+	echo "--------- 8< ---------"
+	cat src/secrets.template.py
+	echo "--------- >8 ---------"
+	exit 1
+fi
 
 # warn: remove disk-saving options in production (only keep --dbpath)
-mongod --nojournal --nssize=1 --noprealloc --smallfiles --dbpath data/mongo --port `grep DB_URL src/secrets.py | cut -f2 -d"'" | awk -F: '{print $(NF)}'` > "logs/db_$timestamp.txt" 2>&1 &
+mongod --nojournal --nssize=1 --noprealloc --smallfiles --dbpath data/mongo --port `grep DB_URL src/secrets.py | cut -f2 -d"'" | awk -F: '{print $(NF)}'` > "data/logs/db_$timestamp.txt" 2>&1 &
 
-python -u src/server.py $* 2>&1 | tee "logs/server_$timestamp.txt"
+python -u src/server.py $* 2>&1 | tee "data/logs/server_$timestamp.txt"
 
-kill %%
+kill -TERM -$PGID

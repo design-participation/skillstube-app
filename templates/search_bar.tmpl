@@ -19,9 +19,9 @@
 				</div>
 			</div>
 			<div class="float-right mt-1">
-				<input class="form-check-input" name="channel_only" type="checkbox" id="channel_only" aria-label="Limit to Endeavour channel" {{ 'checked' if channel_only == 'on' }}>
+				<input class="form-check-input" name="channel_only" type="checkbox" id="channel_only" aria-label="Limit to {{ channel_name }}" {{ 'checked' if channel_only == 'on' }}>
 				<label class="form-check-label" for="channel_only">
-					Endeavour channel
+					{{ channel_name }}
 				</label>
 			</div>
 		</form>

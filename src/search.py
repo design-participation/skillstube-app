@@ -41,7 +41,7 @@ async def search(request):
             args = {
                 'videoSyndicated': 'true',
                 'videoEmbeddable': 'true',
-                'channelId': secrets.YOUTUBE_CHANNEL,
+                'channelId': secrets.YOUTUBE_CHANNEL_ID,
             }
         else:
             args = {
@@ -69,7 +69,7 @@ async def search(request):
     session['prompt'] = prompt
     session['channel_only'] = channel_only
     
-    return {'results': results, 'query': query, 'prompt': prompt, 'channel_only': channel_only, 'nav': 'search'}
+    return {'results': results, 'query': query, 'prompt': prompt, 'channel_only': channel_only, 'nav': 'search', 'channel_name': secrets.YOUTUBE_CHANNEL_NAME}
 
 # TODO: deprecated
 async def get_video_info(videoId):
