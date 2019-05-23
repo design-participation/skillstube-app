@@ -5,6 +5,10 @@ from aiohttp_session import get_session, new_session
 import aiohttp_jinja2
 from aiohttp import ClientSession
 
+from bson.objectid import ObjectId
+import json
+import datetime
+
 from util import routes, get_user, to_objectid
 from backend import users, friends, comments, history, shares, playlists, videos
 from youtube import Youtube
@@ -144,10 +148,17 @@ async def debug_videos(request):
 
 @routes.get('/debug:history')
 async def debug_history(request):
-    result = {}
+    result = []
     for user in await users.list():
         user_id = user['_id']
         items = await history.list(user_id)
-        result[str(user_id)] = [{'date': item['date'].isoformat(), 'type': item['type'], 'data': item['data']} for item in items]
-    return web.json_response(result)
+        result.extend(items)
+    def handler(obj):
+        if isinstance(obj, (datetime.datetime, datetime.date)):
+            return obj.isoformat()
+        elif isinstance(obj, ObjectId):
+            return str(obj) 
+        else:
+            return obj
+    return web.json_response(result, dumps=lambda obj: json.dumps(obj, default=handler))
 
