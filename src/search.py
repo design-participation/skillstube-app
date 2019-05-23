@@ -45,7 +45,8 @@ async def search(request):
             }
         else:
             args = {
-                'videoCategoryId': 26, # 26 = how to and style, 27 = education
+                    # videoCategory: 26 = how to and style, 27 = education
+                'videoCategoryId': 26,
                 'relevanceLanguage': 'en',
                 'videoSyndicated': 'true',
                 'videoEmbeddable': 'true',
@@ -53,6 +54,9 @@ async def search(request):
                 'regionCode': 'AU',
                 'safeSearch': 'strict',
             }
+                    # unset if prompt is (no start)
+        if prompts[prompt] == '' and 'videoCategoryId' in args:
+            del args['videoCategoryId']
         async for item in youtube.search(final_query, 24, **args):
             video = {'video_id': item['id']['videoId'], 'thumbnail': item['snippet']['thumbnails']['high']['url'], 'title': item['snippet']['title']}
             results.append(video)

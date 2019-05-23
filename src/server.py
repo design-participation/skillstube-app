@@ -22,6 +22,7 @@ import playlists
 import history
 
 if '-debug' in sys.argv[1:]:
+    print('WARNING: running in debug mode')
     import debug
 
 import secrets

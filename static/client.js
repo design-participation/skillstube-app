@@ -1,5 +1,17 @@
 $(document).ready(function() {
 
+	/***************** logging *************/
+
+	function log_action(name, parameters) {
+		fetch('/action', {
+			method: 'POST', 
+			headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}, 
+			body: JSON.stringify({name: name, parameters: parameters})
+		}).then(function(res) {
+			console.log(res);
+		});
+	}
+
 	/***************** query suggestions ******************/
 
 	let timer = null;
@@ -20,7 +32,13 @@ $(document).ready(function() {
 				});
 		}, 100);
 	}
-	$("#query-field").typeahead({source: get_suggestions, matcher: function() { return true; } });
+	$("#query-field").typeahead({
+		source: get_suggestions, 
+		matcher: function() { return true; },
+		afterSelect: function(item) {
+			log_action('suggest', {action: 'selected-item', value: item});
+		},
+	});
 
 	/***************** endeavour channel checkbox ******************/
 
@@ -62,6 +80,7 @@ $(document).ready(function() {
 		function on_final(text) {
 			transcript += ' ' + text;
 			$(target).val(transcript);
+			log_action('stt', {action: 'transcript', text: text});
 		}
 
 		function on_state_change(state, error) {
@@ -101,8 +120,10 @@ $(document).ready(function() {
 		if(stt.isSupported()) {
 			$(button).click(function() {
 				if(listening) {
+					log_action('stt', {action: 'stop-recording'});
 					stt.stopRecording();
 				} else {
+					log_action('stt', {action: 'start-recording'});
 					stt.startRecording();
 				}
 			});

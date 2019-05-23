@@ -142,3 +142,12 @@ async def debug_restart(request):
 async def debug_videos(request):
     return {'videos': await videos.list()}
 
+@routes.get('/debug:history')
+async def debug_history(request):
+    result = {}
+    for user in await users.list():
+        user_id = user['_id']
+        items = await history.list(user_id)
+        result[str(user_id)] = [{'date': item['date'].isoformat(), 'type': item['type'], 'data': item['data']} for item in items]
+    return web.json_response(result)
+
