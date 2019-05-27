@@ -7,6 +7,7 @@ import aiohttp_jinja2
 
 from util import routes, login_required, run_command, remove_file, get_user
 from backend import users, history
+import thumbnail
 
 async def upload_picture(field):
     # TODO: should check content for actual picture; should also limit size on the client side
@@ -28,11 +29,12 @@ async def upload_picture(field):
                 fp.close()
                 os.unlink('./data/pictures/' + orig_filename)
                 raise web.HTTPBadRequest(reason='Picture file too large')
-    status, stdout, stderr = await run_command('./src/make-thumbnail.sh "./data/pictures/%s" "./data/pictures/%s"' % (orig_filename, filename))
-    remove_file('./data/pictures/' + orig_filename)
-    if status != 0:
+    #status, stdout, stderr = await run_command('./src/make-thumbnail.sh "./data/pictures/%s" "./data/pictures/%s"' % (orig_filename, filename))
+    if not thumbnail.make_thumbnail('./data/pictures/' + orig_filename, './data/pictures/' + filename, 512):
         remove_file('./data/pictures/' + filename)
-        raise web.HTTPBadRequest(reason='Cannot resize picture (status=%d, stdout="%s", stderr="%s")' % (status, stdout, stderr))
+        #raise web.HTTPBadRequest(reason='Cannot resize picture (status=%d, stdout="%s", stderr="%s")' % (status, stdout, stderr))
+        raise web.HTTPBadRequest(reason='Cannot resize picture')
+    remove_file('./data/pictures/' + orig_filename)
     return '/pictures/' + filename
 
 #GET /user => new user form
