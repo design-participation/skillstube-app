@@ -37,13 +37,13 @@ async def debug_populate(request):
     print(user_ids)
 
     # get random data to sample from
-    with open('data/random/youtube_ids.txt') as fp:
+    with open('debug-data/youtube_ids.txt') as fp:
         random_videos = [line.strip() for line in fp]
-    with open('data/random/laurem.txt') as fp:
+    with open('debug-data/laurem.txt') as fp:
         paragraphs = [line.strip() for line in fp]
-    with open('data/random/queries.txt') as fp:
+    with open('debug-data/queries.txt') as fp:
         queries = [line.strip() for line in fp]
-    with open('data/random/folders.txt') as fp:
+    with open('debug-data/folders.txt') as fp:
         folder_names = [line.strip().capitalize() for line in fp]
 
     import random
