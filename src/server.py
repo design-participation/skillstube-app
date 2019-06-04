@@ -20,6 +20,7 @@ import comment
 import notification
 import playlists
 import history
+import export
 
 if '-debug' in sys.argv[1:]:
     print('WARNING: running in debug mode')
@@ -51,6 +52,7 @@ async def run_web_app():
     # warning from doc: in production, /static should be handled by apache/nginx
     routes.static('/static', 'static', append_version=True)
     routes.static('/pictures', 'data/pictures')
+    routes.static('/export', 'data/export')
     routes.static('/', 'static/favicon')
     app.add_routes(routes) 
 

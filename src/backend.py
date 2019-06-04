@@ -312,6 +312,7 @@ class Playlists(DB):
         return await self.db.count_documents({'folder_id': folder_id})
 
 
+
 async def clear_all():
     await asyncio.gather(
         users.clear(),

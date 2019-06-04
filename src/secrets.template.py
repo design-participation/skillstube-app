@@ -8,9 +8,10 @@ YOUTUBE_CHANNEL_NAME = '' # display name for channel
 
 DB_NAME = 'howtoapp'
 DB_URL = 'mongodb://localhost:27018'
+EXPORT_PASSWORD = '' # fill with a secure password for exporting database content
 
 HOST = os.environ.get('HOST', 'localhost')
-PORT = os.environ.get('PORT', 8787)
+PORT = int(os.environ.get('PORT', 8787))
 
 # for use over https://localhost:8787, use the ssl/generate.sh script to make a trust a new SSL certificate
 SSL_CRT = 'ssl/localhost.crt'

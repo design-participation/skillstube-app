@@ -17,4 +17,4 @@ run:
 		benob/howtoapp:$(VERSION)
 
 export:
-	docker save -o benob/howtoapp:$(VERSION) | gzip > benob-howtoapp-$(VERSION).tgz 
+	docker save benob/howtoapp:$(VERSION) | gzip > benob-howtoapp-$(VERSION).tgz 

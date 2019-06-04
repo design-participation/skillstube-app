@@ -5,7 +5,7 @@ PGID=$(ps -o pgid= $PID | grep -o [0-9]*)
 trap "kill -TERM -$PGID" SIGTERM
 
 timestamp=`date '+%Y-%m-%d_%H:%M:%S'`
-mkdir -p data/mongo data/pictures data/logs
+mkdir -p data/mongo data/pictures data/export data/logs
 
 if [ ! -r src/secrets.py ]; then
 	echo "ERROR: you must provide a secrets.py configuration file. Here is a template:"
