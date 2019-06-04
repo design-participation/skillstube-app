@@ -70,15 +70,6 @@ async def export_all(filename='export.xlsx'):
 @routes.get('/export')
 @aiohttp_jinja2.template('export.html')
 async def export_form(request):
-    import sys
-    if '-debug' in sys.argv:
-        result = []
-        for user in await users.list():
-            user['href'] = '/debug:login/' + str(user['_id'])
-            result.append(user)
-        import random
-        random.shuffle(result)
-        return {'users': result}
     return {}
 
 #GET /export => actual export
@@ -95,4 +86,8 @@ async def export(request):
         return {'error_message': 'invalid credentials'}
 
 if __name__ == '__main__':
-    asyncio.get_event_loop().run_until_complete(export_all())
+    import sys
+    if len(sys.argv) != 2:
+        print('usage: %s <output-filename>', file=sys.stderr)
+        sys.exit(1)
+    asyncio.get_event_loop().run_until_complete(export_all(sys.argv[1]))
