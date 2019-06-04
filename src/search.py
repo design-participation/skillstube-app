@@ -58,7 +58,7 @@ async def search(request):
         if prompts[prompt] == '' and 'videoCategoryId' in args:
             del args['videoCategoryId']
         async for item in youtube.search(final_query, 24, **args):
-            video = {'video_id': item['id']['videoId'], 'thumbnail': item['snippet']['thumbnails']['high']['url'], 'title': item['snippet']['title']}
+            video = {'video_id': item['id']['videoId'], 'thumbnail': item['snippet']['thumbnails']['medium']['url'], 'title': item['snippet']['title']}
             results.append(video)
             await videos.add(**video)
 
@@ -89,7 +89,7 @@ async def get_video_info(videoId):
 async def get_related(videoId):
     results = []
     async for item in youtube.related(videoId, 25):
-        results.append({'videoId': item['id']['videoId'], 'thumbnail': item['snippet']['thumbnails']['high']['url'], 'title': item['snippet']['title']})
+        results.append({'videoId': item['id']['videoId'], 'thumbnail': item['snippet']['thumbnails']['medium']['url'], 'title': item['snippet']['title']})
     return results
 
 @routes.get('/watch/{video_id}')
@@ -122,7 +122,7 @@ async def show_recent(request):
     for item in history_items:
         videoId = item['data']
         if videoId not in seen:
-            recent_videos.append({'videoId': videoId, 'title': '', 'thumbnail': 'http://i3.ytimg.com/vi/%s/hqdefault.jpg' % videoId})
+            recent_videos.append({'videoId': videoId, 'title': '', 'thumbnail': 'http://i3.ytimg.com/vi/%s/mqdefault.jpg' % videoId})
             seen.add(videoId)
     await history.add(user['_id'], 'recent-videos')
     return {'results': recent_videos, 'nav': 'playlists'}

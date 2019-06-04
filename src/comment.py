@@ -30,7 +30,7 @@ async def post_comment(request):
         for key, other_id in data.items():
             if key == 'friend':
                 #print('adding', other_id)
-                await shares.add(video_id, comment_id, {'thumbnail': 'https://i.ytimg.com/vi/%s/hqdefault.jpg' % video_id, 'text': data['text']}, user['_id'], to_objectid(other_id))
+                await shares.add(video_id, comment_id, {'thumbnail': 'https://i.ytimg.com/vi/%s/mqdefault.jpg' % video_id, 'text': data['text']}, user['_id'], to_objectid(other_id))
         await history.add(user['_id'], 'save-comment', {'video_id': video_id, 'comment_id': comment_id, 'shared-with': [v for k, v in data.items() if key == 'friend']})
         raise web.HTTPFound('/watch/' + video_id + '#' + str(comment_id))
     else:

@@ -86,7 +86,7 @@ async def debug_populate(request):
                 # share comment
                 for other_id in friend_ids:
                     if random.random() > .5:
-                        await shares.add(video_id, comment_id, {'thumbnail': 'https://i.ytimg.com/vi/%s/hqdefault.jpg' % video_id, 'text': comment_item['text']}, user_id, other_id)
+                        await shares.add(video_id, comment_id, {'thumbnail': 'https://i.ytimg.com/vi/%s/mqdefault.jpg' % video_id, 'text': comment_item['text']}, user_id, other_id)
 
     
     tasks = [populate_one_user(user_id) for user_id in user_ids]

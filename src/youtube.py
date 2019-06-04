@@ -14,8 +14,6 @@ import secrets
 import asyncio
 from aiohttp import ClientSession
 
-from backend import videos
-
 class Youtube:
     def __init__(self):
         self.backend = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=secrets.YOUTUBE_DEVELOPER_KEY)
