@@ -9,6 +9,7 @@ YOUTUBE_CHANNEL_NAME = '' # display name for channel
 DB_NAME = 'howtoapp'
 DB_URL = 'mongodb://localhost:27018'
 EXPORT_PASSWORD = '' # fill with a secure password for exporting database content
+LOG_TIMEZONE = 'Australia/Brisbane'
 
 HOST = os.environ.get('HOST', 'localhost')
 PORT = int(os.environ.get('PORT', 8787))

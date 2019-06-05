@@ -36,7 +36,7 @@ async def request_friend(request):
             await friends.add(user['_id'], other[0]['_id'], request=True)
         else:
             raise web.HTTPBadRequest(reason='User not found')
-        await history.add(user['_id'], 'friend-request', {'email': data['email']})
+        await history.add(user['_id'], 'send-friend-request', {'email': data['email']})
     else:
         raise web.HTTPBadRequest(reason='Email missing')
     raise web.HTTPFound('/friends')

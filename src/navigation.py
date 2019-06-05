@@ -1,3 +1,4 @@
+#TODO: deprecated
 
 class Breadcrumb(dict):
     def __init__(self, text, link, icon=''):

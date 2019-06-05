@@ -1,6 +1,8 @@
 import sys
 import os
 import asyncio
+import pytz
+from datetime import datetime
 
 from aiohttp import web
 from aiohttp_session import get_session
@@ -11,6 +13,7 @@ from jinja2 import Environment, FileSystemLoader
 import aiohttp_jinja2
 
 from backend import users, notifications
+import secrets
 
 templates = Environment(loader=FileSystemLoader('templates/'))
 def from_template(name, params = {}):
@@ -98,4 +101,23 @@ def remove_file(filename):
         os.unlink(filename)
         return True
     return False
+
+# NOTE(timestamps): all times are stored as UTC in the DB.
+# When displayed or exported, they are converted to the timezone
+# specified in secrets.LOG_TIMEZONE.
+# Old DB records are in UTC but do not contain timezone info
+
+# returns UTC timestamp, inc. timezone
+def now():
+    return datetime.now(pytz.utc)
+
+# convert timezone of timestamp, accounting for old 
+# logs where timestamps do not have a timezone set
+log_timezone = pytz.timezone(secrets.LOG_TIMEZONE)
+def as_log_timezone(time):
+    if time.tzinfo is None or time.tzinfo.utcoffset(time) is None:
+        time = time.replace(tzinfo=pytz.utc)
+    return time.astimezone(log_timezone)
+
+
 

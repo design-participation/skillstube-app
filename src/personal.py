@@ -11,6 +11,6 @@ from util import routes, login_required, get_user
 async def personal(request):
     user = await get_user(request)
     notification_items = await notifications.list(user['_id'], return_all=False, populate=True)
-    await history.add(user['_id'], 'show-personal')
+    await history.add(user['_id'], 'show-personal-information')
     return {'notifications': notification_items}
 

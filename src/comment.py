@@ -15,7 +15,7 @@ async def write_comment(request):
     video_id = request.match_info['video_id']
     video = await videos.get(video_id)
     friend_items = await friends.list(user['_id'], populate=True)
-    await history.add(user['_id'], 'write-comment', {'video_id': video_id})
+    await history.add(user['_id'], 'write-comment', {'video_id': video['_id'], 'youtube_id': video_id})
     return {'video': video, 'friends': friend_items}
 
 #POST /comment/{video_id} (text) => add root comment to video
@@ -31,17 +31,19 @@ async def post_comment(request):
             if key == 'friend':
                 #print('adding', other_id)
                 await shares.add(video_id, comment_id, {'thumbnail': 'https://i.ytimg.com/vi/%s/mqdefault.jpg' % video_id, 'text': data['text']}, user['_id'], to_objectid(other_id))
-        await history.add(user['_id'], 'save-comment', {'video_id': video_id, 'comment_id': comment_id, 'shared-with': [v for k, v in data.items() if key == 'friend']})
+        video = await videos.get(video_id)
+        await history.add(user['_id'], 'save-comment', {'video_id': video['_id'], 'youtube_id': video_id, 'comment': data['text'], 'shared-with': [v for k, v in data.items() if key == 'friend']})
         raise web.HTTPFound('/watch/' + video_id + '#' + str(comment_id))
     else:
         raise web.HTTPBadRequest()
 
+#TODO: deprecated
 @routes.get('/comments')
 @login_required
 @aiohttp_jinja2.template('comments.html')
 async def show_comments(request):
     user = await get_user(request)
     comment_items = await comments.list(user['_id'], populate=True)
-    await history.add(user['_id'], 'show-comments')
+    await history.add(user['_id'], 'show-user-comments')
     return {'comments': comment_items, 'show_video': True}
 

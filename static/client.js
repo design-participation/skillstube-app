@@ -2,15 +2,24 @@ $(document).ready(function() {
 
 	/***************** logging *************/
 
-	function log_action(name, parameters) {
+	// note: only whitelisted actions are logged
+	function log_action(type, parameters) {
 		fetch('/action', {
 			method: 'POST', 
 			headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}, 
-			body: JSON.stringify({name: name, parameters: parameters})
+			body: JSON.stringify({type: type, parameters: parameters})
 		}).then(function(res) {
 			console.log(res);
 		});
 	}
+
+	// log typing events
+	$('textarea.comment-form').change(function(event) {
+		log_action('typed-text', {target: 'comment-form', value: event.target.value});
+	});
+	$('input.search-bar').change(function() {
+		log_action('typed-text', {target: 'search-bar', value: event.target.value});
+	});
 
 	/***************** query suggestions ******************/
 
@@ -36,7 +45,7 @@ $(document).ready(function() {
 		source: get_suggestions, 
 		matcher: function() { return true; },
 		afterSelect: function(item) {
-			log_action('suggest', {action: 'selected-item', value: item});
+			log_action('query-suggestion', {action: 'selected-item', value: item});
 		},
 	});
 
@@ -80,7 +89,7 @@ $(document).ready(function() {
 		function on_final(text) {
 			transcript += ' ' + text;
 			$(target).val(transcript);
-			log_action('stt', {action: 'transcript', text: text});
+			log_action('voice-input', {action: 'transcript', text: text});
 		}
 
 		function on_state_change(state, error) {
@@ -120,10 +129,10 @@ $(document).ready(function() {
 		if(stt.isSupported()) {
 			$(button).click(function() {
 				if(listening) {
-					log_action('stt', {action: 'stop-recording'});
+					log_action('voice-input', {action: 'stop-recording'});
 					stt.stopRecording();
 				} else {
-					log_action('stt', {action: 'start-recording'});
+					log_action('voice-input', {action: 'start-recording'});
 					stt.startRecording();
 				}
 			});

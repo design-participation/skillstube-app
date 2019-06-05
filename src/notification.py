@@ -24,7 +24,7 @@ async def process_notification(request):
     notification = await notifications.get(notification_id)
     if notification is not None and notification['user_id'] == user['_id']: 
         await notifications.dismiss(user['_id'], notification_id)
-        await history.add(user['_id'], 'clicked-notification', {'notification_id': notification_id})
+        await history.add(user['_id'], 'click-notification', {'notification_id': notification_id})
         if notification['type'] == 'shared content':
             share = await shares.get(notification['data']['share_id'])
             if share is not None and share['recipient_id'] == user['_id']:

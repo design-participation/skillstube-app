@@ -82,7 +82,7 @@ async def new_user(request):
     else:
         session = await new_session(request)
         session['user_id'] = str(user_id)
-        await history.add(user_id, 'created')
+        await history.add(user_id, 'create-user')
         raise web.HTTPFound('/')
 
 #GET /login => login form
@@ -130,7 +130,7 @@ async def change_picture(request):
     user = await get_user(request)
     await users.change_picture(user['_id'], picture)
     user['picture'] = picture
-    await history.add(user['_id'], 'changed-picture', {'picture': picture})
+    await history.add(user['_id'], 'change-picture', {'picture': picture})
     raise web.HTTPFound('/user')
     #return {'info_message': 'Picture changed'}
 
@@ -147,7 +147,7 @@ async def change_password(request):
         raise web.HTTPBadRequest(reason='missing password')
     if not await users.change_password(user['_id'], old_password, new_password):
         raise web.HTTPBadRequest(reason='wrong password')
-    await history.add(user['_id'], 'changed-password')
+    await history.add(user['_id'], 'change-password')
     raise web.HTTPFound('/user')
     #return {'info_message': 'Password changed'}
 

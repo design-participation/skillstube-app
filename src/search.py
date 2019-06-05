@@ -65,7 +65,7 @@ async def search(request):
     user = await get_user(request)
     if user is not None:
         if query != '':
-            await history.add(user['_id'], 'search', {'query': query, 'prompt': prompt, 'channel_only': channel_only})
+            await history.add(user['_id'], 'search', {'query': query, 'prompt': prompt, 'channel_only': channel_only, 'results': ','.join([item['video_id'] for item in results])})
         else:
             await history.add(user['_id'], 'show-search-page')
 
@@ -107,10 +107,11 @@ async def watch(request):
         raise web.HTTPBadRequest()
     if user is not None:
         comment_items = await comments.list(user['_id'], video_id, populate=True)
-        await history.add(user['_id'], 'watch', {'video': video['_id']})
+        await history.add(user['_id'], 'show-video', {'video_id': video['_id'], 'youtube_id': video['video_id'], 'link': 'https://youtu.be/' + video['video_id'], 'title': video['title'], 'thumbnail': video['thumbnail']})
         folder = await playlists.get_for_video(user['_id'], video_id)
     return { 'video': video, 'comments': comment_items, 'folder': folder, 'nav': 'search'}
 
+#TODO: deprecated (maybe use categories to host recent videos)
 @routes.get('/recent')
 @login_required
 @aiohttp_jinja2.template('recent.html')
@@ -137,6 +138,6 @@ async def suggest(request):
     suggestions = [re.sub('^' + prompts[prompt].lower(), '', item.strip()).strip() for item in found[1]]
     user = await get_user(request)
     if user is not None:
-        await history.add(user['_id'], 'suggest', {'query': query, 'prompt': prompt, 'suggestions': suggestions})
+        await history.add(user['_id'], 'query-suggestion', {'query': query, 'prompt': prompt, 'suggestions': suggestions})
     return web.json_response(suggestions)
 

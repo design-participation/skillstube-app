@@ -11,8 +11,8 @@ async def show_playlists(request):
     user = await get_user(request)
     folder_id = to_objectid(request.match_info['folder_id'])
     folder = await playlists.get(folder_id)
-    await history.add(user['_id'], 'show-playlist', {'folder_id': folder_id})
     if folder is not None and folder['user_id'] == user['_id']:
+        await history.add(user['_id'], 'show-playlist', {'folder_id': folder_id, 'name': folder['name']})
         folder['videos'] = await videos.get([item['video_id'] for item in await playlists.list(user['_id'], folder['_id'])])
         folder['count'] = await playlists.count(folder['_id'])
         return {'folder': folder, 'nav': 'playlists'}
@@ -39,7 +39,7 @@ async def set_playlist_ui(request):
     video_id = request.match_info['video_id']
     folders = await playlists.list_folders(user['_id'])
     video = await videos.get(video_id)
-    await history.add(user['_id'], 'show-playlist-selector', {'video_id': video_id})
+    await history.add(user['_id'], 'show-playlist-selector', {'video_id': video['_id'], 'youtube_id': video_id})
     return {'folders': folders, 'video': video, 'nav': 'playlists'}
 
 # POST /set_playlist/{video_id} => actually add the video to a playlist
@@ -51,15 +51,18 @@ async def set_playlist(request):
     video_id = request.match_info['video_id']
     data = await request.post()
     folder_id = None
+    video = await videos.get(video_id)
     if 'folder' in data and data['folder'].strip() != '':
         folder_id = to_objectid(data['folder'])
         if not await playlists.get(folder_id):
             folder_id = None
     if 'new_name' in data and data['new_name'].strip() != '':
         folder_id = await playlists.add_folder(user['_id'], data['new_name'])
-    await history.add(user['_id'], 'set-playlist', {'video_id': video_id, 'folder_id': folder_id, 'new': 'new_name' in data})
+        await history.add(user['_id'], 'add-playlist', {'folder_id': folder_id, 'name': data['new_name']})
     if folder_id is not None:
         await playlists.add(user['_id'], folder_id, video_id)
+        folder = await playlists.get(folder_id)
+        await history.add(user['_id'], 'set-playlist', {'video_id': video['_id'], 'youtube_id': video_id, 'folder_id': folder_id, 'name': folder['name']})
         raise web.HTTPFound('/watch/' + video_id)
     raise web.HTTPBadRequest()
 

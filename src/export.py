@@ -5,8 +5,12 @@ import aiohttp_jinja2
 
 from backend import users, videos, history, notifications, friends, comments, shares, playlists
 from util import routes, login_required, get_user
+import util
 
 import secrets
+
+import pytz
+timezone = pytz.timezone(secrets.LOG_TIMEZONE)
 
 async def export_all(filename='export.xlsx'):
     # redact sensitive information
@@ -59,7 +63,7 @@ async def export_all(filename='export.xlsx'):
                 record_doc(row, doc)
                 for num, value in enumerate(row):
                     if type(value) is datetime.datetime:
-                        worksheet.write_datetime(doc_num, num, value, date_format)
+                        worksheet.write_datetime(doc_num, num, util.as_log_timezone(value).replace(tzinfo=None), date_format)
                     else:
                         worksheet.write(doc_num, num, str(value))
                 doc_num += 1
@@ -79,7 +83,7 @@ async def export(request):
     data = await request.post()
     password = data.get('password', '')
     if password == secrets.EXPORT_PASSWORD:
-        filename = '/export/export_%s.xlsx' % datetime.datetime.utcnow()
+        filename = '/export/export_%s.xlsx' % str(util.as_log_timezone(util.now())).replace(' ', '_')
         await export_all('data' + filename)
         raise web.HTTPFound(filename)
     else:

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 import collections
 
 import asyncio
@@ -8,6 +8,7 @@ import pymongo
 from bson.objectid import ObjectId
 from passlib.hash import pbkdf2_sha256
 
+import util
 import secrets
 
 client = motor.motor_asyncio.AsyncIOMotorClient(secrets.DB_URL)
@@ -117,7 +118,7 @@ class History(DB):
         self.db.create_index('user_id')
 
     async def add(self, user_id, type, data=None):
-        return await super().add(user_id=user_id, type=type, data=data, date=datetime.utcnow())
+        return await super().add(user_id=user_id, type=type, data=data, date=util.now())
 
     async def list(self, user_id, type=None, limit=0):
         filter = {'user_id': user_id}
@@ -132,7 +133,7 @@ class Notifications(DB):
         self.db.create_index('user_id')
 
     async def add(self, user_id, type, data=None):
-        return await super().add(user_id=user_id, new=True, data=data, type=type, date=datetime.utcnow())
+        return await super().add(user_id=user_id, new=True, data=data, type=type, date=util.now())
 
     async def dismiss(self, user_id, _id):
         await self.db.find_one_and_update({'_id': _id, 'user_id': user_id}, {'$set': {'new': False}})
@@ -182,7 +183,7 @@ class Friends(DB):
         status = 'accepted'
         if request:
             status = 'requested'
-        friend_id = await super().add(pair=pair, user_id=user_id, other_id=other_id, status=status, date=datetime.utcnow())
+        friend_id = await super().add(pair=pair, user_id=user_id, other_id=other_id, status=status, date=util.now())
         if request:
             # TODO: discard older notifications for the same relationship
             await notifications.add(other_id, 'friend request', {'sender_id': user_id, 'friend_id': friend_id})
@@ -193,7 +194,7 @@ class Friends(DB):
         friendship = await self.get(_id)
         print(friendship)
         await notifications.add(friendship['user_id'], 'friend accept', {'sender_id': friendship['other_id'], 'friend_id': friendship['_id']})
-        await self.db.find_one_and_update({'_id': _id}, {'$set': {'status': 'accepted', 'date': datetime.utcnow()}})
+        await self.db.find_one_and_update({'_id': _id}, {'$set': {'status': 'accepted', 'date': util.now()}})
 
     async def list(self, user_id, populate=False, limit=0):
         filter = {'$or': [{'user_id': user_id}, {'other_id': user_id}], 'status': 'accepted'}
@@ -251,7 +252,7 @@ class Comments(DB):
         return sorted(roots, key=lambda x: x['date'])
 
     async def add(self, user_id, video_id, text, parent_id=None):
-        return await super().add(user_id=user_id, video_id=video_id, text=text, parent_id=parent_id, date=datetime.utcnow())
+        return await super().add(user_id=user_id, video_id=video_id, text=text, parent_id=parent_id, date=util.now())
 
 
 class Shares(DB):
@@ -261,7 +262,7 @@ class Shares(DB):
     async def add(self, video_id, comment_id, preview, owner_id, recipient_id):
         # can only share once
         if await self.db.count_documents({'video_id': video_id, 'comment_id': comment_id, 'owner_id': owner_id, 'recipient_id': recipient_id}) == 0:
-            share_id = await super().add(video_id=video_id, comment_id=comment_id, owner_id=owner_id, recipient_id=recipient_id, date=datetime.utcnow())
+            share_id = await super().add(video_id=video_id, comment_id=comment_id, owner_id=owner_id, recipient_id=recipient_id, date=util.now())
             preview.update({'video_id': video_id, 'comment_id': comment_id})
             await notifications.add(recipient_id, 'shared content', {'sender_id': owner_id, 'share_id': share_id, 'preview': preview})
             return share_id
