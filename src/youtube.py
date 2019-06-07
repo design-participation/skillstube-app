@@ -8,6 +8,7 @@ from urllib.parse import quote
 
 YOUTUBE_API_SERVICE_NAME = 'youtube'
 YOUTUBE_API_VERSION = 'v3'
+REGION_CODE = None
 
 import secrets
 
@@ -58,7 +59,7 @@ class Youtube:
         async for item in self.load('videos', max_results,
                 part='id,snippet,contentDetails,player',
                 id=','.join(videoIds),
-                regionCode='US',
+                regionCode=REGION_CODE,
                 ):
             yield item
 

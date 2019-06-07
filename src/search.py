@@ -33,6 +33,11 @@ async def search(request):
     else:
         channel_only = session['channel_only'] if 'channel_only' in session else 'off'
 
+    # handle copy-pasted youtube URL => show video instead
+    youtube_url_pattern = re.compile(r'(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})', re.I)
+    found = youtube_url_pattern.search(query)
+    if found:
+        raise web.HTTPFound('/watch/' + found.group(1))
 
     results = []
     if query.strip() != '':
@@ -104,7 +109,11 @@ async def watch(request):
     folder = None
     video = await videos.get(video_id)
     if video is None:
-        raise web.HTTPBadRequest()
+        async for item in youtube.video([video_id]):
+            video = {'video_id': video_id, 'thumbnail': item['snippet']['thumbnails']['medium']['url'], 'title': item['snippet']['title']}
+            await videos.add(**video)
+        if video is None:
+            raise web.HTTPBadRequest()
     if user is not None:
         comment_items = await comments.list(user['_id'], video_id, populate=True)
         await history.add(user['_id'], 'show-video', {'video_id': video['_id'], 'youtube_id': video['video_id'], 'link': 'https://youtu.be/' + video['video_id'], 'title': video['title'], 'thumbnail': video['thumbnail']})
