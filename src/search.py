@@ -33,14 +33,17 @@ async def search(request):
     else:
         channel_only = session['channel_only'] if 'channel_only' in session else 'off'
 
+    results = []
     # handle copy-pasted youtube URL => show video instead
     youtube_url_pattern = re.compile(r'(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})', re.I)
     found = youtube_url_pattern.search(query)
     if found:
-        raise web.HTTPFound('/watch/' + found.group(1))
-
-    results = []
-    if query.strip() != '':
+        video_id = found.group(1)
+        async for item in youtube.video([video_id]):
+            video = {'video_id': video_id, 'thumbnail': item['snippet']['thumbnails']['medium']['url'], 'title': item['snippet']['title']}
+            await videos.add(**video)
+            results.append(video)
+    elif query.strip() != '':
         final_query = '"%s" %s' % (prompts[prompt], query)
         if channel_only == 'on':
             args = {
@@ -52,11 +55,11 @@ async def search(request):
             args = {
                     # videoCategory: 26 = how to and style, 27 = education
                 'videoCategoryId': 26,
-                'relevanceLanguage': 'en',
+                'relevanceLanguage': secrets.YOUTUBE_LANGUAGE,
                 'videoSyndicated': 'true',
                 'videoEmbeddable': 'true',
                 'videoDuration': 'short',
-                'regionCode': 'AU',
+                'regionCode': secrets.YOUTUBE_REGION_CODE,
                 'safeSearch': 'strict',
             }
                     # unset if prompt is (no start)

@@ -59,7 +59,6 @@ class Youtube:
         async for item in self.load('videos', max_results,
                 part='id,snippet,contentDetails,player',
                 id=','.join(videoIds),
-                regionCode=REGION_CODE,
                 ):
             yield item
 
@@ -70,14 +69,14 @@ class Youtube:
                 type='video',
                 safeSearch='strict',
                 videoType='movie',
-                regionCode='US',
+                regionCode=secrets.YOUTUBE_REGION_CODE,
                 ):
             yield item
 
     async def categories(self, target, max_results=50):
         async for item in self.load('videoCategories', max_results,
                 part='id,snippet',
-                regionCode='US',
+                regionCode=secrets.YOUTUBE_REGION_CODE,
                 noPageToken=True):
             yield item
 
@@ -87,7 +86,7 @@ class Youtube:
                 type='video',
                 videoCategoryId=category,
                 order='viewCount',
-                regionCode='US',
+                regionCode=secrets.YOUTUBE_REGION_CODE,
                 q='',
                 ):
             yield item

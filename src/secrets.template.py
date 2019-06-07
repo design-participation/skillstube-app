@@ -5,6 +5,9 @@ SERVER_COOKIE_KEY = b'' # generate by running this script
 YOUTUBE_DEVELOPER_KEY = '' # get one from google
 YOUTUBE_CHANNEL_ID = '' # youtube channel id selectable for search
 YOUTUBE_CHANNEL_NAME = '' # display name for channel
+# can be set to None to ignore restriction
+YOUTUBE_REGION_CODE = 'AU' 
+YOUTUBE_LANGUAGE = 'en'
 
 DB_NAME = 'howtoapp'
 DB_URL = 'mongodb://localhost:27018'
