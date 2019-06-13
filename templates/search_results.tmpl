@@ -1,4 +1,4 @@
-<div class="row show-idle-prompt pt-3 rounded">
+<div class="row {{ 'show-idle-prompt' if results|length > 0 }} pt-3 rounded">
 	{% if results|length == 0 and query != '' %}
 	<div class="col">
 		<h3> No video found </h3>
