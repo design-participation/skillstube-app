@@ -21,6 +21,14 @@ $(document).ready(function() {
 		log_action('typed-text', {target: 'search-bar', value: event.target.value});
 	});
 
+	/***************** channel checkbox *****************/
+
+	$('input.channel-checkbox').click(function(event) {
+		if(event.target.checked) {
+			event.target.checked = confirm('Only search in Endeavour channel?');
+		}
+	});
+
 	/***************** query suggestions ******************/
 
 	let timer = null;
@@ -47,6 +55,7 @@ $(document).ready(function() {
 		afterSelect: function(item) {
 			log_action('query-suggestion', {action: 'selected-item', value: item});
 		},
+		autoSelect: false,
 	});
 
 	/***************** endeavour channel checkbox ******************/

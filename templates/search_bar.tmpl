@@ -18,8 +18,8 @@
 					<button class="btn btn-outline-secondary" type="submit" id="search-button"><i class="fas fa-search"></i> <span class="d-none d-md-inline">Search</span></button>
 				</div>
 			</div>
-			<div class="float-right mt-1">
-				<input class="form-check-input" name="channel_only" type="checkbox" id="channel_only" aria-label="Limit to {{ channel_name }}" {{ 'checked' if channel_only == 'on' }}>
+			<div class="float-right mt-3">
+				<input class="form-check-input channel-checkbox" name="channel_only" type="checkbox" id="channel_only" aria-label="Limit to {{ channel_name }}" {{ 'checked' if channel_only == 'on' }}>
 				<label class="form-check-label" for="channel_only">
 					{{ channel_name }}
 				</label>

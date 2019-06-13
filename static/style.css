@@ -215,6 +215,13 @@ body {
 	padding-top: 4rem;
 }
 
+/* hack to increase the size of buttons on larger tablets */
+@media(min-width:992px){
+	html {
+			zoom: 1.2;
+	}
+}
+
 .player {
 	background: black;
 }
