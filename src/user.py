@@ -92,7 +92,7 @@ async def new_user(request):
         session = await new_session(request)
         session['user_id'] = str(user_id)
         await history.add(user_id, 'create-user')
-        user = users.get(user_id)
+        user = await users.get(user_id)
         update_qrcode_image(user)
         raise web.HTTPFound('/')
 
