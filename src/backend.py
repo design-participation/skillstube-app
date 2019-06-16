@@ -106,6 +106,7 @@ class Users(DB):
 
     async def login_from_qrcode(self, qrcode):
         user = await super().find({'qrcode': qrcode})
+        print('user:', user)
         if user is not None:
             return user['_id']
         return None

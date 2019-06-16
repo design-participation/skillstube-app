@@ -77,6 +77,8 @@
 			$('#qrcode-scanner').on('show.bs.modal', function (e) {
 				run_qrcode_scanner(function(result) {
 					$('#qrcode').val(result);
+					$('#email').prop('required', false);
+					$('#password').prop('required', false);
 					$('#login-button').click();
 				});
 			})
