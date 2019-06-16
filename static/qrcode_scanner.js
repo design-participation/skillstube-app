@@ -21,16 +21,21 @@ function run_qrcode_scanner(result_callback) {
 	}
 
 	let video = document.getElementById('qr-video');
-	let context = document.getElementById('qr-canvas').getContext('2d');
+	let canvas = document.getElementById('qr-canvas');
+	let context = canvas.getContext('2d');
 
 	navigator.getUserMedia({
-		video: {width: {exact: 640}, height: {exact: 480}}
+		video: {width: {exact: 320}, height: {exact: 240}}
 	}, function(stream) {
 		videoStream = stream;
 		video.srcObject = stream;
 		video.play();
 		setInterval(function() {
-			context.drawImage(video, 0, 0, 320, 240);
+			console.log(video.width, video.height);
+			canvas.width = video.videoWidth;
+			canvas.height = video.videoHeight;
+			canvas.style.display='block';
+			context.drawImage(video, 0, 0);
 			try {
 				qrcode.decode();
 			} catch(error) {
