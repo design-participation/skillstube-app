@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 import collections
+import uuid
 
 import asyncio
 import motor.motor_asyncio
@@ -68,7 +69,12 @@ class Users(DB):
         self.db.create_index('email', unique=True)
 
     async def get(self, _id):
-        return await super().get(_id, {'password': False})
+        user = await super().get(_id, {'password': False})
+        # upgrade users who don't have yet a qrcode
+        if type(user) is dict and 'qrcode' not in user: 
+            user['qrcode'] = str(uuid.uuid4())
+            await self.db.find_one_and_update({'_id': _id}, {'$set': {'qrcode': user['qrcode']}})
+        return user
 
     async def add(self, email, password, name='', picture='', origin='genuine'):
         if await self.db.find_one({'email': email}):
@@ -78,13 +84,14 @@ class Users(DB):
                 password=pbkdf2_sha256.hash(password),
                 name=name,
                 picture=picture,
+                qrcode=str(uuid.uuid4()),
                 origin=origin
                 )
 
     async def change_password(self, _id, old_password, new_password): 
         user = await super().find({'_id': _id})
         if user is not None and pbkdf2_sha256.verify(old_password, user['password']):
-            await self.db.find_one_and_update({'_id': _id}, {'$set': {'password': pbkdf2_sha256.hash(new_password)}})
+            await self.db.find_one_and_update({'_id': _id}, {'$set': {'password': pbkdf2_sha256.hash(new_password), 'qrcode': str(uuid.uuid4())}})
             return True
         return False
 
@@ -94,6 +101,12 @@ class Users(DB):
     async def login(self, email, password):
         user = await super().find({'email': email})
         if user is not None and pbkdf2_sha256.verify(password, user['password']):
+            return user['_id']
+        return None
+
+    async def login_from_qrcode(self, qrcode):
+        user = await super().find({'qrcode': qrcode})
+        if user is not None:
             return user['_id']
         return None
 

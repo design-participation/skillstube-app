@@ -4,7 +4,8 @@
 <div class="row">
 	<div class="col">
 		<h1>Login</h1>
-		<form action="/login" method="post">
+		<form name="login" action="/login" method="post">
+			<input id="qrcode" type="hidden" name="qrcode" value="">
 			{% if error %}
 			<div class="alert alert-danger">Error: {{ error }} </div>
 			{% endif %}
@@ -17,8 +18,10 @@
 				<input class="form-control" id="password" type="password" name="password" placeholder="Enter your password" required>
 			</div>
 			<div class="form-group">
-				<button class="btn btn-primary mr-2" id="submit" type="submit"> <i class="fas fa-sign-in-alt"></i> Login </button>
+				<button id="login-button" class="btn btn-primary mr-2" id="submit" type="submit"> <i class="fas fa-sign-in-alt"></i> Login </button>
 				<!--or create a <a class="ml-1" href="/user"><i class="fas fa-user-plus"></i> New user </a>-->
+				<button id='qrcode-start-button' type="button" class="btn btn-primary" data-toggle="modal" data-target="#qrcode-scanner"> <i class="fas fa-qrcode"></i> Scan QR code </button>
+
 			</div>
 		</form>
 	</div>
@@ -41,4 +44,45 @@
 	{% endfor %}
 </div>
 {% endif %}
+
+<!-- QR code scanner model -->
+<div class="modal" id="qrcode-scanner" tabindex="-1" role="dialog" aria-labelledby="qrcode-scanner-label" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="qrcode-scanner-label"> <i class="fas fa-qrcode"></i> Login with QR code</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+				<div class="video-container">
+					<video id="qr-video" style="width: 320px; height: 240px">Video preview not supported</video><div class="corners"><i></i><i></i><i></i><i></i></div>
+					<canvas id="qr-canvas" width="320" height="240" style="display:none">Canvas not supported</canvas>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+	<script type="text/javascript" src="/static/jsqrcode.js"></script>
+	<script type="text/javascript" src="/static/qrcode_scanner.js"></script>
+	<script>
+		init_qrcode_scanner(function() {
+			$('#qrcode-start-button').prop('disabled', true);
+		});
+		$(function() {
+			$('#qrcode-scanner').on('show.bs.modal', function (e) {
+				run_qrcode_scanner(function(result) {
+					$('#qrcode').val(result);
+					$('#login-button').click();
+				});
+			})
+			$('#qrcode-scanner').on('hide.bs.modal', function (e) {
+				stop_qrcode_scanner();
+			})
+		});
+	</script>
 {% endblock body %}

@@ -20,7 +20,7 @@ if [ "`grep USE_SSL src/secrets.py | grep True`" != "" ] && [ ! -f `grep SSL_KEY
 fi
 
 timestamp=`date '+%Y-%m-%d_%H:%M:%S'`
-mkdir -p data/mongo data/pictures data/export logs
+mkdir -p data/mongo data/pictures data/qrcodes data/export logs
 
 # warn: remove disk-saving options in production (only keep --dbpath)
 mongod --nojournal --nssize=1 --noprealloc --smallfiles --dbpath data/mongo --port `grep DB_URL src/secrets.py | cut -f2 -d"'" | awk -F: '{print $(NF)}'` > "logs/db_$timestamp.txt" 2>&1 &

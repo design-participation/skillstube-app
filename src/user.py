@@ -37,6 +37,15 @@ async def upload_picture(field):
     remove_file('./data/pictures/' + orig_filename)
     return '/pictures/' + filename
 
+def update_qrcode_image(user):
+    import qrcode
+    img = qrcode.make(user['qrcode'])
+    filename = 'data/qrcodes/%s.png' % str(user['_id'])
+    img.save(filename)
+
+def check_qrcode(user, data):
+    return user['qrcode'] == data
+
 #GET /user => new user form
 @routes.get('/new-user')
 @aiohttp_jinja2.template('new_user.html')
@@ -83,6 +92,8 @@ async def new_user(request):
         session = await new_session(request)
         session['user_id'] = str(user_id)
         await history.add(user_id, 'create-user')
+        user = users.get(user_id)
+        update_qrcode_image(user)
         raise web.HTTPFound('/')
 
 #GET /login => login form
@@ -112,7 +123,11 @@ async def logout(request):
 @login_required
 @aiohttp_jinja2.template('user.html')
 async def logout(request):
-    return {}
+    user = await get_user(request)
+    filename = 'data/qrcodes/%s.png' % str(user['_id'])
+    if not os.path.exists(filename):
+        update_qrcode_image(user)
+    return {'qrcode': '/qrcodes/%s.png' % str(user['_id'])}
 
 #POST /user/change-picture => change picture
 @routes.post('/user/change-picture')
@@ -147,6 +162,7 @@ async def change_password(request):
         raise web.HTTPBadRequest(reason='missing password')
     if not await users.change_password(user['_id'], old_password, new_password):
         raise web.HTTPBadRequest(reason='wrong password')
+    update_qrcode_image(user)
     await history.add(user['_id'], 'change-password')
     raise web.HTTPFound('/user')
     #return {'info_message': 'Password changed'}
@@ -169,7 +185,12 @@ async def login(request):
     data = await request.post()
     email = data.get('email', '')
     password = data.get('password', '')
-    user_id = await users.login(email, password)
+    qrcode = data.get('qrcode', '')
+    print([email, password, qrcode])
+    if qrcode != '':
+        user_id = await users.login_from_qrcode(qrcode)
+    else:
+        user_id = await users.login(email, password)
     if user_id is not None:
         session = await new_session(request)
         session['user_id'] = str(user_id)

@@ -402,3 +402,54 @@ body {
 .nav-item.active:nth-child(5) > .nav-link {
 	color: var(--color-notifications) !important;
 }
+
+/* =============== qrcode scanner ============== */
+
+.video-container {
+	display: inline-block;
+}
+.corners {
+	display: block;
+	width: 320px;
+	height: 240px;
+	position: relative;
+	margin-top: -248px;
+}
+.corners i {
+	display: inline-block;
+	width: 32px;
+	height: 32px;
+	position: absolute;
+	box-sizing: border-box;
+}
+.corners i:nth-child(1) {
+	border-left: 4px solid black;
+	border-top: 4px solid black;
+	left: 56px;
+	top: 16px;
+}
+.corners i:nth-child(2) {
+	border-right: 4px solid black;
+	border-top: 4px solid black;
+	right: 56px;
+	top: 16px;
+}
+.corners i:nth-child(3) {
+	border-right: 4px solid black;
+	border-bottom: 4px solid black;
+	right: 56px;
+	bottom: 16px;
+}
+.corners i:nth-child(4) {
+	border-left: 4px solid black;
+	border-bottom: 4px solid black;
+	left: 56px;
+	bottom: 16px;
+}
+#qr-video {
+	display: inline-block;
+	background: gray;
+}
+.modal-body {
+	text-align: center;
+}

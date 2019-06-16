@@ -52,6 +52,7 @@ async def run_web_app():
     # warning from doc: in production, /static should be handled by apache/nginx
     routes.static('/static', 'static', append_version=True)
     routes.static('/pictures', 'data/pictures')
+    routes.static('/qrcodes', 'data/qrcodes')
     routes.static('/export', 'data/export')
     routes.static('/', 'static/favicon')
     app.add_routes(routes) 
