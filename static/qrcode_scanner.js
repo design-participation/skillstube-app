@@ -12,6 +12,7 @@ function init_qrcode_scanner(error_callback) {
 }
 
 var videoStream = null;
+var interval;
 
 function run_qrcode_scanner(result_callback) {
 	console.log('start qrcode scanner');
@@ -30,11 +31,9 @@ function run_qrcode_scanner(result_callback) {
 		videoStream = stream;
 		video.srcObject = stream;
 		video.play();
-		setInterval(function() {
-			console.log(video.width, video.height);
+		interval = setInterval(function() {
 			canvas.width = video.videoWidth;
 			canvas.height = video.videoHeight;
-			canvas.style.display='block';
 			context.drawImage(video, 0, 0);
 			try {
 				qrcode.decode();
@@ -56,5 +55,6 @@ function stop_qrcode_scanner() {
 		video.srcObject = null;
 		let tracks = videoStream.getTracks();
 		for(let i = 0; i < tracks.length; i++) tracks[i].stop();
+		clearInterval(interval);
 	}
 }

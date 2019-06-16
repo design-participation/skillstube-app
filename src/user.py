@@ -186,7 +186,6 @@ async def login(request):
     email = data.get('email', '')
     password = data.get('password', '')
     qrcode = data.get('qrcode', '')
-    print([email, password, qrcode])
     if qrcode != '':
         user_id = await users.login_from_qrcode(qrcode)
     else:
