@@ -14,7 +14,7 @@ function init_qrcode_scanner(error_callback) {
 var videoStream = null;
 var interval;
 
-function run_qrcode_scanner(result_callback) {
+function run_qrcode_scanner(result_callback, camera_type) {
 	console.log('start qrcode scanner');
 	qrcode.callback = function(result) {
 		console.log('scan result [' + result + ']');
@@ -25,9 +25,20 @@ function run_qrcode_scanner(result_callback) {
 	let canvas = document.getElementById('qr-canvas');
 	let context = canvas.getContext('2d');
 
-	navigator.getUserMedia({
-		video: {width: {exact: 320}, height: {exact: 240}}
-	}, function(stream) {
+	// stop previous stream if any
+	if(videoStream !== null) {
+		video.pause();
+		video.srcObject = null;
+		let tracks = videoStream.getTracks();
+		console.log(tracks);
+		for(let i = 0; i < tracks.length; i++) tracks[i].stop();
+		clearInterval(interval);
+	}
+
+	// get new stream
+	let constraints = {video: {width: {exact: 320}, height: {exact: 240}, facingMode: {exact: (camera_type == 1 ? 'user' : 'environment')} }};
+	console.log(constraints);
+	navigator.getUserMedia(constraints , function(stream) {
 		videoStream = stream;
 		video.srcObject = stream;
 		video.play();

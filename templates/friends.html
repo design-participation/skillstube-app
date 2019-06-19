@@ -6,14 +6,17 @@
 <div class="row mb-3">
 	<div class="col">
 		<form action="/friend/request" method="post">
+			<input id="qrcode" type="hidden" name="qrcode" value="">
 			<div class="form-group">
 				<label for="email"> <i class="far fa-envelope"></i> Friend email:</label>
 				<input class="form-control" id="email" type="email" name="email" value="{{ email|e }}" placeholder="Enter friend email" required>
 			</div>
 			<div class="form-group">
-				<button class="btn btn-primary" id="submit" type="submit"><i class="fas fa-user-friends"></i> Send request</button>
+				<button class="btn btn-primary mr-2" id="submit" type="submit"><i class="fas fa-user-friends"></i> Send request</button>
+				<button id='qrcode-start-button' type="button" class="btn btn-secondary" data-toggle="modal" data-target="#qrcode-scanner"> <i class="fas fa-qrcode"></i> Scan QR code </button>
 			</div>
 		</form>
 	</div>
 </div>
+{% include 'qrcode_scanner.tmpl' %}
 {% endblock body %}

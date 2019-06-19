@@ -13,33 +13,45 @@ from backend import friends, users, notifications, history
 async def show_friends(request):
     user = await get_user(request)
     friend_items = await friends.list(user['_id'], populate=True)
-    # TODO: remove
-    if '-debug' in sys.argv:
-        for item in friend_items:
-            item['href'] = '/shared/' + str(item['_id'])
-
-    # get friend request notifications
-    notification_items = await notifications.list(user['_id'], ['friend request', 'friend accept'], populate=True)
     await history.add(user['_id'], 'list-friends')
-    return {'friends': friend_items, 'notifications': notification_items, 'nav': 'friends'}
+    return {'friends': friend_items, 'nav': 'friends'}
 
 #POST /friend/request (email) => send friend request to user identified by email address
 @routes.post('/friend/request')
 @login_required
+@aiohttp_jinja2.template('friends.html')
 async def request_friend(request):
     user = await get_user(request)
+    friend_items = await friends.list(user['_id'], populate=True)
+
     data = await request.post()
-    if 'email' in data:
-        email = data['email'].lower().strip()
+    qrcode = data.get('qrcode', '')
+    email = data.get('email', '').lower().strip()
+    other = []
+    await history.add(user['_id'], 'send-friend-request', {'email': email, 'qrcode': qrcode})
+    if qrcode != '':
+        request = False
+        other = await users.list({'qrcode': qrcode})
+    elif email != '':
         other = await users.list({'email': email})
-        if len(other) == 1:
-            await friends.add(user['_id'], other[0]['_id'], request=True)
+        requrest = True
+
+    info = error = None
+    if len(other) == 1:
+        if await friends.exists(user['_id'], other[0]['_id']):
+            info = 'Already friend with %s' % other[0]['name']
         else:
-            raise web.HTTPBadRequest(reason='User not found')
-        await history.add(user['_id'], 'send-friend-request', {'email': data['email']})
+            await friends.add(user['_id'], other[0]['_id'], request=request)
+            if request:
+                info = 'Sent request to %s' % other[0]['name']
+            else:
+                info = '%s is now a friend' % other[0]['name']
+                friend_items.insert(0, other[0])
     else:
-        raise web.HTTPBadRequest(reason='Email missing')
-    raise web.HTTPFound('/friends')
+        error = 'User not found'
+
+    #raise web.HTTPFound('/friends')
+    return {'friends': friend_items, 'info_message': info, 'error_message': error, 'nav': 'friends'}
 
 @routes.get('/friend/request/{request_id}')
 @login_required

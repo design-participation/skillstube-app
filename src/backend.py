@@ -222,6 +222,11 @@ class Friends(DB):
             result.sort(key=lambda item: order[item['_id']]) # need to reenforce sorting order
         return result
 
+    async def exists(self, user_id, other_id):
+        filter = {'$or': [{'user_id': user_id, 'other_id': other_id}, {'other_id': user_id, 'user_id': other_id}], 'status': 'accepted'}
+        found = await super().list(filter)
+        return len(found) > 0
+
 
 class Comments(DB):
     def __init__(self):

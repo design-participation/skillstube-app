@@ -1,0 +1,48 @@
+<!-- QR code scanner model -->
+<div class="modal" id="qrcode-scanner" tabindex="-1" role="dialog" aria-labelledby="qrcode-scanner-label" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="qrcode-scanner-label"> <i class="fas fa-qrcode"></i> Login with QR code</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+				<div class="video-container">
+					<video id="qr-video" style="width: 320px; height: 240px">Video preview not supported</video><div class="corners"><i></i><i></i><i></i><i></i></div>
+					<canvas id="qr-canvas" width="320" height="240" style="display:none">Canvas not supported</canvas>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="choose-camera" type="button" class="btn btn-secondary" style="float: left"><i class="fas fa-sync"></i></button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i> Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+	<script type="text/javascript" src="/static/jsqrcode.js"></script>
+	<script type="text/javascript" src="/static/qrcode_scanner.js"></script>
+	<script>
+		var camera_type = 0;
+		function process_qrcode(result) {
+				$('#qrcode').val(result);
+				$('input').prop('required', false);
+				$('#submit').click();
+		}
+		init_qrcode_scanner(function() {
+			$('#qrcode-start-button').prop('disabled', true);
+		});
+		$(function() {
+			$('#qrcode-scanner').on('show.bs.modal', function (e) {
+				run_qrcode_scanner(process_qrcode, camera_type);
+			})
+			$('#qrcode-scanner').on('hide.bs.modal', function (e) {
+				stop_qrcode_scanner();
+			})
+			$('#choose-camera').click(function() {
+				camera_type = 1 - camera_type;
+				run_qrcode_scanner(process_qrcode, camera_type);
+			});
+		});
+	</script>
