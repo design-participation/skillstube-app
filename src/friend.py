@@ -40,6 +40,8 @@ async def request_friend(request):
     if len(other) == 1:
         if await friends.exists(user['_id'], other[0]['_id']):
             info = 'Already friend with %s' % other[0]['name']
+        elif user['_id'] == other[0]['_id']:
+            error = 'You cannot friend yourself'
         else:
             await friends.add(user['_id'], other[0]['_id'], request=request)
             if request:
