@@ -21,6 +21,7 @@ import notification
 import playlists
 import history
 import export
+import speech
 
 if '-debug' in sys.argv[1:]:
     print('WARNING: running in debug mode')

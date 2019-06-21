@@ -4,6 +4,8 @@
  *   - on_final(transcript): called when a final transcript is generated
  *   - on_interim(transcript): called when an interim transcript is generated
  *   - lang: code for the spoken language
+ * https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API
+ * Currently, only Chrome browsers are supported
  */
 function WebSpeechProvider(on_final, on_interim, on_state_change, lang) {
 	let SpeechRecognitionImpl = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -87,18 +89,13 @@ WebSpeechProvider.isSupported = function() {
 	return window.SpeechRecognition !== undefined || window.webkitSpeechRecognition !== undefined;
 }
 
-// TODO: get and renew token from server
-// see https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/troubleshooting
-let secrets = {
-	password: '4fbeb80ecd3a4d8ca25fcfbd17232ca4',
-	region: 'southeastasia',
-};
-
 /* Speech-to-text provider using Microsoft Cognitive Services
  *   - on_final(transcript): called when a final transcript is generated
  *   - on_interim(transcript): called when an interim transcript is generated
  *   - lang: code for the spoken language
  * This component in only supported if microsoft.cognitiveservices.speech.sdk.bundle.js was first loaded in the page.
+ * see https://github.com/Azure-Samples/cognitive-services-speech-sdk/blob/master/samples/js/browser/index.html
+ * The server provides tokens valid for 10 minutes at GET /stt/microsoft.
  */
 function MicrosoftSpeechProvider(on_final, on_interim, on_state_change, lang) {
 	let provider = {};
@@ -112,7 +109,32 @@ function MicrosoftSpeechProvider(on_final, on_interim, on_state_change, lang) {
 
 	provider.init = function() {
 		console.log('stt: init');
-		let speechConfig = SpeechSDKImpl.SpeechConfig.fromSubscription(secrets.password, secrets.region);
+		provider.renew_token();
+	}
+	
+	provider.renew_token = function() {
+		console.log('stt: renew token');
+		fetch('/stt/microsoft')
+			.then(response => {
+				return response.text();
+			}).then(text => {
+				var token = JSON.parse(atob(text.split('.')[1]));
+				region = token.region;
+				provider.init_from_token(text, region);
+			})
+			.catch(function(error) {
+				console.log('stt get token error:', error);
+				provider.on_state_change(error);
+			}
+		);
+		// renew access token every 9 minutes (note that this may 
+		setTimeout(provider.renew_token, 9 * 60 * 1000);
+	}
+
+	provider.init_from_token = function(token, region) {
+		console.log('stt: init from token');
+		//let speechConfig = SpeechSDKImpl.SpeechConfig.fromSubscription(secrets.password, secrets.region);
+		let speechConfig = SpeechSDKImpl.SpeechConfig.fromAuthorizationToken(token, region);
 		speechConfig.language = lang || 'en-US';
 		let audioConfig = SpeechSDKImpl.AudioConfig.fromDefaultMicrophoneInput();
 		provider.recognizer = new SpeechSDKImpl.SpeechRecognizer(speechConfig, audioConfig);
