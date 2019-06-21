@@ -116,11 +116,14 @@ class Videos(DB):
         super().__init__('videos')
 
     async def add(self, video_id, title, thumbnail): 
-        return await super().add(video_id=video_id, title=title, thumbnail=thumbnail)
+        # overwrite video if it already existed
+        return await super().add(_key={'video_id': video_id}, video_id=video_id, title=title, thumbnail=thumbnail)
 
     async def get(self, video_id):
         if type(video_id) is list:
-            return await self.db.find({'video_id': {'$in': video_id}}).to_list(None)
+            found = await self.db.find({'video_id': {'$in': video_id}}).to_list(None)
+            # FIX bug when there are duplicates in the database
+            return sorted({item['video_id']: item for item in found}.values(), key=lambda item: item['_id'])
         else:
             return await self.db.find_one({'video_id': video_id})
          
@@ -187,6 +190,7 @@ class Friends(DB):
         self.db.create_index('other_id')
 
     async def add(self, user_id, other_id, request=False):
+        # TODO: could use _key parameter from super().add to ensure unicity
         if user_id == other_id:
             return None
         pair = '|'.join(tuple(set([str(user_id), str(other_id)])))
@@ -331,7 +335,7 @@ class Playlists(DB):
         return await self.db.count_documents({'folder_id': folder_id})
 
 
-
+# WARNING: this function destroys the content of the database
 async def clear_all():
     await asyncio.gather(
         users.clear(),
@@ -344,8 +348,9 @@ async def clear_all():
         playlists.clear(),
         )
     import os
-    os.system('rm data/pictures/*') # also remove all uploaded pictures
+    os.system('rm data/pictures/* data/qrcodes/*') # also remove all uploaded/generated pictures
 
+# singletons for all adapters
 users = Users()
 videos = Videos()
 history = History()
@@ -354,64 +359,4 @@ friends = Friends()
 comments = Comments()
 shares = Shares()
 playlists = Playlists()
-
-#TODO write proper separate tests
-#TODO documentation
-
-if __name__ == '__main__':
-    async def main():
-        await clear_all()
-
-        # Users
-        for c in 'ABCDEF':
-            print(await users.add(name=c, email=c + '@example.com', picture='', password=c))
-
-        print('DUP', await users.add(name='A', email='A@example.com', picture='', password='A'))
-
-        for user in await users.list():
-            print(user)
-
-        print(await users.login('X@example.com', 'A'))
-        print(await users.login('A@example.com', 'A'))
-        print(await users.login('A@example.com', 'X'))
-
-        A = await users.find({'email': 'A@example.com'})
-        user_id = A['_id']
-        print(await users.get(user_id))
-
-        # History
-        import random, time
-        for i in range(5):
-            await history.add(user_id, 'query', {'a': random.random()})
-            time.sleep(random.random() * 0.1)
-        for i in range(5):
-            await history.add(user_id, 'doc', {'b': random.random()})
-            time.sleep(random.random() * 0.1)
-
-        for item in await history.list():
-            print(item['date'])
-        print(await history.list(type='doc', limit=3))
-
-        # Notifications
-        for i in range(5):
-            notif_id = await notifications.add(user_id, 'friend request', {'a': random.random()})
-
-        print(repr(notif_id))
-        print(await notifications.count(user_id))
-        await notifications.dismiss(user_id, notif_id)
-        print(await notifications.count(user_id))
-        for notif in await notifications.list(user_id):
-            print(notif)
-
-        # Friends
-        user_ids = [x['_id'] for x in await users.list()]
-        for i in range(4):
-            id = await friends.add(user_id, random.choice(user_ids))
-            await friends.accept(id)
-
-        for friend in await friends.list(user_id):
-            print(friend)
-
-
-    asyncio.get_event_loop().run_until_complete(main())
 

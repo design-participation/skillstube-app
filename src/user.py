@@ -10,7 +10,7 @@ from backend import users, history
 import thumbnail
 
 async def upload_picture(field):
-    # TODO: should check content for actual picture; should also limit size on the client side
+    # TODO: should check content for actual picture; should also resize on the client side
     extension = field.filename.split('.')[-1].lower()
     if extension not in ['jpg', 'jpeg', 'png', 'gif']:
         raise web.HTTPBadRequest(reason='Picture file type not allowed, please use jpg, jpeg, png or gif')
