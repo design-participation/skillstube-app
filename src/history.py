@@ -10,7 +10,7 @@ import secrets
 @routes.get('/history/{category}')
 @login_required
 @aiohttp_jinja2.template('history.html')
-async def personal(request):
+async def history_category(request):
     user = await get_user(request)
     category = request.match_info['category']
     history_items = await history.list(user['_id'], type=category)
@@ -23,7 +23,7 @@ async def personal(request):
 @routes.get('/history')
 @login_required
 @aiohttp_jinja2.template('history.html')
-async def personal(request):
+async def history(request):
     user = await get_user(request)
     history_items = await history.list(user['_id'])
     # convert history to local timezone before rendering
@@ -33,7 +33,7 @@ async def personal(request):
 
 @routes.post('/action')
 @login_required
-async def personal(request):
+async def log_action(request):
     user = await get_user(request)
     data = await request.json()
     action_type = data.get('type', '')

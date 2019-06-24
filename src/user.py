@@ -111,13 +111,13 @@ async def login_form(request):
 @routes.get('/user-modify')
 @login_required
 @aiohttp_jinja2.template('user-modify.html')
-async def logout(request):
+async def user_modify(request):
     return {}
 
 @routes.get('/user')
 @login_required
 @aiohttp_jinja2.template('user.html')
-async def logout(request):
+async def user_profile(request):
     user = await get_user(request)
     filename = 'data/qrcodes/%s.png' % str(user['_id'])
     if not os.path.exists(filename):
