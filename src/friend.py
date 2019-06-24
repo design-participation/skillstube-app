@@ -6,7 +6,6 @@ import aiohttp_jinja2
 from util import routes, login_required, get_user, to_objectid
 from backend import friends, users, notifications, history
 
-#GET /personal => show personal information
 @routes.get('/friends')
 @login_required
 @aiohttp_jinja2.template('friends.html')
@@ -16,7 +15,6 @@ async def show_friends(request):
     await history.add(user['_id'], 'list-friends')
     return {'friends': friend_items, 'nav': 'friends'}
 
-#POST /friend/request (email) => send friend request to user identified by email address
 @routes.post('/friend/request')
 @login_required
 @aiohttp_jinja2.template('friends.html')
@@ -63,13 +61,11 @@ async def view_friend_request(request):
     request_id = to_objectid(request.match_info['request_id'])
     request = await friends.get(request_id)
     if request is not None and request['other_id'] == user['_id']:
-        #TODO: finish
         friend = await users.get(request['user_id'])
         await history.add(user['_id'], 'view-friend-request', {'request': request})
         return {'friend': friend, 'request_id': request_id, 'nav': 'notifications'}
     raise web.HTTPBadRequest()
 
-#GET /friend/accept/{friend_id} => accept friend request
 @routes.get('/friend/accept/{request_id}')
 @login_required
 async def accept_friend(request):

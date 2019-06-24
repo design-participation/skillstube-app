@@ -46,13 +46,11 @@ def update_qrcode_image(user):
 def check_qrcode(user, data):
     return user['qrcode'] == data
 
-#GET /user => new user form
 @routes.get('/new-user')
 @aiohttp_jinja2.template('new_user.html')
 async def new_user_form(request):
     return {}
 
-#POST /new-user (email, password) => create user
 @routes.post('/new-user')
 @aiohttp_jinja2.template('new_user.html')
 async def new_user(request):
@@ -96,7 +94,6 @@ async def new_user(request):
         update_qrcode_image(user)
         raise web.HTTPFound('/')
 
-#GET /login => login form
 @routes.get('/login')
 @aiohttp_jinja2.template('login.html')
 async def login_form(request):
@@ -111,14 +108,12 @@ async def login_form(request):
         return {'users': result}
     return {}
 
-#GET /user => show form to channge profile information
 @routes.get('/user-modify')
 @login_required
 @aiohttp_jinja2.template('user-modify.html')
 async def logout(request):
     return {}
 
-#GET /user => show user profile
 @routes.get('/user')
 @login_required
 @aiohttp_jinja2.template('user.html')
@@ -129,7 +124,6 @@ async def logout(request):
         update_qrcode_image(user)
     return {'qrcode': '/qrcodes/%s.png' % str(user['_id'])}
 
-#POST /user/change-picture => change picture
 @routes.post('/user/change-picture')
 @login_required
 @aiohttp_jinja2.template('user.html')
@@ -147,9 +141,7 @@ async def change_picture(request):
     user['picture'] = picture
     await history.add(user['_id'], 'change-picture', {'picture': picture})
     raise web.HTTPFound('/user')
-    #return {'info_message': 'Picture changed'}
 
-#POST /user/change-password => change password
 @routes.post('/user/change-password')
 @login_required
 @aiohttp_jinja2.template('user.html')
@@ -167,7 +159,6 @@ async def change_password(request):
     raise web.HTTPFound('/user')
     #return {'info_message': 'Password changed'}
 
-#GET /logout => remove user_id from session
 @routes.get('/logout')
 @login_required
 async def logout(request):
@@ -178,7 +169,6 @@ async def logout(request):
         del session['user_id']
     raise web.HTTPFound('/login')
 
-#POST /login (email, password) => login as existing user
 @routes.post('/login')
 @aiohttp_jinja2.template('login.html')
 async def login(request):

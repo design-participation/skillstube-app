@@ -4,25 +4,6 @@ import aiohttp_jinja2
 from util import routes, get_user, login_required, to_objectid
 from backend import comments, shares, notifications, friends, history
 
-# TODO: deprecated
-@routes.post('/view-shared/{share_id}')
-@login_required
-async def view_shared(request):
-    user = await get_user(request)
-    share_id = to_objectid(request.match_info['share_id'])
-    share = await shares.get(share_id)
-    data = await request.post()
-    if 'notification' in data:
-        notification_id = to_objectid(data['notification'])
-        notification = await notifications.get(notification_id)
-        if notification is not None and notification['data']['share_id'] == share_id:
-            await notifications.dismiss(user['_id'], notification_id)
-    if share is not None and share['recipient_id'] == user['_id']:
-        await history.add(user['_id'], 'view-shared', {'share_id': share_id})
-        raise web.HTTPFound('/watch/' + str(share['video_id']) + '#' + str(share['comment_id']))
-    raise web.HTTPBadRequest()
-        
-#GET /share/{comment_id} => show friend selection ui for sharing
 @routes.get('/share/{comment_id}')
 @login_required
 @aiohttp_jinja2.template('share.html')
@@ -40,7 +21,6 @@ async def share_select(request):
         return {'comment': comment, 'friends': friend_items, 'nav': 'search'}
     raise web.HTTPBadRequest()
 
-#POST /share/{comment_id} => perform the sharing
 @routes.post('/share/{comment_id}')
 @login_required
 async def share_save(request):

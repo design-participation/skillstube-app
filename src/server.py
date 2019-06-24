@@ -13,7 +13,7 @@ import jinja2
 
 import user
 import search
-import personal
+#import personal
 import friend
 import share
 import comment

@@ -20,7 +20,6 @@ async def personal(request):
     return {'history': history_items, 'category': category}
 
 
-#GET /history => show history data
 @routes.get('/history')
 @login_required
 @aiohttp_jinja2.template('history.html')
@@ -32,7 +31,6 @@ async def personal(request):
         item['date'] = util.as_log_timezone(item['date']).strftime("%Y-%m-%d %H:%M:%S")
     return {'history': history_items, 'category': 'all'}
 
-#POST /action => log action to history
 @routes.post('/action')
 @login_required
 async def personal(request):

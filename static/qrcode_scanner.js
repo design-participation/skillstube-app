@@ -25,6 +25,8 @@ function run_qrcode_scanner(result_callback, camera_type) {
 	let canvas = document.getElementById('qr-canvas');
 	let context = canvas.getContext('2d');
 
+	$('#choose-camera').popover('dispose');
+
 	// stop previous stream if any
 	if(videoStream !== null) {
 		video.pause();
@@ -55,6 +57,8 @@ function run_qrcode_scanner(result_callback, camera_type) {
 
 	}, function(error) {
 		console.log('Video capture error: ', error.code);
+		console.log($('#choose-camera'));
+		$('#choose-camera').popover('dispose').popover({html: true, content: '<i style="color: var(--danger)" class="fas fa-times-circle"></i> Did you allow video recording?', placement: 'top'}).popover('show');
 	});
 }
 

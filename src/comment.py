@@ -6,7 +6,6 @@ from util import routes, login_required, get_user, to_objectid
 
 from backend import comments, friends, videos, shares, history
 
-# GET /comment/{video_id} => form to write and share a comment
 @routes.get('/comment/{video_id}') 
 @login_required
 @aiohttp_jinja2.template('comment.html')
@@ -18,7 +17,6 @@ async def write_comment(request):
     await history.add(user['_id'], 'write-comment', {'video_id': video['_id'], 'youtube_id': video_id})
     return {'video': video, 'friends': friend_items}
 
-#POST /comment/{video_id} (text) => add root comment to video
 @routes.post('/comment/{video_id}')
 @login_required
 async def post_comment(request):
@@ -36,14 +34,4 @@ async def post_comment(request):
         raise web.HTTPFound('/watch/' + video_id + '#' + str(comment_id))
     else:
         raise web.HTTPBadRequest()
-
-#TODO: deprecated
-@routes.get('/comments')
-@login_required
-@aiohttp_jinja2.template('comments.html')
-async def show_comments(request):
-    user = await get_user(request)
-    comment_items = await comments.list(user['_id'], populate=True)
-    await history.add(user['_id'], 'show-user-comments')
-    return {'comments': comment_items, 'show_video': True}
 

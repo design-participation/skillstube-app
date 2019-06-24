@@ -5,7 +5,6 @@ import aiohttp_jinja2
 from util import routes, login_required, get_user, to_objectid
 from backend import notifications, shares, history
 
-#get /dismiss/{notification_id} => dismiss notification (json result)
 @routes.get('/dismiss/{notification_id}')
 @login_required
 async def dismiss_notification(request):
@@ -15,7 +14,6 @@ async def dismiss_notification(request):
     await history.add(user['_id'], 'dismiss-notification', {'notification_id': notification_id})
     return web.json_response('ok')
 
-#get /notification/{notification_id} => when clicked on notification, process and redirect user
 @routes.get('/notification/{notification_id}')
 @login_required
 async def process_notification(request):

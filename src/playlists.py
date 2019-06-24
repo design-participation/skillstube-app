@@ -30,7 +30,6 @@ async def show_playlists(request):
     await history.add(user['_id'], 'show-playlists')
     return {'folders': folders, 'nav': 'playlists'}
 
-# GET /set_playlist/{video_id} => ui for adding a video to a playlist
 @routes.get('/set_playlist/{video_id}')
 @aiohttp_jinja2.template('set_playlist.html')
 @login_required
@@ -42,7 +41,6 @@ async def set_playlist_ui(request):
     await history.add(user['_id'], 'show-playlist-selector', {'video_id': video['_id'], 'youtube_id': video_id})
     return {'folders': folders, 'video': video, 'nav': 'playlists'}
 
-# POST /set_playlist/{video_id} => actually add the video to a playlist
 @routes.post('/set_playlist/{video_id}')
 @aiohttp_jinja2.template('set_playlist.html')
 @login_required

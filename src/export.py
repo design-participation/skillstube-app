@@ -70,13 +70,11 @@ async def export_all(filename='export.xlsx'):
 
     workbook.close()
 
-#GET /export => export form
 @routes.get('/export')
 @aiohttp_jinja2.template('export.html')
 async def export_form(request):
     return {}
 
-#GET /export => actual export
 @routes.post('/export')
 @aiohttp_jinja2.template('export.html')
 async def export(request):
