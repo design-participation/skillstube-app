@@ -1,0 +1,34 @@
+{% extends 'base.tmpl' %}
+{% block title %}Friend{% endblock %}
+{% block body %}
+<h1>{{ friend['name'] }}</h1>
+<div class="row">
+	<div class="col">
+		<div class="card border-0 mb-3">
+			<div class="row">
+				<div class="col-4">
+					<a href="/">
+						<img class="card-img" src="{{ friend['picture'] }}">
+					</a>
+				</div>
+				<div class="col-8">
+					<div class="card-body">
+						<!--<p class="name"><strong>Name:</strong> {{ friend['name'] }}</p>-->
+						<p class="name"><strong>Email:</strong> {{ friend['email'] }}</p>
+						{% if debug %}
+						<p class="uid"><strong>debug:Uid:</strong> {{ friend['_id'] }}</p>
+						{% endif %}
+						<form id="unfriend-form" action="/unfriend/{{ friend['_id'] }}" method="post">
+							<button class="btn btn-secondary" onclick="confirm_dialog('fa-user-slash', 'Remove friend', 'Are you sure you want to unfriend <strong>{{ friend['name'] }}</strong>?', 'Unfriend', function() { $('#unfriend-form').submit() })" type="button" data-toggle="modal" data-target="#confirm-dialog"> <i class="fas fa-user-slash"></i> Unfriend </button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% if comments|length > 0 %}
+<h1>Shared content</h1>
+{% include 'comment_list.tmpl' %}
+{% endif %}
+{% endblock body %}

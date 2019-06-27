@@ -3,14 +3,14 @@
 	{% if comments|length > 0 %}
 		{% for item in comments %}
 		<div class="card border-0">
-			<a name="{{ item._id }}"></a>
+			<a name="{{ item._id }}">
 			<div class="card-body">
 				<img class="user-picture" src="{{ item.user.picture }}">
 				<div class="bubble-arrow"></div>
 				<div class="bubble-text">
 				{% if show_video %}
 				<a style="text-align: left;" class="btn" href="/watch/{{ item.video_id }}">
-						<img width="50%" style="float: right" src="http://i3.ytimg.com/vi/{{ item.video_id }}/hqdefault.jpg" class="rounded img-thumbnail ml-1 mb-1">
+						<img width="50%" style="float: right" src="https://i3.ytimg.com/vi/{{ item.video_id }}/mqdefault.jpg" class="rounded img-thumbnail ml-1 mb-1">
 						{{ item.text }}
 				</a>
 				{% else %}
@@ -26,6 +26,7 @@
 				</div>
 				{% endif %}
 			</div>
+		</a>
 		</div>
 		{% endfor %}
 	{% else %}

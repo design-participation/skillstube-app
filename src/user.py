@@ -49,7 +49,7 @@ def check_qrcode(user, data):
 @routes.get('/new-user')
 @aiohttp_jinja2.template('new_user.html')
 async def new_user_form(request):
-    return {}
+    return {'nav': 'new-user'}
 
 @routes.post('/new-user')
 @aiohttp_jinja2.template('new_user.html')
@@ -105,8 +105,8 @@ async def login_form(request):
             result.append(user)
         import random
         random.shuffle(result)
-        return {'users': result}
-    return {}
+        return {'users': result, 'nav': 'login'}
+    return {'nav': 'login'}
 
 @routes.get('/user-modify')
 @login_required
@@ -186,5 +186,5 @@ async def login(request):
         await history.add(user_id, 'login')
         raise web.HTTPFound('/')
     else:
-        return {'email': email, 'error_message': 'invalid credentials'}
+        return {'email': email, 'error_message': 'invalid credentials', 'nav': 'login'}
 

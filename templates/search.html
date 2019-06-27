@@ -1,23 +1,27 @@
 {% extends 'base.tmpl' %}
 {% block title %}Search{% endblock %}
 {% block body %}
-{% if query == '' %}
+{# {% if query == '' %}
 <div style="margin-bottom: 30%" class="row">
 	<div class="col">
 		<div style="font-size: 500%; text-align: center; margin-top: 8%; margin-bottom: 1rem;">
 			{% include 'logo.tmpl' %}
 		</div>
-{% else %}
+{% else %} #}
 <div class="row">
 	<div class="col">
-{% endif %}
+{# {% endif %} #}
 	{% include 'search_bar.tmpl' %}
+{% if results|length == 0 %}
+	<p>Example queries:</p>
+	<ul>
+		<li> <a href="/search?prompt=1&q=tie+shoes">How to tie shoes</a> </li>
+		<li> <a href="/search?prompt=1&q=make+coffee">How to make coffee</a> </li>
+		<li> <a href="/search?prompt=1&q=take+a+bus">How to take a bus</a> </li>
+	</ul>
+{% else %}
 	{% include 'search_results.tmpl' %}
+{% endif %}
 	</div>
 </div>
-{# 
-{% if results|length > 0 %}
-	<div class="arrow-prompt show-idle-prompt"><i class="fas fa-caret-down"></i></div>
-{% endif %}
-#}
 {% endblock body %}

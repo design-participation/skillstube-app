@@ -30,7 +30,9 @@ async def process_notification(request):
         elif notification['type'] == 'friend request':
             raise web.HTTPFound('/friend/request/' + str(notification['data']['friend_id']))
         elif notification['type'] == 'friend accept':
-            raise web.HTTPFound('/friends')
+            raise web.HTTPFound('/notifications')
+        elif notification['type'] == 'friend removal':
+            raise web.HTTPFound('/notifications')
         else:
             raise web.HTTPBadRequest()
     raise web.HTTPBadRequest()

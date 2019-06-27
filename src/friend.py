@@ -3,8 +3,8 @@ from aiohttp import web
 from aiohttp_session import get_session
 import aiohttp_jinja2
 
-from util import routes, login_required, get_user, to_objectid
-from backend import friends, users, notifications, history
+from util import routes, login_required, get_user, to_objectid, redirect
+from backend import friends, users, notifications, history, comments
 
 @routes.get('/friends')
 @login_required
@@ -12,8 +12,25 @@ from backend import friends, users, notifications, history
 async def show_friends(request):
     user = await get_user(request)
     friend_items = await friends.list(user['_id'], populate=True)
+    for item in friend_items:
+        item['href'] = '/friend/%s' % str(item['_id'])
     await history.add(user['_id'], 'list-friends')
     return {'friends': friend_items, 'nav': 'friends'}
+
+@routes.get('/friend/{friend_id}')
+@login_required
+@aiohttp_jinja2.template('friend.html')
+async def show_friend(request):
+    user = await get_user(request)
+    friend_id = to_objectid(request.match_info['friend_id'])
+    if await friends.exists(user['_id'], friend_id):
+        friend = await users.get(friend_id)
+        shared_by_myself = await comments.list(owner_id=user['_id'], recipient_id=friend['_id'], populate=True) 
+        shared_with_me = await comments.list(recipient_id=user['_id'], owner_id=friend_id, populate=True)
+        all_items = sorted(shared_by_myself + shared_with_me, key=lambda item: item['date'], reverse=True)
+        await history.add(user['_id'], 'show-friend', {'friend_id': friend_id, 'name': friend['name']})
+        return {'friend': friend, 'nav': 'friends', 'comments': all_items, 'show_video': True}
+    raise web.HTTPBadRequest(reason='Not a friend')
 
 @routes.post('/friend/request')
 @login_required
@@ -75,4 +92,16 @@ async def accept_friend(request):
     request = await friends.get(request_id)
     await history.add(user['_id'], 'accept-friend-request', {'request': request})
     raise web.HTTPFound('/friends')
+
+@routes.post('/unfriend/{friend_id}')
+@login_required
+async def unfriend(request):
+    user = await get_user(request)
+    friend_id = to_objectid(request.match_info['friend_id'])
+    if await friends.remove(user['_id'], friend_id):
+        friend = await users.get(friend_id)
+        await history.add(user['_id'], 'unfriend', {'friend_id': friend['_id'], 'name': friend['name']})
+        # TODO: send notificaiton to other user
+        await redirect(request, '/friends', info='Unfriended %s' % friend['name'])
+    raise web.HTTPBadRequest(reason='Not friend')
 

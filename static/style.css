@@ -1,10 +1,12 @@
 /* ============= colors =========== */
 :root {
+  --color-home: green;
   --color-search: #645AA5; 
   --color-friends: #8E3B88; 
   --color-playlists: #E8314F; 
   --color-notifications: #F47726; 
 
+  --color-home-light: #ada;
   --color-search-light: #e0deed; 
   --color-friends-light: #ecd3eb; 
   --color-playlists-light: #fad5db; 
@@ -184,11 +186,11 @@
 	left: 69px; 
 	width: 12px; 
 	height: 16px; 
-	z-index: 1;
+	z-index: 0;
 }
 
 .bubble-text {
-	z-index: 0;
+	z-index: 1;
 	background: lightgray;
 	position:relative; 
 	top: -80px; 
@@ -201,6 +203,10 @@
 .bubble-text a {
 	text-decoration: none;
 	color: var(--dark);
+}
+
+a:target .bubble-text {
+	border: 3px solid var(--primary);
 }
 
 /* ================ search bar =============== */
@@ -259,9 +265,9 @@ body {
     box-shadow: none;
   }
   25% {
-    -webkit-box-shadow: 0 0 5rem 0 green;
-    -moz-box-shadow: 0 0 5rem 0 green;
-    box-shadow: 0 0 5rem 0 green;
+    -webkit-box-shadow: 0 0 3rem 0 green;
+    -moz-box-shadow: 0 0 3rem 0 green;
+    box-shadow: 0 0 3rem 0 green;
   }
   50% {
     -webkit-box-shadow: none;
@@ -269,9 +275,9 @@ body {
     box-shadow: none;
   }
   75% {
-    -webkit-box-shadow: 0 0 5rem 0 green;
-    -moz-box-shadow: 0 0 5rem 0 green;
-    box-shadow: 0 0 5rem 0 green;
+    -webkit-box-shadow: 0 0 3rem 0 green;
+    -moz-box-shadow: 0 0 3rem 0 green;
+    box-shadow: 0 0 3rem 0 green;
   }
   100% {
     -webkit-box-shadow: none;
@@ -374,6 +380,13 @@ body {
 	--background-color: var(--color-notifications);
 }
 
+.nav-item.active:nth-child(1) {
+	border-color: var(--color-home) !important;
+	background-color: var(--color-home-light) !important;
+}
+.nav-item.active:nth-child(1) > .nav-link {
+	color: var(--color-home) !important;
+}
 .nav-item.active:nth-child(2) {
 	border-color: var(--color-search) !important;
 	background-color: var(--color-search-light) !important;
@@ -452,4 +465,10 @@ body {
 }
 .modal-body {
 	text-align: center;
+}
+
+/* =============== misc ============== */
+
+.playlist-container {
+	background: black;
 }

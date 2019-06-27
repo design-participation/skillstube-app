@@ -23,7 +23,7 @@ async def history_category(request):
 @routes.get('/history')
 @login_required
 @aiohttp_jinja2.template('history.html')
-async def history(request):
+async def show_history(request):
     user = await get_user(request)
     history_items = await history.list(user['_id'])
     # convert history to local timezone before rendering

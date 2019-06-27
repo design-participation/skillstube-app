@@ -39,6 +39,15 @@ async def add_globals(request):
     if user is not None:
         user['notification_count'] = await notifications.count(user['_id'])
         values['user'] = user
+    session = await get_session(request)
+    # pass messages from redirects
+    if session:
+        if 'info_message' in session:
+            values['info_message'] = session['info_message']
+            del session['info_message']
+        if 'error_message' in session:
+            values['error_message'] = session['error_message']
+            del session['error_message']
     if '-debug' in sys.argv:
         values['debug'] = True
     return values
@@ -119,5 +128,11 @@ def as_log_timezone(time):
         time = time.replace(tzinfo=pytz.utc)
     return time.astimezone(log_timezone)
 
-
+async def redirect(request, target, info=None, error=None):
+    session = await get_session(request)
+    if info:
+        session['info_message'] = info
+    if error:
+        session['error_message'] = error
+    raise web.HTTPFound(target)
 

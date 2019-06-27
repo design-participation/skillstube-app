@@ -9,6 +9,8 @@
 				{% include 'notification_friend_request.tmpl' %}
 			{% elif item.type == 'friend accept' %}
 				{% include 'notification_friend_accept.tmpl' %}
+			{% elif item.type == 'friend removal' %}
+				{% include 'notification_friend_removal.tmpl' %}
 			{% elif item.type == 'shared content' %}
 				{% include 'notification_shared_content.tmpl' %}
 			{% else %}

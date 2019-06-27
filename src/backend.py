@@ -51,9 +51,9 @@ class DB:
     async def delete(self, _id):
         self.check_type(_id)
         if type(_id) is list:
-            await self.db.delete_many({_id: {'$in': _id}})
+            await self.db.delete_many({'_id': {'$in': _id}})
         else:
-            await self.db.delete_one({_id: _id})
+            await self.db.delete_one({'_id': _id})
 
     async def count(self):
         return await self.db.count_documents()
@@ -185,7 +185,6 @@ class Notifications(DB):
 class Friends(DB):
     def __init__(self):
         super().__init__('friends')
-        self.db.create_index('pair', unique=True)
         self.db.create_index('user_id')
         self.db.create_index('other_id')
 
@@ -193,23 +192,30 @@ class Friends(DB):
         # TODO: could use _key parameter from super().add to ensure unicity
         if user_id == other_id:
             return None
-        pair = '|'.join(tuple(set([str(user_id), str(other_id)])))
-        if await self.db.find_one({'pair': pair}):
+        found = await self.from_pair(user_id, other_id)
+        if found:
             # TODO: resend notification if already exists?
             return None
         status = 'accepted'
         if request:
             status = 'requested'
-        friend_id = await super().add(pair=pair, user_id=user_id, other_id=other_id, status=status, date=util.now())
+        friend_id = await super().add(user_id=user_id, other_id=other_id, status=status, date=util.now())
         if request:
             # TODO: discard older notifications for the same relationship
             await notifications.add(other_id, 'friend request', {'sender_id': user_id, 'friend_id': friend_id})
         return friend_id
 
+    async def remove(self, user_id, other_id):
+        found = await self.from_pair(user_id, other_id)
+        if found:
+            await self.delete(found['_id'])
+            await notifications.add(other_id, 'friend removal', {'sender_id': user_id, 'friend_id': found['_id']})
+            return True
+        return False
+
     async def accept(self, _id):
         # TODO: check whether it was already accepted
         friendship = await self.get(_id)
-        print(friendship)
         await notifications.add(friendship['user_id'], 'friend accept', {'sender_id': friendship['other_id'], 'friend_id': friendship['_id']})
         await self.db.find_one_and_update({'_id': _id}, {'$set': {'status': 'accepted', 'date': util.now()}})
 
@@ -226,22 +232,24 @@ class Friends(DB):
             result.sort(key=lambda item: order[item['_id']]) # need to reenforce sorting order
         return result
 
-    async def exists(self, user_id, other_id):
+    async def from_pair(self, user_id, other_id):
         filter = {'$or': [{'user_id': user_id, 'other_id': other_id}, {'other_id': user_id, 'user_id': other_id}], 'status': 'accepted'}
-        found = await super().list(filter)
-        return len(found) > 0
+        return await self.db.find_one(filter)
+
+    async def exists(self, user_id, other_id):
+        return await self.from_pair(user_id, other_id) is not None
 
 
 class Comments(DB):
     def __init__(self):
         super().__init__('comments')
 
-    async def list(self, user_id, video_id=None, populate=False, shared_with_me=False, owner_id=None, limit=0):
+    async def list(self, user_id=None, video_id=None, populate=False, shared_with_me=False, owner_id=None, recipient_id=None, limit=0):
         filter = {'user_id': user_id}
         if video_id is not None:
             filter['video_id'] = video_id
-        if shared_with_me:
-            shared_comment_ids = [item['comment_id'] for item in await shares.list(recipient_id=user_id, owner_id=owner_id)]
+        if recipient_id is not None:
+            shared_comment_ids = [item['comment_id'] for item in await shares.list(recipient_id=recipient_id, owner_id=owner_id)]
             found = await super().get(shared_comment_ids)
         else:
             found = await super().list(filter, limit=limit, sort=[('date', pymongo.ASCENDING)])

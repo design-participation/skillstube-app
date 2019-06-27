@@ -44,7 +44,7 @@ async def share_save(request):
 @aiohttp_jinja2.template('shared.html')
 async def show_shared(request):
     user = await get_user(request)
-    shared_with_me = await comments.list(user['_id'], shared_with_me=True, populate=True)
+    shared_with_me = await comments.list(recipient_id=user['_id'], populate=True)
     await history.add(user['_id'], 'view-shared-with-me')
     return {'comments': shared_with_me, 'show_video': True, 'nav': 'shared'}
 
@@ -63,7 +63,7 @@ async def show_shared(request):
 async def show_shared(request):
     user = await get_user(request)
     friend_id = to_objectid(request.match_info['friend_id'])
-    shared_with_me = await comments.list(user['_id'], shared_with_me=True, owner_id=friend_id, populate=True)
+    shared_with_me = await comments.list(recipient_id=user['_id'], owner_id=friend_id, populate=True)
     await history.add(user['_id'], 'view-shared-by-friend', {'friend': friend_id})
     return {'comments': shared_with_me, 'show_video': True, 'nav': 'friends'}
 

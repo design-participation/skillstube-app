@@ -5,12 +5,21 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
-      <li class="nav-item">
+      <!--<li class="nav-item">
 				<a class="nav-link" href="javascript:window.history.back()" title="Back"><i class="fas fa-arrow-left"></i><span class="sr-only">Back</span></a>
+      </li>-->
+      <!--<li class="nav-item {{ 'active' if nav == 'search' }}">
+				<a class="nav-link" href="/" title="Search"><i class="fas fa-search"></i><i style="position:relative;margin-right:-1em; left: -42px; top: 16px; font-size: 50%;" class="fas fa-home"></i><span class="sr-only">Search</span></a>
+      </li>-->
+      <li class="nav-item {{ 'active' if nav == 'home' }}">
+				<a class="nav-link" href="/" title="Home"><i class="fas fa-home"></i><span class="sr-only">Home</span></a>
       </li>
       <li class="nav-item {{ 'active' if nav == 'search' }}">
-				<a class="nav-link" href="/" title="Search"><i class="fas fa-search"></i><i style="position:relative;margin-right:-1em; left: -42px; top: 16px; font-size: 50%;" class="fas fa-home"></i><span class="sr-only">Search</span></a>
+				<a class="nav-link" href="/search" title="Search"><i class="fas fa-search"></i><span class="sr-only">Search</span></a>
       </li>
+      <!--<li class="nav-item {{ 'active' if nav == 'video' }}">
+				<a class="nav-link" href="/watch" title="Video"><i class="fas fa-film"></i><span class="sr-only">Video</span></a>
+      </li>-->
 			{% if user %}
 			<li class="nav-item {{ 'active' if nav == 'friends' }}">
 				<a class="nav-link" href="/friends" title="Friends"><i class="fas fa-user-friends"></i><span class="sr-only">Friends</span></a>
@@ -26,10 +35,10 @@
 				</a>
 			</li>
 			{% else %}
-			<li class="nav-item">
+			<li class="nav-item {{ 'active' if nav == 'login' }}">
 				<a class="nav-link" href="/login" title="Login"><i class="fas fa-sign-in-alt"></i><span class="sr-only">Login</span></a>
 			</li>
-			<li class="nav-item">
+			<li class="nav-item {{ 'active' if nav == 'new-user' }}">
 				<a class="nav-link" href="/new-user" title="New user"><i class="fas fa-user-plus"></i><span class="sr-only">New user</span></a>
 			</li>
 			{% endif %}
