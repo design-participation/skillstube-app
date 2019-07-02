@@ -1,31 +1,56 @@
 var videoDevices = [];
-
-function init_qrcode_scanner(error_callback) {
-}
-
 var videoStream = null;
 var interval;
 
+function qrcode_file_fallback() {
+}
+
 function run_qrcode_scanner(result_callback, camera_num) {
-	console.log('start qrcode scanner');
+  console.log('start qrcode scanner');
+
 	qrcode.callback = function(result) {
 		console.log('scan result [' + result + ']');
 		result_callback(result);
-	}
+	};
 
-	let video = document.getElementById('qr-video');
-	let canvas = document.getElementById('qr-canvas');
-	let context = canvas.getContext('2d');
+	var video = document.getElementById('qr-video');
+	var canvas = document.getElementById('qr-canvas');
+	var context = canvas.getContext('2d');
+  $(canvas).hide();
 
 	$('#choose-camera').popover('dispose');
+
+  if(!navigator.mediaDevices) { // file input fallback
+    $('#qr-image-picker').val(null);
+    $('#qr-image-picker').change(function() {
+      var url = URL.createObjectURL(document.getElementById('qr-image-picker').files[0]);
+      var image = new Image();
+      image.src = url;
+      image.onload = function() {
+        $(canvas).show();
+        canvas.width = image.width;
+        canvas.height = image.height;
+        context.drawImage(image, 0, 0);
+        try {
+          qrcode.decode();
+        } catch(error) {
+          //console.log(error);
+        }
+      };
+    });
+    return;
+  }
+  $('#qr-image-picker').hide();
+  $('#qr-video-container').show();
+  $('#choose-camera').show();
 
 	// stop previous stream if any
 	if(videoStream !== null) {
 		video.pause();
 		video.srcObject = null;
-		let tracks = videoStream.getTracks();
+		var tracks = videoStream.getTracks();
 		console.log(tracks);
-		for(let i = 0; i < tracks.length; i++) tracks[i].stop();
+		for(var i = 0; i < tracks.length; i++) tracks[i].stop();
 		clearInterval(interval);
 	}
 
@@ -40,8 +65,8 @@ function run_qrcode_scanner(result_callback, camera_num) {
         }
       });
       if(videoDevices.length == 0) throw "No video device found";
-      let device = videoDevices[camera_num % videoDevices.length];
-      let constraints = {video: {width: 320, height: 240, deviceId: device.deviceId}};
+      var device = videoDevices[camera_num % videoDevices.length];
+      var constraints = {video: {width: 320, height: 240, deviceId: device.deviceId}};
       return navigator.mediaDevices.getUserMedia(constraints);
     })
     .then(function(stream) {
@@ -67,12 +92,12 @@ function run_qrcode_scanner(result_callback, camera_num) {
 
 function stop_qrcode_scanner() {
 	console.log('stop qrcode scanner');
-	let video = document.getElementById('qr-video');
+	var video = document.getElementById('qr-video');
 	if(videoStream !== null) {
 		video.pause();
 		video.srcObject = null;
-		let tracks = videoStream.getTracks();
-		for(let i = 0; i < tracks.length; i++) tracks[i].stop();
+		var tracks = videoStream.getTracks();
+		for(var i = 0; i < tracks.length; i++) tracks[i].stop();
 		clearInterval(interval);
 	}
 }

@@ -1,0 +1,36 @@
+<div class="modal" id="input-dialog" tabindex="-1" role="dialog" aria-labelledby="input-dialog-label" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="input-dialog-label"> <i class="input-dialog-icon fas"></i> <span class="input-dialog-title"></span></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+				<p class="input-dialog-text"></p>
+				<input type="text" class="form-control input-dialog-input" name="value" placeholder="Type here" autofocus>
+			</div>
+			<div class="modal-footer">
+				<button id="input-dialog-input" type="button" class="btn btn-primary"><i class="input-dialog-icon fas fa-check"></i> <span class="input-dialog-ok">Ok</span></button>
+				<button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times"></i> Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+function input_dialog(icon, title, question, placeholder, button, callback) {
+  console.log('start input-dialog');
+	$('#input-dialog').on('show.bs.modal', function (e) {
+		$('.input-dialog-icon').addClass(icon);
+		$('.input-dialog-title').text(title);
+		$('.input-dialog-text').html(question);
+		$('.input-dialog-input').attr('placeholder', placeholder);
+		$('.input-dialog-ok').text(button);
+		$('.input-dialog-ok').parent('button').click(function() {
+      let value = $.trim($('.input-dialog-input').val());
+      if(value != '') callback(value);
+    });
+	})
+}
+</script>

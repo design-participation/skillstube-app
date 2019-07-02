@@ -18,6 +18,7 @@ db = client[secrets.DB_NAME]
 class DB:
     def __init__(self, db_name):
         self.db = db[db_name]
+        self.db.drop_indexes()
 
     def check_type(self, _id):
         if type(_id) is not list:
@@ -40,7 +41,7 @@ class DB:
     async def update(self, _id, value):
         self.check_type(_id)
         result = await self.db.replace_one({'_id': _id}, value)
-        return result.inserted_id
+        return result
 
     async def list(self, *args, **kwargs):
         return await self.db.find(*args, **kwargs).to_list(None)
@@ -326,6 +327,14 @@ class Playlists(DB):
 
     async def add_folder(self, user_id, name):
         return await super().add(user_id=user_id, type='folder', name=name)
+
+    async def rename_folder(self, folder_id, new_name):
+        folder = await self.get(folder_id)
+        if folder is not None:
+            folder['name'] = new_name
+            await self.update(folder_id, folder)
+            return True
+        return False
 
     async def add(self, user_id, folder_id, video_id):
         return await super().add(_key={'user_id': user_id, 'video_id': video_id}, user_id=user_id, type='video', video_id=video_id, folder_id=folder_id)

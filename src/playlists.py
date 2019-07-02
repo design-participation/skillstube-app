@@ -1,7 +1,7 @@
 from aiohttp import web
 import aiohttp_jinja2
 
-from util import routes, get_user, login_required, to_objectid
+from util import routes, get_user, login_required, to_objectid, redirect
 from backend import playlists, videos, history
 
 @routes.get('/playlists/{folder_id}')
@@ -17,6 +17,39 @@ async def show_playlists(request):
         folder['count'] = await playlists.count(folder['_id'])
         return {'folder': folder, 'nav': 'playlists'}
     raise web.HTTPBadRequest()
+
+@routes.get('/add-playlist')
+@aiohttp_jinja2.template('add_playlist.html')
+@login_required
+async def add_playlist(request):
+    user = await get_user(request)
+    await history.add(user['_id'], 'add-playlist-form')
+    return {'nav': 'playlists'}
+
+@routes.post('/add-playlist')
+@login_required
+async def add_playlist(request):
+    user = await get_user(request)
+    data = await request.post()
+    if 'name' in data:
+        folder_id = await playlists.add_folder(user['_id'], data['name'])
+        if folder_id is not None:
+            await history.add(user['_id'], 'add-playlist', {'folder_id': folder_id, 'name': data['name']})
+        await redirect(request, '/playlists', info='Playlist "%s" created' % data['name'])
+    await redirect(request, '/playlists', error='Invalid playlist name')
+
+@routes.post('/rename-playlist')
+@login_required
+async def add_playlist(request):
+    user = await get_user(request)
+    data = await request.post()
+    if 'name' in data and 'folder' in data:
+        folder_id = to_objectid(data['folder'])
+        if folder_id is not None:
+            await playlists.rename_folder(folder_id, data['name'])
+            await history.add(user['_id'], 'rename-folder', {'folder_id': folder_id, 'name': data['name']})
+            await redirect(request, '/playlists/%s' % folder_id, info='Playlist renamed to "%s"' % data['name'])
+    await redirect(request, '/playlists', error='Cannot rename playlist')
 
 @routes.get('/playlists')
 @aiohttp_jinja2.template('playlists.html')

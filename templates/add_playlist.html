@@ -1,0 +1,17 @@
+{% extends 'base.tmpl' %}
+{% block title %}Add playlist{% endblock %}
+{% block body %}
+<div class="row">
+	<div class="col">
+		<a name="playlist"></a>
+		<form action="/add-playlist" method="post">
+			<div class="mb-3">
+				<h3>Create a new playlist</h3>
+				<input type="text" class="form-control" name="name" placeholder="Type playlist name here">
+			</div>
+			<button type="submit" class="btn btn-primary mr-3 mb-2"><i class="fas fa-star"></i> Save</button>
+			<a href="#" onclick="window.history.go(-1); return false;" class="btn btn-danger mb-2"><i class="fas fa-times"></i> Cancel</a>
+		</form>
+	</div>
+</div>
+{% endblock body %}

@@ -18,7 +18,7 @@ def validate_prompt(prompt):
 @aiohttp_jinja2.template('index.html')
 async def index(request):
     session = await get_session(request)
-    for variable in ['query', 'prompt', 'channel_only']:
+    for variable in ['query', 'prompt', 'channel_only', 'video']:
         if variable in session:
             del session[variable]
     return {'nav': 'home', 'channel_name': secrets.YOUTUBE_CHANNEL_NAME}
@@ -103,6 +103,15 @@ async def get_related(videoId):
         results.append({'videoId': item['id']['videoId'], 'thumbnail': item['snippet']['thumbnails']['medium']['url'], 'title': item['snippet']['title']})
     return results
 
+@routes.get('/watch')
+@aiohttp_jinja2.template('watch.html')
+async def watch(request):
+    session = await get_session(request)
+    if 'video' in session:
+        raise web.HTTPFound('/watch/' + session['video'])
+    #raise web.HTTPFound('/recent')
+    return {'nav': 'video'}
+
 @routes.get('/watch/{video_id}')
 @aiohttp_jinja2.template('watch.html')
 async def watch(request):
@@ -124,7 +133,9 @@ async def watch(request):
         comment_items = await comments.list(user['_id'], video_id, populate=True)
         await history.add(user['_id'], 'show-video', {'video_id': video['_id'], 'youtube_id': video['video_id'], 'link': 'https://youtu.be/' + video['video_id'], 'title': video['title'], 'thumbnail': video['thumbnail']})
         folder = await playlists.get_for_video(user['_id'], video_id)
-    return { 'video': video, 'comments': comment_items, 'folder': folder, 'nav': 'search'}
+    session = await get_session(request)
+    session['video'] = video_id # memorize video
+    return { 'video': video, 'comments': comment_items, 'folder': folder, 'nav': 'video'}
 
 #TODO: deprecated (maybe use categories to host recent videos)
 @routes.get('/recent')
@@ -132,16 +143,17 @@ async def watch(request):
 @aiohttp_jinja2.template('recent.html')
 async def show_recent(request):
     user = await get_user(request)
-    history_items = await history.list(user['_id'], 'video')
-    recent_videos = []
+    history_items = await history.list(user['_id'], 'show-video', limit=50)
+    ids = []
     seen = set()
     for item in history_items:
-        videoId = item['data']
+        videoId = item['data']['youtube_id']
         if videoId not in seen:
-            recent_videos.append({'videoId': videoId, 'title': '', 'thumbnail': 'http://i3.ytimg.com/vi/%s/mqdefault.jpg' % videoId})
+            ids.append(videoId)
             seen.add(videoId)
+    recent_videos = await videos.get(ids)
     await history.add(user['_id'], 'recent-videos')
-    return {'results': recent_videos, 'nav': 'playlists'}
+    return {'results': recent_videos, 'nav': 'video'}
 
 @routes.get('/suggest')
 async def suggest(request):

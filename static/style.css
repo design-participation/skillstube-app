@@ -1,16 +1,18 @@
 /* ============= colors =========== */
 :root {
-  --color-home: green;
-  --color-search: #645AA5; 
-  --color-friends: #8E3B88; 
-  --color-playlists: #E8314F; 
-  --color-notifications: #F47726; 
+  --color1: green;
+  --color2: #645AA5; 
+  --color3: #8E3B88; 
+  --color4: #E8314F; 
+  --color5: #F47726; 
+  --color6: gray; 
 
-  --color-home-light: #ada;
-  --color-search-light: #e0deed; 
-  --color-friends-light: #ecd3eb; 
-  --color-playlists-light: #fad5db; 
-  --color-notifications-light: #fce3d3; 
+  --color1-light: #ada;
+  --color2-light: #e0deed; 
+  --color3-light: #ecd3eb; 
+  --color4-light: #fad5db; 
+  --color5-light: #fce3d3; 
+  --color6-light: #ddd; 
 }
 
 /* ============= logo ============= */
@@ -232,6 +234,25 @@ body {
 	background: black;
 }
 
+.playlist-container {
+	border-top-left-radius: calc(.25rem - 1px);
+	border-top-right-radius: calc(.25rem - 1px);
+  background-size: cover;
+}
+
+.playlist-regular {
+  background-color: #b3b3b3;
+}
+
+.playlist-empty {
+  background-image: url('/static/img/playlist-folder.svg');
+}
+
+.playlist-add {
+  background-color: #b3b3b3;
+  background-image: url('/static/img/playlist-add.svg');
+}
+
 .card-img-4 img {
 	width: 50%;
 	border-radius: 0px;
@@ -381,39 +402,46 @@ body {
 }
 
 .nav-item.active:nth-child(1) {
-	border-color: var(--color-home) !important;
-	background-color: var(--color-home-light) !important;
+	border-color: var(--color1) !important;
+	background-color: var(--color1-light) !important;
 }
 .nav-item.active:nth-child(1) > .nav-link {
-	color: var(--color-home) !important;
+	color: var(--color1) !important;
 }
 .nav-item.active:nth-child(2) {
-	border-color: var(--color-search) !important;
-	background-color: var(--color-search-light) !important;
+	border-color: var(--color2) !important;
+	background-color: var(--color2-light) !important;
 }
 .nav-item.active:nth-child(2) > .nav-link {
-	color: var(--color-search) !important;
+	color: var(--color2) !important;
 }
 .nav-item.active:nth-child(3) {
-	border-color: var(--color-friends) !important;
-	background-color: var(--color-friends-light) !important;
+	border-color: var(--color3) !important;
+	background-color: var(--color3-light) !important;
 }
 .nav-item.active:nth-child(3) > .nav-link {
-	color: var(--color-friends) !important;
+	color: var(--color3) !important;
 }
 .nav-item.active:nth-child(4) {
-	border-color: var(--color-playlists) !important;
-	background-color: var(--color-playlists-light) !important;
+	border-color: var(--color4) !important;
+	background-color: var(--color4-light) !important;
 }
 .nav-item.active:nth-child(4) > .nav-link {
-	color: var(--color-playlists) !important;
+	color: var(--color4) !important;
 }
 .nav-item.active:nth-child(5) {
-	border-color: var(--color-notifications) !important;
-	background-color: var(--color-notifications-light) !important;
+	border-color: var(--color5) !important;
+	background-color: var(--color5-light) !important;
 }
 .nav-item.active:nth-child(5) > .nav-link {
-	color: var(--color-notifications) !important;
+	color: var(--color5) !important;
+}
+.nav-item.active:nth-child(6) {
+	border-color: var(--color6) !important;
+	background-color: var(--color6-light) !important;
+}
+.nav-item.active:nth-child(6) > .nav-link {
+	color: var(--color6) !important;
 }
 
 /* =============== qrcode scanner ============== */
@@ -467,8 +495,3 @@ body {
 	text-align: center;
 }
 
-/* =============== misc ============== */
-
-.playlist-container {
-	background: black;
-}

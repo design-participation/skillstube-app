@@ -11,12 +11,12 @@
 			<div class="col-sm-6 col-md-4 col-lg-3 align-items-stretch">
 				<div class="card mb-3">
 					<a href="/playlists/{{ folder._id }}">
-					<div class="card-img-4 playlist-container">
+            <div class="card-img-4 playlist-container {{ "playlist-empty" if folder.videos|length == 0 else "playlist-regular" }}">
 					{% for i in range(4) -%}
 						{%- if folder.videos|length > i -%}
-							<img class="card-img-top" src="{{ folder.videos[i].thumbnail }}">
+              <img src="{{ folder.videos[i].thumbnail }}">
 						{%- else -%}
-							<img class="card-img-top" src="/static/img/gray.png">
+              <img class="card-img-top" src="/static/img/transparent.png">
 						{%- endif -%}
 					{%- endfor %}
 					</div>
@@ -34,6 +34,18 @@
 				</div>
 			</div>
 		{% endfor %}
+			<div class="col-sm-6 col-md-4 col-lg-3 align-items-stretch">
+				<div class="card mb-3">
+          <a href="/add-playlist">
+					<div class="card-img-4 playlist-container playlist-add">
+              <img class="card-img-top" src="/static/img/transparent.png"><img class="card-img-top" src="/static/img/transparent.png"><img class="card-img-top" src="/static/img/transparent.png"><img class="card-img-top" src="/static/img/transparent.png">
+					</div>
+					<div class="card-body">
+            Add playlist
+					</div>
+					</a>
+				</div>
+			</div>
 	{% endif %}
 </div>
 {% endblock body %}

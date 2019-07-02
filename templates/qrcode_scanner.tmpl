@@ -10,12 +10,13 @@
       </div>
       <div class="modal-body">
 				<div class="video-container">
-					<video id="qr-video" style="width: 320px; height: 240px">Video preview not supported</video><div class="corners"><i></i><i></i><i></i><i></i></div>
-					<canvas id="qr-canvas" width="320" height="240" style="display:none">Canvas not supported</canvas>
+          <input id="qr-image-picker" type="file" accept="image/*" />
+					<div style="display: none" id="qr-video-container"><video id="qr-video" style="width: 320px; height: 240px">Video preview not supported</video><div class="corners"><i></i><i></i><i></i><i></i></div></div>
+					<canvas id="qr-canvas" width="320" height="240" style="width: 100%">Canvas not supported</canvas>
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button id="choose-camera" type="button" class="btn btn-secondary" style="float: left"><i class="fas fa-sync"></i> Other camera</button>
+				<button style="display: none" id="choose-camera" type="button" class="btn btn-secondary" style="float: left"><i class="fas fa-sync"></i> Other camera</button>
 				<button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times"></i> Cancel</button>
 			</div>
 		</div>
@@ -25,25 +26,22 @@
 	<script type="text/javascript" src="/static/jsqrcode.js"></script>
 	<script type="text/javascript" src="/static/qrcode_scanner.js"></script>
 	<script>
+  document.addEventListener('DOMContentLoaded', function() {
 		var camera_num = 0;
 		function process_qrcode(result) {
 				$('#qrcode').val(result);
 				$('input').prop('required', false);
 				$('#submit').click();
 		}
-		init_qrcode_scanner(function() {
-			//$('#qrcode-start-button').prop('disabled', true);
-		});
-		$(function() {
-			$('#qrcode-scanner').on('show.bs.modal', function (e) {
-				run_qrcode_scanner(process_qrcode, camera_num);
-			})
-			$('#qrcode-scanner').on('hide.bs.modal', function (e) {
-				stop_qrcode_scanner();
-			})
-			$('#choose-camera').click(function() {
-				camera_num += 1;
-				run_qrcode_scanner(process_qrcode, camera_num);
-			});
-		});
+    $('#qrcode-scanner').on('show.bs.modal', function (e) {
+      run_qrcode_scanner(process_qrcode, camera_num);
+    });
+    $('#qrcode-scanner').on('hide.bs.modal', function (e) {
+      stop_qrcode_scanner();
+    });
+    $('#choose-camera').click(function() {
+      camera_num += 1;
+      run_qrcode_scanner(process_qrcode, camera_num);
+    });
+  }, false);
 	</script>
