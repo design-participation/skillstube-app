@@ -54,12 +54,12 @@
 	background: var(--warning);
 	border-radius: 50%;
 }
-.notification-count {
-	position: relative;
+/*.notification-count {
+	position: absolute;
 	top: 15px;
 	right: 15px;
 	margin-right: -15px;
-}
+}*/
 .user a:hover {
 	text-decoration: none;
 }
@@ -353,6 +353,8 @@ body {
 	margin-right: .5rem;
 	padding-left: .5rem;
 	padding-right: .5rem;
+  min-width: 4.3rem;
+  text-align: center;
 }
 
 .navbar-collapse.show .nav-link {
@@ -391,14 +393,17 @@ body {
 	background: var(--warning);
 }
 
+.notification-container {
+  position: relative;
+}
+
 .notification-count {
 	font-size: 40%;
-	position: relative;
-	margin-left: -11px;
-	top: 8px;
-	left: -2px;
+	position: absolute;
+	top: 3em;
+  right: -3px;
+  overflow: visible;
 	border: 1px solid #f8f9fa!important;
-	--background-color: var(--color-notifications);
 }
 
 .nav-item.active:nth-child(1) {

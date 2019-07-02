@@ -28,7 +28,7 @@
 				<a class="nav-link" href="/playlists" title="Playlists"><i class="fas fa-star"></i><span class="sr-only">Playlists</span></a>
 			</li>
 			<li class="nav-item {{ 'active' if nav == 'notifications' }}">
-				<a class="nav-link" href="/notifications" title="Notifications"><i class="fas fa-bell"></i><span class="sr-only">Notifications</span>
+				<a class="nav-link notification-container" href="/notifications" title="Notifications"><i class="fas fa-bell"></i><span class="sr-only">Notifications</span>
 				{%- if user.notification_count > 0 -%}
 					<span class="notification-count badge badge-primary">{{ user.notification_count }}</span>
 				{%- endif -%}
