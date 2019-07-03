@@ -48,6 +48,10 @@ async def add_globals(request):
         if 'error_message' in session:
             values['error_message'] = session['error_message']
             del session['error_message']
+        if 'query' in session and session['query'].strip() != '':
+            values['show_search_results_tab'] = True
+        if 'video' in session and session['video'].strip() != '':
+            values['show_watch_tab'] = True
     if '-debug' in sys.argv:
         values['debug'] = True
     return values

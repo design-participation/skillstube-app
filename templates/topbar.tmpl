@@ -14,12 +14,16 @@
       <li class="nav-item {{ 'active' if nav == 'home' }}">
 				<a class="nav-link" href="/" title="Home"><i class="fas fa-home"></i><span class="sr-only">Home</span></a>
       </li>
+      {% if show_search_results_tab or nav == 'search' %}
       <li class="nav-item {{ 'active' if nav == 'search' }}">
 				<a class="nav-link" href="/search" title="Search"><i class="fas fa-search"></i><span class="sr-only">Search</span></a>
       </li>
+      {% endif %}
+      {% if show_watch_tab or nav == 'video' %}
       <li class="nav-item {{ 'active' if nav == 'video' }}">
 				<a class="nav-link" href="/watch" title="Video"><i class="fas fa-film"></i><span class="sr-only">Video</span></a>
       </li>
+      {% endif %}
 			{% if user %}
 			<li class="nav-item {{ 'active' if nav == 'friends' }}">
 				<a class="nav-link" href="/friends" title="Friends"><i class="fas fa-user-friends"></i><span class="sr-only">Friends</span></a>

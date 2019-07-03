@@ -1,19 +1,16 @@
-<div class="row">
-	{% for item in friends %}
-	<div class="col-sm-6 col-md-4 col-lg-3 align-items-stretch">
-		<div class="card mb-3">
-			{% if item.href %}
-			<a href="{{ item.href }}">
-			{% endif %}
-				<img src="{{ item.picture }}" class="card-img-top" alt="{{ item.name }}">
-			{% if item.href %}
-			</a>
-			{% endif %}
-			<div class="card-body">
-				<p class="card-text">{{ item.name }}</p>
-			</div>
-			</a>
-		</div>
-	</div>
-	{% endfor %}
+{% for item in friends %}
+<div class="col-sm-6 col-md-4 col-lg-3 align-items-stretch">
+  <div class="card mb-3">
+    {% if item.href %}
+    <a class="no-decoration" href="{{ item.href }}">
+    {% endif %}
+      <img src="{{ item.picture }}" class="card-img-top" alt="{{ item.name }}">
+    <div class="card-body">
+      <p class="card-text">{{ item.name }}</p>
+    </div>
+    {% if item.href %}
+    </a>
+    {% endif %}
+  </div>
 </div>
+{% endfor %}

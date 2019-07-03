@@ -64,6 +64,34 @@
 	text-decoration: none;
 }
 
+/* ============= playlist selector ========= */
+.hidden-input {
+	opacity: 0;
+	position: absolute;
+	width: 0px;
+	height: 0px;
+}
+.selector-card {
+  padding: 0px;
+  background: #ddd;
+}
+.selector-card .card-body {
+  text-align: initial;
+}
+
+.selector-card:not(.active) {
+  color: black;
+}
+.selector-card:not(.active):hover {
+  color: white;
+}
+.selector-card:not(.active):hover img {
+  opacity: .8;
+}
+.selector-card:not(.active) img {
+  opacity: .3;
+}
+
 /* ============= card selector ============= */
 .hidden-checkbox {
 	opacity: 0;

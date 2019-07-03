@@ -166,7 +166,8 @@ async def logout(request):
     if 'user_id' in session:
         user = await get_user(request)
         await history.add(user['_id'], 'logout')
-        del session['user_id']
+        for name in list(session):
+            del session[name]
     raise web.HTTPFound('/login')
 
 @routes.post('/login')

@@ -18,9 +18,10 @@ def validate_prompt(prompt):
 @aiohttp_jinja2.template('index.html')
 async def index(request):
     session = await get_session(request)
-    for variable in ['query', 'prompt', 'channel_only', 'video']:
-        if variable in session:
-            del session[variable]
+    # => reset session
+    #for variable in ['query', 'prompt', 'channel_only', 'video']:
+    #    if variable in session:
+    #        del session[variable]
     return {'nav': 'home', 'channel_name': secrets.YOUTUBE_CHANNEL_NAME}
 
 @routes.get('/search')

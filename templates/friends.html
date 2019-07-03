@@ -1,22 +1,19 @@
 {% extends 'base.tmpl' %}
 {% block title %}Friends{% endblock %}
 {% block body %}
+<div class="row">
 {% include 'friend_list.tmpl' %}
-<h3>Add Friend</h3>
-<div class="row mb-3">
-	<div class="col">
-		<form action="/friend/request" method="post">
-			<input id="qrcode" type="hidden" name="qrcode" value="">
-			<div class="form-group">
-				<label for="email"> <i class="far fa-envelope"></i> Friend email:</label>
-				<input class="form-control" id="email" type="email" name="email" value="{{ email|e }}" placeholder="Enter friend email" required>
-			</div>
-			<div class="form-group">
-				<button class="btn btn-primary mr-2" id="submit" type="submit"><i class="fas fa-user-friends"></i> Send request</button>
-				<button id='qrcode-start-button' type="button" class="btn btn-secondary" data-toggle="modal" data-target="#qrcode-scanner"> <i class="fas fa-qrcode"></i> Scan QR code </button>
-			</div>
-		</form>
-	</div>
+  <div class="col-sm-6 col-md-4 col-lg-3 align-items-stretch">
+    <div class="card mb-3">
+      <a class="no-decoration" href="/add-friend">
+        <div class="card-img">
+          <img class="card-img-top" src="/static/img/friend-add.svg">
+        </div>
+        <div class="card-body">
+          <i class="fa fa-user-friends"></i> Add friend
+        </div>
+      </a>
+    </div>
+  </div>
 </div>
-{% include 'qrcode_scanner.tmpl' %}
 {% endblock body %}

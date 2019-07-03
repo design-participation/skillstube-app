@@ -31,17 +31,17 @@ $(document).ready(function() {
 
 	/***************** query suggestions ******************/
 
-	let timer = null;
+	var timer = null;
 	function get_suggestions(query, sync, async) {
 		if(timer != null) clearTimeout(timer);
 		timer = setTimeout(function() {
-			let prompt = $('#query-prompt').val()
+			var prompt = $('#query-prompt').val()
 			fetch('/suggest?q=' + escape(query) + '&prompt=' + prompt)
 				.then(function(response) {
 					return response.json();
 				})
 				.then(function(data) {
-					let source = [];
+					var source = [];
 					for(var i = 0; i < data.length; i++) {
 						source.push({'id': i, name: data[i]});
 					}
@@ -75,8 +75,8 @@ $(document).ready(function() {
 	/***************** friend selector for sharing ******************/
 
 	function update_checkbox(event) {
-		let target = event.target;
-		let checked = target.checked;
+		var target = event.target;
+		var checked = target.checked;
 		if(! $(target).hasClass('disabled')) {
 			if(checked) $(target).parent().addClass('btn-secondary').removeClass('btn-light-outline');
 			else $(target).parent().removeClass('btn-secondary').addClass('btn-light-outline');
@@ -87,9 +87,9 @@ $(document).ready(function() {
 	/***************** speech to text ******************/
 
 	$('.stt-button').each(function(index, button) {
-		let target = $('#' + $(button).attr('stt-target'));
-		let transcript = '';
-		let listening = false;
+		var target = $('#' + $(button).attr('stt-target'));
+		var transcript = '';
+		var listening = false;
 		
 		function on_interim(text) {
 			$(target).val(transcript + ' ' + text);
@@ -160,9 +160,9 @@ $(document).ready(function() {
     return jQuery(this[index % this.length]);
 	};
 
-	const idleTriggerTime = 4;
-	const idleLoopTime = 4;
-	const idleAnimationDuration = 2;
+	var idleTriggerTime = 4;
+	var idleLoopTime = 4;
+	var idleAnimationDuration = 2;
 	var idleTime = 0;
 
 	function resetIdlePrompts() {
@@ -176,7 +176,7 @@ $(document).ready(function() {
 	var idleInterval = setInterval(function() {
 		idleTime = idleTime + 1;
 		if (idleTime >= idleTriggerTime) {
-			let sinceTrigger = idleTime - idleTriggerTime;
+			var sinceTrigger = idleTime - idleTriggerTime;
 			if(sinceTrigger % idleLoopTime == 0) {
 				$('.show-idle-prompt').eq_mod(nextIdleElement).addClass('idle');
 				nextIdleElement ++;
