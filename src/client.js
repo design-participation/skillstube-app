@@ -73,7 +73,7 @@ $(document).ready(function() {
 		var prompt_select = $('#query-prompt')[0];
 		if(event.target.checked) {
 			saved_prompt = prompt_select.selectedIndex;
-			prompt_select.selectedIndex = 3; // use "(no start)" when checkbox is checked
+			prompt_select.selectedIndex = 1; // use "(no start)" when checkbox is checked
 		} else {
 			prompt_select.selectedIndex = saved_prompt;
 		}
