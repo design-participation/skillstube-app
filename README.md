@@ -10,9 +10,9 @@ input...
 
 ## Technical description
 
-The search engine uses the Youtube data API to retrive videos limited to the "how-to" category. Search can be restricted to a target channel for directing users to specific content.
+The search engine uses the Youtube data API to retrieve videos limited to the "how-to" category. Search can be restricted to a target channel for directing users to specific content.
 
-The server is written in python 3.7 using aiohttp for asynchroneous queries, and mongodb for data storage. 
+The server is written in python 3.7 using aiohttp for asynchronous queries, and mongodb for data storage. 
 
 # Requirements
 
@@ -31,6 +31,8 @@ A configuration file named src/secrets.py needs to be filled with parameters and
 First, generate a secure token for signing session data in cookies.
 ~~~~
 # install the cryptography python module if you don't already have it
+# you can do that in the virtualenv of the server (cryptography is part 
+# of the requirements), or create your own virtualenv
 pip3 install --user cryptography
 # generate a secure token for authenticating cookies in the app
 python3 src/secrets.template.py | tee src/secrets.py
@@ -42,7 +44,7 @@ Then, fill the rest of the config file with corresponding values.
 
 Use `make build` to create the container image from scratch.
 
-## Creating a SSL certifacte for localhost (optional)
+## Creating a SSL certificate for localhost (optional)
 
 You can run the app on https://localhost:8787, but for that you need to
 generate and trust a certificate for localhost. This step requires openssl to
@@ -61,7 +63,7 @@ The container needs to be bound to four volumes:
 * `/app/ssl/localhost.crt`: the ssl certificate for your host
 * `/app/data`: the data directory which will contain the mongdb database, users information and random data for populating the app
 
-Then use the makefile to run the app.
+You can modify the `Makefile` to account for those paths, and run the container with:
 ~~~~
 make run
 ~~~~
@@ -72,17 +74,9 @@ To stop the container, use `docker stop`, otherwise the mongodb database will be
 
 ## Running using a virtualenv
 
-Install python3.7, mongodb, gcc, libffi, libuv, (with development files) then
-create the environment:
-~~~~
-virtualenv -p python3.7 env
-. env/bin/activate
-pip install -r requirements.txt
-~~~~
+Install python3.7, mongodb, gcc, libffi, libuv, (with development files), then run:
+~~~
+./run-in-virtualenv.sh
+~~~
 
-You can run the app with:
-~~~~
-. env/bin/activate
-./run.sh
-~~~~
-
+Make sure you shut it down with Ctrl-C or sending it the TERM signal in order to not corrupt the mongodb database.

@@ -1,8 +1,10 @@
 <div class="row">
 	<div class="col-9">
 		<img style="flush:left" class="user-picture mb-3 mr-3" src="{{ item.data.sender.picture }}">
-		<strong>{{ item.data.sender.name }}</strong> shared a comment <i class="far fa-comment"></i> with you.</strong>
+		<strong>{{ item.data.sender.name }}</strong> shared a <i class="fa fa-film"></i> video with you.</strong>
+    {% if item.data.preview.text|length > 0 %}
 		<p> <i>"{{ item.data.preview.text|truncate(200) }}"</i> </p>
+    {% endif %}
 	</div>
 	<div class="col-3">
 		<img src="{{ item.data.preview.thumbnail }}" class="rounded img-thumbnail mb-3">

@@ -1,0 +1,38 @@
+<div class="row">
+  {% for item in comments %}
+  <div class="card col-12 mb-3">
+  <a name="{{ item._id }}">
+    <div class="row no-gutters card-body">
+      {% if show_video %}
+      <div class="col-md-3">
+        <a href="/watch/{{ item.video_id }}">
+          <img src="https://i3.ytimg.com/vi/{{ item.video_id }}/mqdefault.jpg" class="card-img">
+        </a>
+      </div>
+      <div class="col-md-9">
+        <p></p>
+        {% else %}
+      <div class="col">
+        {% endif %}
+        <p class="shared-list-users">
+          <img class="user-picture" src="{{ item.user.picture }}">
+          {% if item.shared_with|length > 0 %}
+          <i class="fas fa-share"></i>
+          {% for share_user in item.shared_with %}
+          <img class="user-picture-xs mr-1" src="{{ share_user.picture }}">
+          {% endfor %}
+          {% endif %}
+        </p>
+        {% if item.text|length > 0 %}
+        <p class="shared-list-comment" style="display: inline-block; margin-left: 1rem; margin-top: 1rem; background: #ddd; padding: .5rem 1rem .5rem 1rem;border-radius: .5rem;position: relative; left: 0px; top: 0px;" class="card-text">{{ item.text }}
+        <svg viewbox="0 0 2 1" width="20" height="10" style="position: absolute; left: 24px; top: -8px">
+          <path style="fill: #ddd" d="M 0 1 L 1 0 L 2 1 Z" />
+          <svg>
+        </p>
+        {% endif %}
+      </div>
+    </div>
+  </a>
+  </div>
+  {% endfor %}
+</div>

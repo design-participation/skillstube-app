@@ -89,7 +89,7 @@ async def set_playlist(request):
     video_id = request.match_info['video_id']
     data = await request.post()
     folder_id = None
-    if 'no-playlist' in data:
+    if data.get('no-playlist', '') == 'yes':
         # remove video from playlist
         await playlists.delete(user['_id'], video_id)
         raise web.HTTPFound('/watch/' + video_id)

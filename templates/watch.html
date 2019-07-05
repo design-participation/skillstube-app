@@ -7,8 +7,11 @@
 		{% include 'video.tmpl' %}
 		<div class="mt-3">
 			{% if user %}
-				<button class="btn btn-primary mr-2" href="#" data-toggle="modal" data-target="#share-video-dialog"><i class="fas fa-share"></i> Share</button>
-        <button class="btn btn-success" href="#" data-toggle="modal" data-target="#set-playlist-dialog"><i class="fas fa-star"></i> {{ folder.name if folder else 'Add to playlist' }} </button>
+				<button class="btn btn-primary mr-1" data-toggle="modal" data-target="#share-video-dialog"><i class="fas fa-share"></i> Share</button>
+        <button class="btn btn-success mr-1" data-toggle="modal" data-target="#set-playlist-dialog"><i class="fas fa-star"></i> {{ folder.name if folder else 'Add to playlist' }} </button>
+        {% if folder %}
+          <button class="btn btn-danger" data-toggle="modal" data-target="#no-playlist-dialog"><i class="fas fa-trash"></i> <span class="sr-only">No playlist</span> </button>
+        {% endif %}
 			{% endif %}
 		</div>
   {% else %}
@@ -18,8 +21,7 @@
 </div>
 {% if user %}
 	{% if comments|length > 0 %}
-		<h4> Comments </h4>
-		{% include 'comment_list.tmpl' %}
+		{% include 'shared_list.tmpl' %}
 	{% endif %}
 
 {% from 'dialog.tmpl' import dialog %}
@@ -27,13 +29,13 @@
 
 {% set dialog_body %}
   <form id="share-video-form" action="/comment/{{ video.video_id }}" method="post">
-    <h3 for="text">What did you learn from this video?</h3>
-    <div class="stt-textarea mb-3">
-      <textarea id="text" name="text" class="form-control" rows="3" required>{{ text }}</textarea>
-      <button type="button" stt-target="text" class="stt-button btn disabled"><i class="fas fa-microphone-slash"></i></button>
-    </div>
     <h3>Share it with whom?</h3>
       {% include 'friend_selector.tmpl' %}
+    <h3 for="text">What did you learn from this video?</h3>
+    <div class="stt-textarea mb-3">
+      <textarea id="text" name="text" class="form-control" rows="3">{{ text }}</textarea>
+      <button type="button" stt-target="text" class="stt-button btn disabled"><i class="fas fa-microphone-slash"></i></button>
+    </div>
   </form>
 {% endset %}
 {{ dialog('share-video-dialog', 'fa-share', 'Share video', dialog_body,
@@ -46,6 +48,7 @@
 
 {% set dialog_body %}
   <form id="set-playlist-form" action="/set_playlist/{{ video.video_id }}" method="post">
+    <input type="hidden" id="no-playlist" name="no-playlist">
     {% include 'playlist_selector.tmpl' %}
   </form>
 {% endset %}
@@ -55,6 +58,14 @@
   {'color': 'danger', 'label': 'Cancel', 'icon': 'fa-times', 'dismiss': True},
 ]) }}
 
+{% if folder %}
+{{ dialog('no-playlist-dialog', 'fa-trash', 'Remove from playlist', 'Are you sure to remove this video from playlists?', [
+  {'color': 'primary', 'label': 'Remove', 'icon': 'fa-trash', 'onclick': "$('#no-playlist').val('yes');submit_form('#set-playlist-form')"},
+  {'color': 'danger', 'label': 'Cancel', 'icon': 'fa-times', 'dismiss': True},
+]) }}
 {% endif %}
+
+{% endif %}
+
 
 {% endblock body %}

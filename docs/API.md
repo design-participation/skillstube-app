@@ -11,7 +11,7 @@ This document describes the API of the How-To-App server.
 
 ## Users (`src/users.py`)
 * `GET /new-user`: show new user form
-* `POST /new-user`: create user. Expects POST data: email, name, password, picture (image data). The picture is thumbailed and saved to data/pictures. If no picture was given, a surrogate is used.
+* `POST /new-user`: create user. Expects POST data: email, name, password, picture (image data). The picture is thumbnailed and saved to data/pictures. If no picture was given, a surrogate is used.
 * `GET /login`: show login form
 * `POST /login`: login user. If a qrcode is given, the user is logged with that qrcode, otherwise, email/password are checked. A new session cookie is created to keep the user logged-in.
 * `GET /logout`: logout user
