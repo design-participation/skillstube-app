@@ -14,6 +14,12 @@ The search engine uses the Youtube data API to retrive videos limited to the "ho
 
 The server is written in python 3.7 using aiohttp for asynchroneous queries, and mongodb for data storage. 
 
+# Requirements
+
+- To build js scripts: node, npm
+- To run the server in a virtualenv: python3.7, virtualenv, all the above
+- To build the docker image: docker, all the above
+
 # Running
 
 HowToApp can be run as a docker container, or directly from a python virtual environment.
