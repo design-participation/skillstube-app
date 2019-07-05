@@ -4,8 +4,8 @@
 <div class="row">
 {% include 'friend_list.tmpl' %}
   <div class="col-sm-6 col-md-4 col-lg-3 align-items-stretch">
-    <div class="card mb-3">
-      <a class="no-decoration" href="/add-friend">
+    <div class="card mb-3 card-add-item">
+      <a class="no-decoration" href="#" data-toggle="modal" data-target="#add-friend-dialog">
         <div class="card-img">
           <img class="card-img-top" src="/static/img/friend-add.svg">
         </div>
@@ -16,4 +16,25 @@
     </div>
   </div>
 </div>
+
+{% from 'dialog.tmpl' import dialog %}
+{{ dialog('add-friend-dialog', 'fa-user-friends', 'Add friend', '<form id="add-friend-form" action="/friend/request" method="post"><input type="email" class="form-control" name="email" placeholder="Type friend email here" required>
+  <input type="hidden" id="qrcode" name="qrcode">
+</form>',
+[
+  {'color': 'primary', 'label': 'Request', 'icon': 'fa-user-friends', 'onclick': "submit_form('#add-friend-form')"},
+  {'color': 'secondary', 'label': 'Scan QR code', 'icon': 'fa-qrcode', 'onclick': "$('#add-friend-dialog').modal('hide');$('.qrcode-scanner-title').text('Scan friend QR code');$('#qrcode-scanner').modal()"},
+  {'color': 'danger', 'label': 'Cancel', 'icon': 'fa-times', 'dismiss': True},
+]) }}
+
+<script>
+  function process_qrcode(result) {
+    $('#qrcode').val(result);
+    $('input').prop('required', false);
+    submit_form('#add-friend-form');
+  }
+</script>
+
+{% include 'qrcode_scanner.tmpl' %}
+
 {% endblock body %}

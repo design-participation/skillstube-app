@@ -44,5 +44,12 @@
 	{% endfor %}
 </div>
 {% endif %}
+<script>
+  function process_qrcode(result) {
+    $('#qrcode').val(result);
+    $('input').prop('required', false);
+    $('#submit').click();
+  }
+</script>
 {% include 'qrcode_scanner.tmpl' %}
 {% endblock body %}

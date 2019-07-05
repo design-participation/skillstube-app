@@ -1,18 +1,16 @@
 /* ============= colors =========== */
 :root {
-  --color1: green;
-  --color2: #645AA5; 
-  --color3: #8E3B88; 
-  --color4: #E8314F; 
-  --color5: #F47726; 
-  --color6: gray; 
+  --color1: #645AA5; 
+  --color2: #8E3B88; 
+  --color3: #E8314F; 
+  --color4: #F47726; 
+  --color5: gray; 
 
-  --color1-light: #ada;
-  --color2-light: #e0deed; 
-  --color3-light: #ecd3eb; 
-  --color4-light: #fad5db; 
-  --color5-light: #fce3d3; 
-  --color6-light: #ddd; 
+  --color1-light: #e0deed; 
+  --color2-light: #ecd3eb; 
+  --color3-light: #fad5db; 
+  --color4-light: #fce3d3; 
+  --color5-light: #ddd; 
 }
 
 /* ============= logo ============= */
@@ -258,6 +256,10 @@ body {
 	}
 }
 
+.modal-body {
+  text-align: left !important;
+}
+
 .player {
 	background: black;
 }
@@ -299,6 +301,13 @@ body {
 }
 .no-decoration {
 	color: var(--dark);
+}
+
+.card-add-item .card-body {
+  padding-top: 10px;
+  height: 64px;
+  display: block;
+  font-size: 24px;
 }
 
 /* =================== prompts ================= */

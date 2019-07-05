@@ -4,9 +4,9 @@ from aiohttp import web
 from aiohttp_session import get_session
 import aiohttp_jinja2
 
-from util import routes, get_user, login_required
+from util import routes, get_user, login_required, redirect
 from youtube import Youtube
-from backend import users, comments, history, videos, playlists
+from backend import users, comments, history, videos, playlists, friends
 import secrets
 
 youtube = Youtube()
@@ -15,14 +15,8 @@ def validate_prompt(prompt):
     return prompt if prompt in prompts else '1'
 
 @routes.get('/')
-@aiohttp_jinja2.template('index.html')
 async def index(request):
-    session = await get_session(request)
-    # => reset session
-    #for variable in ['query', 'prompt', 'channel_only', 'video']:
-    #    if variable in session:
-    #        del session[variable]
-    return {'nav': 'home', 'channel_name': secrets.YOUTUBE_CHANNEL_NAME}
+    raise web.HTTPFound('/search')
 
 @routes.get('/search')
 @aiohttp_jinja2.template('search.html')
@@ -121,6 +115,9 @@ async def watch(request):
     #task1 = asyncio.create_task(get_related(video_id))
     #task2 = asyncio.create_task(get_video_info(video_id))
     #results, (video_url, audio_url, title) = await asyncio.gather(task1, task2)
+    folder_items = []
+    friend_items = []
+    playlist_items = []
     comment_items = []
     folder = None
     video = await videos.get(video_id)
@@ -134,9 +131,15 @@ async def watch(request):
         comment_items = await comments.list(user['_id'], video_id, populate=True)
         await history.add(user['_id'], 'show-video', {'video_id': video['_id'], 'youtube_id': video['video_id'], 'link': 'https://youtu.be/' + video['video_id'], 'title': video['title'], 'thumbnail': video['thumbnail']})
         folder = await playlists.get_for_video(user['_id'], video_id)
+        friend_items = await friends.list(user['_id'], populate=True)
+        folder_items = await playlists.list_folders(user['_id'])
+    for folder_item in folder_items:
+        folder_item['videos'] = await videos.get([item['video_id'] for item in await playlists.list(user['_id'], folder_item['_id'], limit=4)])
+        if folder is not None and folder['_id'] == folder_item['_id']:
+            folder_item['selected'] = True
     session = await get_session(request)
     session['video'] = video_id # memorize video
-    return { 'video': video, 'comments': comment_items, 'folder': folder, 'nav': 'video'}
+    return { 'video': video, 'comments': comment_items, 'folder': folder, 'folders': folder_items, 'friends': friend_items, 'nav': 'video'}
 
 #TODO: deprecated (maybe use categories to host recent videos)
 @routes.get('/recent')

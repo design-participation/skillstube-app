@@ -64,4 +64,4 @@ async def run_web_app():
 
 app = asyncio.get_event_loop().run_until_complete(run_web_app())
 print('Running app at http%s://%s:%d' % ('s' if secrets.USE_SSL else '', secrets.HOST, secrets.PORT))
-web.run_app(app, ssl_context=ssl_context, host=secrets.HOST, port=secrets.PORT, print=None)
+web.run_app(app, ssl_context=ssl_context, host=secrets.HOST, port=secrets.PORT)

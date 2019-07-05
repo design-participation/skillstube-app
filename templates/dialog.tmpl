@@ -1,0 +1,26 @@
+{% macro dialog(name, icon, title, body, buttons) -%}
+<div class="modal" id="{{ name }}" tabindex="-1" role="dialog" aria-labelledby="{{ name }}-dialog-label" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="{{ name }}-dialog-label"> <i class="fas {{ icon }}"></i> {{ title }} </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        {{ body|safe }}
+			</div>
+			<div class="modal-footer">
+        {% for button in buttons %}
+          <button id="{{ button.id }}" type="{{ button.type|default('button') }}" onclick="{{ button.onclick|safe }}" class="btn btn-{{ button.color|default('primary') }}" {{ 'data-dismiss=modal' if button.dismiss }}>
+            <i class="fas {{ button.icon }}"></i> {{ button.label }}
+          </button>
+        {% endfor %}
+        {{ footer }}
+			</div>
+		</div>
+	</div>
+</div>
+{%- endmacro %}
+

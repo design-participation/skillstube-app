@@ -1,5 +1,13 @@
 $(document).ready(function() {
 
+  // submit from after triggering verification
+  window.submit_form = function(form) {
+    var button = $('<button>').attr('type', 'submit');
+    $(form).append(button);
+    $(button).click();
+    $(button).remove();
+  }
+
 	/***************** logging *************/
 
 	// note: only whitelisted actions are logged

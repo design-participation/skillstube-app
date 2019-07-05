@@ -7,12 +7,8 @@
 		{% include 'video.tmpl' %}
 		<div class="mt-3">
 			{% if user %}
-				<a class="btn btn-primary mr-3 mb-2" href="/comment/{{ video.video_id }}#form"><i class="fas fa-share"></i> Share</a>
-				{% if folder %}
-					<a class="btn btn-success mb-2" href="/set_playlist/{{ video.video_id }}#form"><i class="fas fa-star"></i> {{ folder.name }} </a>
-				{% else %}
-					<a class="btn btn-success mb-2" href="/set_playlist/{{ video.video_id }}#form"><i class="fas fa-star"></i> Add to playlist </a>
-				{% endif %}
+				<button class="btn btn-primary mr-2" href="#" data-toggle="modal" data-target="#share-video-dialog"><i class="fas fa-share"></i> Share</button>
+        <button class="btn btn-success" href="#" data-toggle="modal" data-target="#set-playlist-dialog"><i class="fas fa-star"></i> {{ folder.name if folder else 'Add to playlist' }} </button>
 			{% endif %}
 		</div>
   {% else %}
@@ -25,5 +21,40 @@
 		<h4> Comments </h4>
 		{% include 'comment_list.tmpl' %}
 	{% endif %}
+
+{% from 'dialog.tmpl' import dialog %}
+{################# SHARING #################}
+
+{% set dialog_body %}
+  <form id="share-video-form" action="/comment/{{ video.video_id }}" method="post">
+    <h3 for="text">What did you learn from this video?</h3>
+    <div class="stt-textarea mb-3">
+      <textarea id="text" name="text" class="form-control" rows="3" required>{{ text }}</textarea>
+      <button type="button" stt-target="text" class="stt-button btn disabled"><i class="fas fa-microphone-slash"></i></button>
+    </div>
+    <h3>Share it with whom?</h3>
+      {% include 'friend_selector.tmpl' %}
+  </form>
+{% endset %}
+{{ dialog('share-video-dialog', 'fa-share', 'Share video', dialog_body,
+[
+  {'color': 'primary', 'label': 'Share', 'icon': 'fa-share', 'onclick': "submit_form('#share-video-form')"},
+  {'color': 'danger', 'label': 'Cancel', 'icon': 'fa-times', 'dismiss': True},
+]) }}
+
+{################# PLAYLIST #################}
+
+{% set dialog_body %}
+  <form id="set-playlist-form" action="/set_playlist/{{ video.video_id }}" method="post">
+    {% include 'playlist_selector.tmpl' %}
+  </form>
+{% endset %}
+{{ dialog('set-playlist-dialog', 'fa-star', 'Add video to playlist', dialog_body,
+[
+  {'color': 'primary', 'label': 'Set playlist', 'icon': 'fa-star', 'onclick': "submit_form('#set-playlist-form')"},
+  {'color': 'danger', 'label': 'Cancel', 'icon': 'fa-times', 'dismiss': True},
+]) }}
+
 {% endif %}
+
 {% endblock body %}

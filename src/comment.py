@@ -6,6 +6,7 @@ from util import routes, login_required, get_user, to_objectid
 
 from backend import comments, friends, videos, shares, history
 
+# TODO: deprecated
 @routes.get('/comment/{video_id}') 
 @login_required
 @aiohttp_jinja2.template('comment.html')

@@ -24,6 +24,12 @@ YOUTUBE_CHANNEL_NAME = '' # display name for channel
 YOUTUBE_REGION_CODE = 'AU' 
 YOUTUBE_LANGUAGE = 'en'
 
+# Parameters for the cache of youtube API calls
+# SIZE is the number of most recent calls to keep 
+# TTL is the time after which a call is invalidated
+YOUTUBE_CACHE_SIZE = 1024
+YOUTUBE_CACHE_TTL = 5 * 60
+
 # Setup Microsoft cognitive services for speech to text at
 # https://azure.microsoft.com/en-us/services/cognitive-services/speech-to-text/
 # And copy-paste the API key and region identifier here.

@@ -17,7 +17,7 @@
 						<p class="uid"><strong>debug:Uid:</strong> {{ friend['_id'] }}</p>
 						{% endif %}
 						<form id="unfriend-form" action="/unfriend/{{ friend['_id'] }}" method="post">
-							<button class="btn btn-secondary" onclick="confirm_dialog('fa-user-slash', 'Remove friend', 'Are you sure you want to unfriend <strong>{{ friend['name'] }}</strong>?', 'Unfriend', function() { $('#unfriend-form').submit() })" type="button" data-toggle="modal" data-target="#confirm-dialog"> <i class="fas fa-user-slash"></i> Unfriend </button>
+              <button class="btn btn-secondary" type="button" data-toggle="modal" data-target="#unfriend-dialog"> <i class="fas fa-user-slash"></i> Unfriend </button>
 						</form>
 					</div>
 				</div>
@@ -29,4 +29,11 @@
 <h1>Shared content</h1>
 {% include 'comment_list.tmpl' %}
 {% endif %}
+
+{% from 'dialog.tmpl' import dialog %}
+{{ dialog('unfriend-dialog', 'fa-user-slash', 'Remove friend', 'Are you sure you want to unfriend <strong>' + friend.name + '</strong>?', [
+  {'color': 'primary', 'label': 'Unfriend', 'icon': 'fa-user-slash', 'onclick': "$('#unfriend-form').submit()"},
+  {'color': 'danger', 'label': 'Cancel', 'icon': 'fa-times', 'dismiss': True},
+]) }}
+
 {% endblock body %}

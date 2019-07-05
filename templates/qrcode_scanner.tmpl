@@ -3,7 +3,7 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="qrcode-scanner-label"> <i class="fas fa-qrcode"></i> Login with QR code</h5>
+        <h5 class="modal-title" id="qrcode-scanner-label"> <i class="fas fa-qrcode"></i> <span class="qrcode-scanner-title">Login with QR code</span></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -28,11 +28,6 @@
 	<script>
   document.addEventListener('DOMContentLoaded', function() {
 		var camera_num = 0;
-		function process_qrcode(result) {
-				$('#qrcode').val(result);
-				$('input').prop('required', false);
-				$('#submit').click();
-		}
     $('#qrcode-scanner').on('show.bs.modal', function (e) {
       run_qrcode_scanner(process_qrcode, camera_num);
     });

@@ -38,13 +38,13 @@ async def add_playlist(request):
         await redirect(request, '/playlists', info='Playlist "%s" created' % data['name'])
     await redirect(request, '/playlists', error='Invalid playlist name')
 
-@routes.post('/rename-playlist')
+@routes.post('/rename-playlist/{folder_id}')
 @login_required
 async def add_playlist(request):
     user = await get_user(request)
     data = await request.post()
-    if 'name' in data and 'folder' in data:
-        folder_id = to_objectid(data['folder'])
+    folder_id = to_objectid(request.match_info['folder_id'])
+    if 'name' in data:
         if folder_id is not None:
             await playlists.rename_folder(folder_id, data['name'])
             await history.add(user['_id'], 'rename-folder', {'folder_id': folder_id, 'name': data['name']})
@@ -64,6 +64,7 @@ async def show_playlists(request):
     await history.add(user['_id'], 'show-playlists')
     return {'folders': folders, 'nav': 'playlists'}
 
+# TODO: deprecated
 @routes.get('/set_playlist/{video_id}')
 @aiohttp_jinja2.template('set_playlist.html')
 @login_required

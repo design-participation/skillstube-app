@@ -5,3 +5,5 @@ ssl/*.crt
 ssl/*.key
 ssl/*.srl
 ssl/*.csr
+tools/node_modules
+tools/package-lock.json

@@ -5,6 +5,7 @@ DATA:=$(PWD)/data
 CONFIG:=$(PWD)/src/secrets.py
 
 build: Dockerfile
+	./tools/babel.sh src -d static
 	docker build -t benob/howtoapp:$(VERSION) . 
 
 run: 

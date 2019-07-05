@@ -5,10 +5,10 @@ import random
 import string
 import sys
 from urllib.parse import quote
+from cachetools import cached, TTLCache
 
 YOUTUBE_API_SERVICE_NAME = 'youtube'
 YOUTUBE_API_VERSION = 'v3'
-REGION_CODE = None
 
 import secrets
 
@@ -19,12 +19,20 @@ class Youtube:
     def __init__(self):
         self.backend = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=secrets.YOUTUBE_DEVELOPER_KEY)
         self.session = ClientSession()
+        self.cache = TTLCache(secrets.YOUTUBE_CACHE_SIZE, secrets.YOUTUBE_CACHE_TTL)
 
     async def close(self):
         await self.session.close()
 
     async def load(self, method, num, **parameters):
+        signature = json.dumps([method, num, parameters])
+        if signature in self.cache:
+            for item in self.cache[signature]:
+                yield item
+            return
+        #print('youtube request', signature)
         pageToken = ''
+        all_items = []
         while True:
             if 'noPageToken' not in parameters:
                 parameters['pageToken'] = pageToken
@@ -36,13 +44,17 @@ class Youtube:
                     print(url, pageToken, response.status, file=sys.stderr)
                     print(result, file=sys.stderr)
                 for item in result['items']:
+                    all_items.append(item)
                     yield item
                     num -= 1
                     if num == 0:
+                        self.cache[signature] = all_items
                         return
                 if 'nextPageToken' not in result or len(result['items']) == 0:
+                    self.cache[signature] = all_items
                     return
                 pageToken = result['nextPageToken']
+        self.cache[signature] = all_items
 
     async def search(self, query, max_results=50, **kwparms):
         if type(query) == list:

@@ -23,8 +23,8 @@
   </div>
   {% endfor %}
   <div class="col-sm-6 col-md-4 col-lg-3 align-items-stretch">
-    <div class="card mb-3">
-      <a class="no-decoration" href="/add-playlist">
+    <div class="card mb-3 card-add-item">
+      <a class="no-decoration" href="#" data-toggle="modal" data-target="#new-playlist-dialog">
         <div class="card-img">
           <img class="card-img-top" src="/static/img/playlist-add.svg">
         </div>
@@ -35,4 +35,12 @@
     </div>
   </div>
 </div>
+
+{% from 'dialog.tmpl' import dialog %}
+{{ dialog('new-playlist-dialog', 'fa-star', 'Create new playlist', '<form id="new-playlist-form" action="/add-playlist" method="post"><input type="text" class="form-control" name="name" placeholder="Type playlist name here" required></form>',
+[
+  {'color': 'primary', 'label': 'Create', 'icon': 'fa-star', 'onclick': "submit_form('#new-playlist-form')"},
+  {'color': 'danger', 'label': 'Cancel', 'icon': 'fa-times', 'dismiss': True},
+]) }}
+
 {% endblock body %}

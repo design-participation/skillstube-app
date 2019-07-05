@@ -17,14 +17,6 @@ async def show_friends(request):
     await history.add(user['_id'], 'list-friends')
     return {'friends': friend_items, 'nav': 'friends'}
 
-@routes.get('/add-friend')
-@aiohttp_jinja2.template('add_friend.html')
-@login_required
-async def add_playlist(request):
-    user = await get_user(request)
-    await history.add(user['_id'], 'add-friend-form')
-    return {'nav': 'friends'}
-
 @routes.get('/friend/{friend_id}')
 @login_required
 @aiohttp_jinja2.template('friend.html')
