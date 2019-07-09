@@ -98,7 +98,7 @@ async def debug_populate(request):
     async def populate_one_video_batch(start):
         async for item in youtube.video(video_ids[start: start + 25]):
             print(item['id'], item['snippet']['title'])
-            await videos.add(video_id=item['id'], thumbnail=item['snippet']['thumbnails']['high']['url'], title=item['snippet']['title'])
+            await videos.add(video_id=item['id'], thumbnail=item['snippet']['thumbnails']['medium']['url'], title=item['snippet']['title'])
     tasks = [populate_one_video_batch(batch) for batch in range(0, len(video_ids), 25)]
     await asyncio.gather(*tasks)
 

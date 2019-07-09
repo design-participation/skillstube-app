@@ -21,7 +21,7 @@ async def show_playlists(request):
 @routes.get('/add-playlist')
 @aiohttp_jinja2.template('add_playlist.html')
 @login_required
-async def add_playlist(request):
+async def add_playlist_form(request):
     user = await get_user(request)
     await history.add(user['_id'], 'add-playlist-form')
     return {'nav': 'playlists'}
@@ -40,7 +40,7 @@ async def add_playlist(request):
 
 @routes.post('/rename-playlist/{folder_id}')
 @login_required
-async def add_playlist(request):
+async def rename_playlist(request):
     user = await get_user(request)
     data = await request.post()
     folder_id = to_objectid(request.match_info['folder_id'])
@@ -82,25 +82,41 @@ async def set_playlist_ui(request):
     return {'folders': folders, 'video': video, 'nav': 'playlists'}
 
 @routes.post('/set_playlist/{video_id}')
-@aiohttp_jinja2.template('set_playlist.html')
 @login_required
 async def set_playlist(request):
     user = await get_user(request)
     video_id = request.match_info['video_id']
     data = await request.post()
     folder_id = None
-    if data.get('no-playlist', '') == 'yes':
-        # remove video from playlist
-        await playlists.delete(user['_id'], video_id)
-        raise web.HTTPFound('/watch/' + video_id)
+    if 'new_playlist' in data:
+        name = data['new_playlist']
+        # TODO: differenciate invalid playist and duplicate name
+        folder_id = await playlists.add_folder(user['_id'], name)
+        if folder_id is None:
+            await redirect(request, '/watch/' + video_id, error='Invalid playlist name')
     elif 'folder' in data:
-        # add video to playlist
+        # playlist selected by user
         folder_id = to_objectid(data['folder'])
+    if folder_id is None:
+        # remove from playlist
+        await playlists.delete(user['_id'], video_id)
+        await redirect(request, '/watch/' + video_id, info='Removed video from playlist')
+    else:
+        # save video in playlist
         folder = await playlists.get(folder_id)
         if folder and folder['user_id'] == user['_id']:
             await playlists.add(user['_id'], folder_id, video_id)
             video = await videos.get(video_id)
             await history.add(user['_id'], 'set-playlist', {'video_id': video['_id'], 'youtube_id': video_id, 'folder_id': folder_id, 'name': folder['name']})
-            raise web.HTTPFound('/watch/' + video_id)
+            await redirect(request, '/watch/' + video_id, info='Saved video to "%s"' % folder['name'])
     raise web.HTTPBadRequest()
 
+@routes.post('/remove-playlist/{folder_id}')
+@login_required
+async def remove_playlist(request):
+    user = await get_user(request)
+    folder_id = to_objectid(request.match_info['folder_id'])
+    result = await playlists.delete_folder(user['_id'], folder_id)
+    if result:
+        await redirect(request, '/playlists', info='Removed playlist')
+    await redirect(request, '/playlists', error='Invalid playlist')

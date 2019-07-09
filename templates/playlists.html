@@ -11,7 +11,7 @@
           {%- if folder.videos|length > i -%}
           <img src="{{ folder.videos[i].thumbnail }}">
           {%- else -%}
-          <img class="card-img-top" src="/static/img/transparent-480x360.png">
+          <img class="card-img-top" src="/static/img/transparent-320x180.png">
           {%- endif -%}
           {%- endfor %}
         </div>
@@ -29,7 +29,7 @@
           <img class="card-img-top" src="/static/img/playlist-add.svg">
         </div>
         <div class="card-body">
-          <i class="fa fa-star"></i> Add playlist
+          <i class="fa fa-star"></i> New playlist
         </div>
       </a>
     </div>

@@ -1,21 +1,40 @@
 <div class="row mb-2 btn-group" data-toggle="buttons">
   {% for folder in folders %}
-    <div class="col-12 col-sm-6 col-md-4 col-lg-3 align-items-stretch">
-      <div class="card mb-3 selector-card btn btn-secondary {{ 'active' if folder.selected }}">
+  <div class="col-sm-6 col-md-4 col-lg-3 align-items-stretch">
+    <div class="card mb-3">
+      <a class="no-decoration" href="#" onclick="add_to_playlist('{{ folder._id }}')">
         <div class="card-img-4 playlist-container {{ "playlist-empty" if folder.videos|length == 0 else "playlist-regular" }}">
           {% for i in range(4) -%}
-            {%- if folder.videos|length > i -%}
-              <img src="{{ folder.videos[i].thumbnail }}">
-            {%- else -%}
-              <img class="card-img-top" src="/static/img/transparent-480x360.png">
-            {%- endif -%}
+          {%- if folder.videos|length > i -%}
+          <img src="{{ folder.videos[i].thumbnail }}">
+          {%- else -%}
+          <img class="card-img-top" src="/static/img/transparent-320x180.png">
+          {%- endif -%}
           {%- endfor %}
         </div>
         <div class="card-body">
-          <input class="hidden-input" type="radio" {{ 'checked' if folder.selected }} name="folder" value="{{ folder._id }}" autocomplete="off" required> 
           {{ folder.name }}
         </div>
-      </div>
+      </a>
     </div>
-    {% endfor %}
+  </div>
+  {% endfor %}
+  <div class="col-sm-6 col-md-4 col-lg-3 align-items-stretch">
+    <div class="card mb-3 card-add-item">
+      <a class="no-decoration" href="#" data-toggle="modal" data-target="#new-playlist-dialog" onclick="$('#set-playlist-dialog').modal('hide');">
+        <div class="card-img">
+          <img class="card-img-top" src="/static/img/playlist-add.svg">
+        </div>
+        <div class="card-body normal-card-text">
+          <i class="fa fa-star"></i> New playlist
+        </div>
+      </a>
+    </div>
+  </div>
 </div>
+<script>
+function add_to_playlist(folder) {
+  $('#selected-folder').val(folder);
+  submit_form('#set-playlist-form');
+}
+</script>

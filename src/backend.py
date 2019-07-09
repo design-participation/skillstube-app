@@ -52,9 +52,9 @@ class DB:
     async def delete(self, _id):
         self.check_type(_id)
         if type(_id) is list:
-            await self.db.delete_many({'_id': {'$in': _id}})
+            return await self.db.delete_many({'_id': {'$in': _id}})
         else:
-            await self.db.delete_one({'_id': _id})
+            return await self.db.delete_one({'_id': _id})
 
     async def count(self):
         return await self.db.count_documents()
@@ -342,6 +342,11 @@ class Playlists(DB):
     async def delete(self, user_id, video_id):
         found = await self.list(user_id, video_id=video_id)
         return await super().delete([item['_id'] for item in found])
+
+    async def delete_folder(self, user_id, folder_id):
+        # delete videos saved in folder
+        found = await self.list(user_id, folder_id)
+        return await super().delete([item['_id'] for item in found] + [folder_id])
 
     async def list_folders(self, user_id):
         return await super().list({'user_id': user_id, 'type': 'folder'})

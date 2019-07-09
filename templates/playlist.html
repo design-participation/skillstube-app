@@ -5,16 +5,25 @@
   <div class="col">
 <h3> <i class="fas fa-star"></i> {{ folder.name }} 
   <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#rename-playlist-dialog"><i class="fas fa-pen"></i> Rename</button>
+  <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#remove-playlist-dialog"><i class="fas fa-trash"></i> <span class="sr-only">Remove</span></button>
 </h3>
   </div>
 </div>
 {% set results = folder.videos %}
 {% include 'search_results.tmpl' %}
 
+{################# RENAME ##################}
 {% from 'dialog.tmpl' import dialog %}
 {{ dialog('rename-playlist-dialog', 'fa-star', 'Rename playlist', '<form id="rename-playlist-form" action="/rename-playlist/' + folder._id|string + '" method="post"><input type="text" class="form-control" name="name" placeholder="Type new name here" required></form>',
 [
   {'color': 'primary', 'label': 'Rename', 'icon': 'fa-pen', 'onclick': "submit_form('#rename-playlist-form')"},
+  {'color': 'danger', 'label': 'Cancel', 'icon': 'fa-times', 'dismiss': True},
+]) }}
+
+{################# REMOVE ##################}
+{{ dialog('remove-playlist-dialog', 'fa-trash', 'Remove playlist', '<form id="remove-playlist-form" action="/remove-playlist/' + folder._id|string + '" method="post">Remove <strong><i class="fas fa-star"></i> ' + folder.name + '</strong> and videos in it?</form>',
+[
+  {'color': 'primary', 'label': 'Remove', 'icon': 'fa-trash', 'onclick': "submit_form('#remove-playlist-form')"},
   {'color': 'danger', 'label': 'Cancel', 'icon': 'fa-times', 'dismiss': True},
 ]) }}
 

@@ -37,19 +37,19 @@
 .user-picture {
 	width: 64px;
 	height: 64px;
-	background: var(--warning);
+	background: #aaa;
 	border-radius: 50%;
 }
 .user-picture-sm {
 	width: 48px;
 	height: 48px;
-	background: var(--warning);
+	background: #aaa;
 	border-radius: 50%;
 }
 .user-picture-xs {
 	width: 32px;
 	width: 32px;
-	background: var(--warning);
+	background: #aaa;
 	border-radius: 50%;
 }
 /*.notification-count {
@@ -70,28 +70,6 @@
 	width: 0px;
 	height: 0px;
 }
-.selector-card {
-  padding: 0px;
-  background: #ddd;
-}
-.selector-card .card-body {
-  text-align: initial;
-}
-
-.selector-card:not(.active) {
-  color: black;
-}
-.selector-card:not(.active):hover {
-  color: white;
-}
-.selector-card img {
-  opacity: .5;
-}
-
-.selector-card .playlist-regular {
-  background-color: transparent !important;
-}
-
 
 /* ============= card selector ============= */
 .hidden-checkbox {
@@ -314,7 +292,7 @@ body {
 	color: var(--dark);
 }
 
-.card-add-item .card-body {
+.card-add-item .card-body:not(.normal-card-text) {
   padding-top: 10px;
   height: 64px;
   display: block;

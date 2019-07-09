@@ -91,7 +91,7 @@ async def accept_friend(request):
     await friends.accept(request_id)
     request = await friends.get(request_id)
     await history.add(user['_id'], 'accept-friend-request', {'request': request})
-    raise web.HTTPFound('/friends')
+    raise web.HTTPFound('/notifications')
 
 @routes.post('/unfriend/{friend_id}')
 @login_required

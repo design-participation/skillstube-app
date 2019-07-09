@@ -8,9 +8,9 @@
 		<div class="mt-3">
 			{% if user %}
 				<button class="btn btn-primary mr-1" data-toggle="modal" data-target="#share-video-dialog"><i class="fas fa-share"></i> Share</button>
-        <button class="btn btn-success mr-1" data-toggle="modal" data-target="#set-playlist-dialog"><i class="fas fa-star"></i> {{ folder.name if folder else 'Add to playlist' }} </button>
+        <button class="btn btn-success mr-1" data-toggle="modal" data-target="#set-playlist-dialog"><i class="fas fa-star"></i> {{ folder.name if folder else 'Save' }} </button>
         {% if folder %}
-          <button class="btn btn-danger" data-toggle="modal" data-target="#no-playlist-dialog"><i class="fas fa-trash"></i> <span class="sr-only">No playlist</span> </button>
+          <button class="btn btn-secondary" data-toggle="modal" data-target="#no-playlist-dialog"><i class="fas fa-trash"></i> <span class="sr-only">No playlist</span> </button>
         {% endif %}
 			{% endif %}
 		</div>
@@ -48,18 +48,23 @@
 
 {% set dialog_body %}
   <form id="set-playlist-form" action="/set_playlist/{{ video.video_id }}" method="post">
-    <input type="hidden" id="no-playlist" name="no-playlist">
+    <input type="hidden" id="selected-folder" name="folder">
     {% include 'playlist_selector.tmpl' %}
   </form>
 {% endset %}
-{{ dialog('set-playlist-dialog', 'fa-star', 'Add video to playlist', dialog_body,
+{{ dialog('set-playlist-dialog', 'fa-star', 'Save video to playlist', dialog_body,
 [
-  {'color': 'primary', 'label': 'Set playlist', 'icon': 'fa-star', 'onclick': "submit_form('#set-playlist-form')"},
+  {'color': 'danger', 'label': 'Cancel', 'icon': 'fa-times', 'dismiss': True},
+]) }}
+
+{{ dialog('new-playlist-dialog', 'fa-star', 'Save video to new playlist', '<form id="new-playlist-form" action="/set_playlist/' + video.video_id + '" method="post"><input type="text" class="form-control" name="new_playlist" placeholder="Type playlist name here" required></form>',
+[
+  {'color': 'primary', 'label': 'Save', 'icon': 'fa-star', 'onclick': "submit_form('#new-playlist-form')"},
   {'color': 'danger', 'label': 'Cancel', 'icon': 'fa-times', 'dismiss': True},
 ]) }}
 
 {% if folder %}
-{{ dialog('no-playlist-dialog', 'fa-trash', 'Remove from playlist', 'Are you sure to remove this video from playlists?', [
+{{ dialog('no-playlist-dialog', 'fa-trash', 'Remove from playlist', 'Remove this video from <strong>' + folder.name + '</strong>?', [
   {'color': 'primary', 'label': 'Remove', 'icon': 'fa-trash', 'onclick': "$('#no-playlist').val('yes');submit_form('#set-playlist-form')"},
   {'color': 'danger', 'label': 'Cancel', 'icon': 'fa-times', 'dismiss': True},
 ]) }}
