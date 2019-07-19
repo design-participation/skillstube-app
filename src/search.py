@@ -162,9 +162,7 @@ async def show_recent(request):
 @routes.get('/suggest')
 async def suggest(request):
     query = request.query.get('q', '')
-    prompt = request.query.get('prompt', '1')
-    if prompt not in prompts:
-        prompt = 1
+    prompt = validate_prompt(request.query.get('prompt', '1'))
     found = await youtube.suggest(prompts[prompt] + ' ' + query)
     suggestions = [re.sub('^' + prompts[prompt].lower(), '', item.strip()).strip() for item in found[1]]
     user = await get_user(request)
