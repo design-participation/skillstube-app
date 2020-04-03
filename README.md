@@ -1,4 +1,4 @@
-# HowToApp: An app to support learning for people with intellectual disability
+# SkillsTube: An app to support learning for people with intellectual disability
 
 This app is a video search engine and social media site to support learning for
 persons with intellectual disabilities. It allows searching for videos using
@@ -22,7 +22,7 @@ The server is written in python 3.7 using aiohttp for asynchronous queries, and 
 
 # Running
 
-HowToApp can be run as a docker container, or directly from a python virtual environment.
+SkillsTube can be run as a docker container, or directly from a python virtual environment.
 
 ## Configuration file
 

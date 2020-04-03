@@ -1,6 +1,6 @@
 # API
 
-This document describes the API of the How-To-App server.
+This document describes the API of the Skills-Tube server.
 
 ## Search (`src/search.py`)
 
