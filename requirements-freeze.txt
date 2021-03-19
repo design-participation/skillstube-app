@@ -20,7 +20,7 @@ MarkupSafe==1.1.1
 motor==2.1.0
 multidict==4.7.5
 passlib==1.7.2
-Pillow==7.1.1
+Pillow>=8.1.1
 Pillow-PIL==0.1.dev0
 protobuf==3.11.3
 pyasn1==0.4.8
